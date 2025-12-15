@@ -5,7 +5,7 @@
     "version" : "25.3.0.0"
   },
   "schemas" : [ "JESS_DEV_2" ],
-  "lastReleaseVersion" : "",
+  "lastReleaseVersion" : "release/release-0.0",
   "export" : {
     "format" : {
       "enable" : true
