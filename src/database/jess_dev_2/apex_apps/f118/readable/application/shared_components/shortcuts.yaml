@@ -1,0 +1,29 @@
+---
+- # ====== Shortcut: TIMEZONE ==================================
+  id: 3266605070450073265
+  identification: 
+    name: TIMEZONE
+
+  subscription: 
+    version-number: 1089051331
+
+  source: 
+    type: Function Body returning VARCHAR2
+    language: PL/SQL
+    pl/sql-function-body: |
+      return '<p>'||'Dates and Times are displayed in the '||
+      '<a href="f?p='||:APP_ID||':timezone:'||:APP_SESSION||'">'||
+      nvl(apex_escape.html(apex_util.get_session_time_zone),'unknown')||'</a> timezone.</p>';
+
+- # ====== Shortcut: DELETE_CONFIRM_MSG ========================
+  id: 8949808133615567890
+  identification: 
+    name: DELETE_CONFIRM_MSG
+
+  subscription: 
+    version-number: 1089051331
+
+  source: 
+    type: Text with JavaScript Escaped Single Quotes
+    text: Would you like to perform this delete action?
+

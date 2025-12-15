@@ -1,0 +1,1598 @@
+---
+# ====== Page: Home ==========================================
+id: 1
+identification: 
+  name: Home
+  alias: HOME
+  title: '&APPLICATION_TITLE. - Home'
+  page-group: Public # 8949832234238591801
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: false
+
+javascript: 
+  file-urls: 
+  - '#APP_IMAGES#gc/apxColor.js'
+
+css: 
+  inline: |
+    .t-Badge.apex-cal-default { background-color: #2578CF; border-color: #2578CF; color: #FFFFFF; }
+    .t-Badge.apex-cal-black { background-color: #303030; border-color: #303030; color: #FFFFFF; }
+    .t-Badge.apex-cal-blue { background-color: #4183D7; border-color: #4183D7; color: #FFFFFF; }
+    .t-Badge.apex-cal-bluesky { background-color: #6BB9F0; border-color: #6BB9F0; color: #404040; }
+    .t-Badge.apex-cal-brown { background-color: #D88935; border-color: #D88935; color: #404040; }
+    .t-Badge.apex-cal-cyan { background-color: #1ABC9C; border-color: #1ABC9C; color: #404040; }
+    .t-Badge.apex-cal-darkblue { background-color: #1F5F97; border-color: #1F5F97; color: #FFFFFF; }
+    .t-Badge.apex-cal-gray { background-color: #A0A0A0; border-color: #A0A0A0; color: #404040; }
+    .t-Badge.apex-cal-green { background-color: #2ECC71; border-color: #2ECC71; color: #404040; }
+    .t-Badge.apex-cal-lime { background-color: #28A346; border-color: #28A346; color: #FFFFFF; }
+    .t-Badge.apex-cal-orange { background-color: #F39C12; border-color: #F39C12; color: #404040; }
+    .t-Badge.apex-cal-red { background-color: #D91E18; border-color: #D91E18; color: #FFFFFF; }
+    .t-Badge.apex-cal-silver { background-color: #BDC3C7; border-color: #BDC3C7; color: #404040; }
+    .t-Badge.apex-cal-white { background-color: #F0F0F0; border-color: #F0F0F0; color: #404040; }
+    .t-Badge.apex-cal-yellow { background-color: #F1C40F; border-color: #F1C40F; color: #404040; }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: |
+    <h2>About this Application</h2>
+    <p>The Team Calendar application gives you a way to list all your events on an easy to use, Web-accessible calendar. The Home page for the Team Calendar displays events in a monthly, weekly or daily format, with embedded links to detailed information about each event. You can also create customized reports on events.</p>
+    <p>
+    Each event is classified by event type and automatically displayed in an associated color. You can create your own event types or modify existing event type attributes.</p>
+    <p>
+    You can send emails to individuals or teams with information about upcoming meetings, and you have the ability to create your own teams to match your needs.</p>
+    
+
+regions: 
+- # ====== Region: Notifications ===============================
+  id: 1225458893464051941
+  identification: 
+    name: Notifications
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select id, 
+             nvl(lower(NOTIFICATION_TYPE),'yellow') as ALERT_TYPE, 
+             NOTIFICATION_NAME as ALERT_TITLE, 
+             NOTIFICATION_DESCRIPTION as ALERT_DESC,
+             '' alert_action
+        from EBA_CA_NOTIFICATIONS
+       where (DISPLAY_FROM is null or DISPLAY_FROM <= current_date) and
+             (DISPLAY_UNTIL is null or DISPLAY_UNTIL >= current_date)
+       order by nvl(DISPLAY_SEQUENCE,0),NOTIFICATION_NAME
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select null
+        from EBA_CA_NOTIFICATIONS
+       where (DISPLAY_FROM is null or DISPLAY_FROM <= current_date) and
+             (DISPLAY_UNTIL is null or DISPLAY_UNTIL >= current_date)
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 100
+
+    appearance: 
+      template-type: Theme
+      template: Alerts
+      template-options: 
+      - '#DEFAULT#'
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: ID ==========================================
+    id: 1225459182266051942
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 1
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ALERT_TYPE ==================================
+    id: 1943747791298669267
+    identification: 
+      column-name: ALERT_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Alert Type
+      alignment: start
+
+    layout: 
+      sequence: 2
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ALERT_TITLE =================================
+    id: 1943748195017669270
+    identification: 
+      column-name: ALERT_TITLE
+      type: Plain Text
+
+    heading: 
+      heading: Alert Title
+      alignment: start
+
+    layout: 
+      sequence: 3
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ALERT_DESC ==================================
+    id: 1943748596591669270
+    identification: 
+      column-name: ALERT_DESC
+      type: Plain Text
+
+    heading: 
+      heading: Alert Desc
+      alignment: start
+
+    layout: 
+      sequence: 4
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ALERT_ACTION ================================
+    id: 1943754524783674170
+    identification: 
+      column-name: ALERT_ACTION
+      type: Plain Text
+
+    heading: 
+      heading: Alert Action
+      alignment: start
+
+    layout: 
+      sequence: 5
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Events Calendar =============================
+  id: 1556090423873463779
+  identification: 
+    name: Events Calendar
+    type: Calendar
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select e.event_id 
+      , case when et.display_color is not null then
+          'apex-cal-'||
+          (select lower(cp.color_name) from eba_ca_color_prefs cp where cp.bg_color = et.display_color)
+        end css_class
+      , e.event_name 
+      , case when e.display_time = 'N' then
+          trunc(e.event_date_time)
+        else 
+          e.event_date_time
+        end event_date_time
+      , to_char(e.event_date_time,v('APP_TIME_FORMAT')) disp_time
+      , substr (case when nvl(display_time,'Y') = 'N' then
+                  '[All Day] '
+                 else
+                   '[' || ltrim(to_char(e.event_date_time,'HH:MIam'),'0')
+                   || ' - ' || ltrim(to_char(e.event_date_time + duration/24,'HH:MIam'),'0')
+      --             || ' (' || case when e.duration = 0  then '0 mins'
+      --                             when e.duration = .25 then '15 mins'
+      --                             when e.duration = .5 then '30 mins'
+      --                             when e.duration = .75 then '45 mins'
+      --                             when e.duration = 1 then '1 hr'
+      --                             when e.duration > 1 then to_char(trunc(e.duration)) || ' hrs'
+      --                               || case when e.duration - trunc(e.duration) = 0  then ''
+      --                                       when e.duration - trunc(e.duration) = .25 then ' 15 mins'
+      --                                       when e.duration - trunc(e.duration) = .5 then ' 30 mins'
+      --                                       when e.duration - trunc(e.duration) = .75 then ' 45 mins'
+      --                                  end
+      --                        end
+      --             || ')] '
+                   || '] '
+                 end ||
+                 case when :MULTIPLE_CAL_BO = 'Include' then nvl(c.short_name, 'Default') ||': ' end || 
+                 e.event_name,1,255) ||
+                 case when exists (select 1 from EBA_CA_FILES
+                                   where event_id = e.event_id)
+                      then ' (a)'
+                 end disp_col
+      from eba_ca_events e
+      ,    eba_ca_event_types et
+      ,    eba_ca_calendars c
+      where e.type_id = et.type_id
+      and   e.calendar_id = c.calendar_id (+)
+      and   (   nvl(:EVENT_TYPES_FILTER,'0') = '0' 
+             or instr(':'||:EVENT_TYPES_FILTER||':', ':'||nvl(e.type_id,'-1')||':') > 0
+            )
+      and   (   :MULTIPLE_CAL_BO = 'Exclude' 
+             or (    nvl(:CALENDARS_FILTER,'0') = '0' 
+                 and (   e.calendar_id is null
+                      or c.public_view_yn = 'Y'
+                      or exists (select 'x'
+                                 from eba_ca_users u
+                                 where u.username = :APP_USER
+                                 and   (   instr(u.restricted_to, c.calendar_id) > 0
+                                        or (access_level_id = 3 and restricted_to is null)
+                                       )
+                                )
+                     ) 
+                )
+             or instr(:CALENDARS_FILTER,nvl(e.calendar_id,'-1')) > 0
+            )
+      and   (   :EXTERNAL_INTERNAL_BO = 'Exclude'
+             or (:CONTACT_EMAIL is null
+                 or instr(upper(e.contact_email), :CONTACT_EMAIL) > 0
+                )
+            )
+      and   (   :EXTERNAL_INTERNAL_BO = 'Exclude'
+             or (   nvl(et.internal_yn, 'N') = 'N'
+                 or upper(:APP_USER) in (select upper(username) from eba_ca_users)
+                )
+            )
+      order by e.event_date_time
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  security: 
+    escape-special-characters: true
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Show Time # 1702553619385177411
+
+  attributes: 
+    settings: 
+      display-column: DISP_COL
+      start-date-column: EVENT_DATE_TIME
+      primary-key-column: EVENT_ID
+      event-sorting: Automatic
+      show-time: true
+      time-format: Default
+      first-hour: 9
+      multiple-line-events: true
+      show-tooltip: true
+      calendar-views-and-navigation: 'month:list:navigation'
+      drag-and-drop: true
+      drag-and-drop-pl/sql-code: |
+        declare
+            l_recur_event boolean := false;
+            l_old_date    timestamp with time zone;
+        begin
+        	for c1 in (select s.series_id, start_date, end_date
+                       from eba_ca_series s, eba_ca_events e
+                       where s.series_id = e.series_id
+                       and e.event_id = :APEX$PK_VALUE)
+            loop
+                l_recur_event := true;
+                exit;
+            end loop;
+        
+            if not l_recur_event then
+                update eba_ca_events
+                set event_date_time = to_timestamp(:APEX$NEW_START_DATE,  'YYYYMMDDHH24MISS')
+                where event_id = :APEX$PK_VALUE;
+            end if;
+        end;
+      create-link: 
+        url: 'f?p=&APP_ID.:10:&SESSION.::&DEBUG.:RP,10:P10_EVENT_DATE_D:&APEX$NEW_START_DATE.'
+        page: 10 # Event Details
+        clear-cache: RP,10
+        values: 
+          p10_event_date_d: '&APEX$NEW_START_DATE.'
+
+      view-/-edit-link: 
+        url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.:RP,3:P3_EVENT_ID,P3_PREV_PAGE:&EVENT_ID.,1'
+        page: 3 # Event Details - &P3_EVENT_NAME.
+        clear-cache: RP,3
+        values: 
+          p3_event_id: '&EVENT_ID.'
+          p3_prev_page: 1
+
+      maximum-events-/-day: 10
+      show-weekend: true
+      css-class: CSS_CLASS
+
+    performance: 
+      lazy-loading: true
+
+- # ====== Region: Events Calendar =============================
+  id: 1702544201694087051
+  identification: 
+    name: Events Calendar
+    type: Calendar
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select e.event_id 
+      , case when et.display_color is not null then
+          'a-luminance-color apex-cal-'||
+          (select lower(cp.color_name) from eba_ca_color_prefs cp where cp.bg_color = et.display_color)
+        end css_class
+      , e.event_name 
+      , case when e.display_time = 'N' then
+          trunc(e.event_date_time)
+        else e.event_date_time
+        end event_date_time
+      , to_char(e.event_date_time,v('APP_TIME_FORMAT')) disp_time
+      , decode(nvl(display_time, 'Y'), 'Y', e.event_date_time + (duration/24)
+                                          , trunc(e.event_date_time) + 1
+              ) end_time
+      , substr (case when nvl(display_time,'Y') = 'N' then
+                   '[All Day] '
+                 else
+                   null
+                 end || 
+                 case when :MULTIPLE_CAL_BO = 'Include' then nvl(c.short_name, 'Default') ||': ' end || 
+                 e.event_name,1,255) ||
+                 case when exists (select 1 from EBA_CA_FILES
+                                   where event_id = e.event_id)
+                      then ' (a)'
+                 end disp_col
+      from eba_ca_events e
+      ,    eba_ca_event_types et
+      ,    eba_ca_calendars c
+      where e.type_id = et.type_id
+      and   e.calendar_id = c.calendar_id (+)
+      and   (   nvl(:EVENT_TYPES_FILTER,'0') = '0' 
+             or instr(':'||:EVENT_TYPES_FILTER||':', ':'||nvl(e.type_id,'-1')||':') > 0
+            )
+      and   (   :MULTIPLE_CAL_BO = 'Exclude' 
+             or (    nvl(:CALENDARS_FILTER,'0') = '0' 
+                 and (   e.calendar_id is null
+                      or c.public_view_yn = 'Y'
+                      or exists (select 'x'
+                                 from eba_ca_users u
+                                 where u.username = :APP_USER
+                                 and   (   instr(u.restricted_to, c.calendar_id) > 0
+                                        or (access_level_id = 3 and restricted_to is null)
+                                       )
+                                )
+                     ) 
+                )
+             or instr(:CALENDARS_FILTER,nvl(e.calendar_id,'-1')) > 0
+            )
+      and   (   :EXTERNAL_INTERNAL_BO = 'Exclude'
+             or (:CONTACT_EMAIL is null
+                 or instr(upper(e.contact_email), :CONTACT_EMAIL) > 0
+                )
+            )
+      and   (   :EXTERNAL_INTERNAL_BO = 'Exclude'
+             or (   nvl(et.internal_yn, 'N') = 'N'
+                 or upper(:APP_USER) in (select upper(username) from eba_ca_users)
+                )
+            )
+      order by e.event_date_time
+      
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: events-calendar
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  security: 
+    escape-special-characters: true
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: MODEL.LOV.NOT_W_ARGUMENT # 1702553619385177411
+
+  attributes: 
+    settings: 
+      display-column: DISP_COL
+      start-date-column: EVENT_DATE_TIME
+      end-date-column: END_TIME
+      primary-key-column: EVENT_ID
+      event-sorting: Automatic
+      show-time: true
+      time-format: 12 Hour
+      first-hour: 8
+      multiple-line-events: true
+      show-tooltip: true
+      calendar-views-and-navigation: 'month:week:day:list:navigation'
+      drag-and-drop: true
+      drag-and-drop-pl/sql-code: |
+        declare
+            l_recur_event boolean := false;
+            l_old_date    timestamp with time zone;
+        begin
+        	for c1 in (select s.series_id, start_date, end_date
+                       from eba_ca_series s, eba_ca_events e
+                       where s.series_id = e.series_id
+                       and e.event_id = :APEX$PK_VALUE)
+            loop
+                l_recur_event := true;
+                exit;
+            end loop;
+        
+            if not l_recur_event then
+                update eba_ca_events
+                set event_date_time = to_timestamp(:APEX$NEW_START_DATE,  'YYYYMMDDHH24MISS')
+                where event_id = :APEX$PK_VALUE;
+            end if;
+        end;
+      create-link: 
+        url: 'f?p=&APP_ID.:10:&SESSION.::&DEBUG.:RP,10:P10_EVENT_DATE_D:&APEX$NEW_START_DATE.'
+        page: 10 # Event Details
+        clear-cache: RP,10
+        values: 
+          p10_event_date_d: '&APEX$NEW_START_DATE.'
+
+      view-/-edit-link: 
+        url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.:RP,3:P3_EVENT_ID,P3_PREV_PAGE:&EVENT_ID.,1'
+        page: 3 # Event Details - &P3_EVENT_NAME.
+        clear-cache: RP,3
+        values: 
+          p3_event_id: '&EVENT_ID.'
+          p3_prev_page: 1
+
+      maximum-events-/-day: 10
+      show-weekend: true
+      css-class: CSS_CLASS
+      export: iCal
+
+    performance: 
+      lazy-loading: true
+
+- # ====== Region: Calendars ===================================
+  id: 1702548916615087098
+  identification: 
+    name: Calendars
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select d
+        from
+      (
+      select 'Default' d,
+             1 ob
+        from dual
+       where exists (select 1 from eba_ca_events
+                      where calendar_id is null)
+       and   (   nvl(:CALENDARS_FILTER,'0') = '0'
+              or instr(:CALENDARS_FILTER, '-1') > 0
+             )
+      union
+      select short_name ||' - '|| calendar_name || decode(public_view_yn, 'Y', null, ' (Private)') d,
+             2 ob
+        from eba_ca_calendars c
+        where (   (     nvl(:CALENDARS_FILTER,'0') = '0' 
+                    and  (   c.public_view_yn = 'Y'
+                          or exists (select 'x'
+                                     from eba_ca_users u
+                                     where u.username = :APP_USER
+                                     and   (   instr(u.restricted_to, c.calendar_id) > 0
+                                            or (access_level_id = 3 and restricted_to is null)
+                                           )
+                                     )
+                         ) 
+                    )
+                 or instr(':'||:CALENDARS_FILTER||':',':'||nvl(calendar_id,'-1')||':') > 0
+                )
+      )
+       order by ob, d
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 80
+    parent-region: Filters # 1874796684003207062
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Include Multiple Calendars # 1866546217384601308
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 50
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      show-null-values-as: ' - '
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: D ===========================================
+    id: 1874795503469207050
+    identification: 
+      column-name: D
+      type: Plain Text
+
+    heading: 
+      heading: Calendars
+      alignment: start
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: &APPLICATION_TITLE. =========================
+  id: 1726273520898509097
+  identification: 
+    name: '&APPLICATION_TITLE.'
+    type: PL/SQL Dynamic Content [Legacy]
+
+  source: 
+    pl/sql-code: |
+      for c1 in ( select preference_value
+                  from eba_ca_preferences
+                  where preference_name = 'APPLICATION_SUBTITLE'
+                  union all
+                  select 'Create, manage, and share calendar events.'
+                  from dual
+                  where not exists ( select null
+                                     from eba_ca_preferences
+                                     where preference_name = 'APPLICATION_SUBTITLE')
+                ) loop
+          sys.htp.p('<p>'||apex_escape.html(c1.preference_value)||'</p>');
+      end loop;
+      
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Hero
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  image: 
+    file-url: '#APP_FILES#icons/app-icon-512.png'
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+- # ====== Region: ACL Warning =================================
+  id: 1742597003711168077
+  identification: 
+    name: ACL Warning
+    type: ACL Warning
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Alert
+    template-options: 
+    - '#DEFAULT#'
+    - t-Alert--colorBG
+    - t-Alert--defaultIcons
+    - t-Alert--warning
+    - t-Alert--horizontal
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: eba_ca_fw.get_preference_value('ACCESS_CONTROL_ENABLED') = 'N'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      administration-page-link: 
+        url: 'f?p=&APP_ID.:SETTINGS:&SESSION.::&DEBUG.:RP::'
+        page: SETTINGS
+        clear-cache: RP
+
+- # ====== Region: Filters =====================================
+  id: 1874796684003207062
+  identification: 
+    name: Filters
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - js-useLocalStorage
+    - is-expanded
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Timezone ====================================
+  id: 3266605181185076376
+  identification: 
+    name: Timezone
+    type: Static Content
+
+  source: 
+    html-code: |2
+       "TIMEZONE"
+      
+       
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - infoTextRegion
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: true
+
+- # ====== Region: Contact Email ===============================
+  id: 5576038504607525860
+  identification: 
+    name: Contact Email
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select nvl(:CONTACT_EMAIL, '- All Contacts -') contact_email
+      from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 90
+    parent-region: Filters # 1874796684003207062
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 'x' from
+      eba_ca_events where contact_email is not null;
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Include External / Internal Event Types # 1641094558700216905
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 50
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+      show-null-values-as: ' - '
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: CONTACT_EMAIL ===============================
+    id: 1886783990597642958
+    identification: 
+      column-name: CONTACT_EMAIL
+      type: Plain Text
+
+    heading: 
+      heading: Contact Email
+      alignment: start
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Event Types =================================
+  id: 7985687663113097851
+  identification: 
+    name: Event Types
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select listagg(a.event_type, ' ') within group (order by a.type_name) event_types
+      from (select type_name,
+             case when display_color is not null
+                  then '<span class="a-luminance-color t-Badge t-Badge--basic t-Badge--small apex-cal-'||apex_escape.html(lower(cp.color_name))||'">'|| 
+                       apex_escape.html(type_name || decode(:EXTERNAL_INTERNAL_BO, 'Include', decode(internal_yn, 'Y', ' (Internal Only)', null), null) ) || '</span>'
+                  else '<span class="a-luminance-color t-Badge t-Badge--basic t-Badge--small" style="background-color:' || apex_escape.html(cp.BG_COLOR) || ';">'||  
+                       apex_escape.html(type_name || decode(:EXTERNAL_INTERNAL_BO, 'Include', decode(internal_yn, 'Y', ' (Internal Only)', null), null) ) || '</span>'
+                  end event_type
+      from eba_ca_event_types et
+      ,    eba_ca_color_prefs cp
+      where et.color_pref_id = cp.id
+      and   (:EXTERNAL_INTERNAL_BO = 'Exclude'
+             or (   nvl(internal_yn, 'N') = 'N'
+                 or upper(:APP_USER) in (select upper(username) from eba_ca_users)
+                )
+            )
+      and   (   nvl(:EVENT_TYPES_FILTER,'0') = '0' 
+             or instr(':'||:EVENT_TYPES_FILTER||':',':'||nvl(type_id,'-1')||':') > 0
+            )
+      ) a
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 70
+    parent-region: Filters # 1874796684003207062
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--showIcon
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: event-types-report
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+        from EBA_CA_EVENT_TYPES
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 50
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+      show-null-values-as: ' - '
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: EVENT_TYPES =================================
+    id: 1874799016658207085
+    identification: 
+      column-name: EVENT_TYPES
+      type: Plain Text
+
+    heading: 
+      heading: Event Types
+      alignment: start
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+buttons: 
+- # ====== Button: FILTER ======================================
+  id: 1702548287497087092
+  identification: 
+    button-name: FILTER
+    label: Update Filters
+
+  layout: 
+    sequence: 10
+    region: Filters # 1874796684003207062
+    slot: RIGHT_OF_TITLE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    - t-Button--iconRight
+    - t-Button--gapLeft
+    icon: fa-wrench
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:5:&SESSION.::&DEBUG.:::'
+      page: 5 # Filter Options
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CREATE ======================================
+  id: 3265804878069144385
+  identification: 
+    button-name: CREATE
+    label: Add Event
+
+  layout: 
+    sequence: 20
+    region: '&APPLICATION_TITLE.' # 1726273520898509097
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-chevron-right
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:10:&SESSION.::&DEBUG.:10::'
+      page: 10 # Event Details
+      clear-cache: 10
+
+    warn-on-unsaved-changes: Do Not Check
+
+  security: 
+    authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+
+dynamic-actions: 
+- # ====== Dynamic Action: Refresh Calendar for Create =========
+  id: 1725627517270624786
+  identification: 
+    name: Refresh Calendar for Create
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Button
+    button: CREATE # 3265804878069144385
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 1702548500059087094
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Events Calendar # 1556090423873463779
+
+    execution: 
+      sequence: 20
+      event: Refresh Calendar for Create # 1725627517270624786
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 1725627555197624787
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Events Calendar # 1702544201694087051
+
+    execution: 
+      sequence: 10
+      event: Refresh Calendar for Create # 1725627517270624786
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 1725627983320624791
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.message.showPageSuccess('Event added.');
+
+    execution: 
+      sequence: 30
+      event: Refresh Calendar for Create # 1725627517270624786
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Refresh Calendar for Filter =========
+  id: 1874795927486207054
+  identification: 
+    name: Refresh Calendar for Filter
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Button
+    button: FILTER # 1702548287497087092
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 1874796025277207055
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Events Calendar # 1556090423873463779
+
+    execution: 
+      sequence: 10
+      event: Refresh Calendar for Filter # 1874795927486207054
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 1874796077974207056
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Events Calendar # 1702544201694087051
+
+    execution: 
+      sequence: 20
+      event: Refresh Calendar for Filter # 1874795927486207054
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 1874796198425207057
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        apex.message.showPageSuccess('Filters applied.');
+        
+
+    execution: 
+      sequence: 70
+      event: Refresh Calendar for Filter # 1874795927486207054
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 1874796269528207058
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Calendars # 1702548916615087098
+
+    execution: 
+      sequence: 50
+      event: Refresh Calendar for Filter # 1874795927486207054
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 1874796369676207059
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Event Types # 7985687663113097851
+
+    execution: 
+      sequence: 40
+      event: Refresh Calendar for Filter # 1874795927486207054
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 1874799168954207087
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Contact Email # 5576038504607525860
+
+    execution: 
+      sequence: 60
+      event: Refresh Calendar for Filter # 1874795927486207054
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+computations: 
+- # ====== Computation: EVENT_TYPES_FILTER =====================
+  id: 33200767805605427
+  identification: 
+    item-name: EVENT_TYPES_FILTER
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      nvl(apex_util.get_preference ( 
+                    p_preference => 'EVENT_TYPES_FILTER', 
+                    p_user       => :APP_USER ),0)
+
+- # ====== Computation: CONTACT_EMAIL ==========================
+  id: 1893491184821065255
+  identification: 
+    item-name: CONTACT_EMAIL
+
+  execution: 
+    sequence: 30
+    point: Before Header
+
+  computation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: null
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: |
+      select 'x'
+      from eba_ca_events
+      where contact_email is not null
+
+- # ====== Computation: LAST_VIEW ==============================
+  id: 3265705990424889439
+  identification: 
+    item-name: LAST_VIEW
+
+  execution: 
+    sequence: 20
+    point: Before Header
+
+  computation: 
+    type: Static Value
+    static-value: 1
+
+branches: 
+- # ====== Branch: Go To Page 1000 =============================
+  id: 1177491323129824278
+  identification: 
+    name: Go To Page 1000
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:1000:&SESSION.::&DEBUG.:RP::&success_msg=#SUCCESS_MSG#'
+      page: 1000 # Getting Started
+      clear-cache: RP
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: eba_ca_fw.get_preference_value('FIRST_RUN') = 'YES'
+

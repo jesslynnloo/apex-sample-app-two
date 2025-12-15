@@ -1,0 +1,4188 @@
+---
+# ====== Page: Event Details - &P3_EVENT_NAME. ===============
+id: 3
+identification: 
+  name: Event Details - &P3_EVENT_NAME.
+  alias: EVENT-DETAILS-P3-EVENT-NAME
+  title: Event Details - &P3_EVENT_NAME.
+  page-group: Public # 8949832234238591801
+
+appearance: 
+  page-mode: Normal
+  page-template: Marquee
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: false
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: This is the event details page. Click the <strong>Cancel</strong> button to leave this page. Click the <strong>iCalendar</strong> button to save this event as an .ics file. Click the <strong>Print</strong> button to print this page. Click the <strong>Edit Event</strong> button to edit this event. Click the "Add Link" list item in the list on the right to add a link. Click the "Add Attachment" list item in the list on the right to upload a file attachment. If your app administrator has enabled the "Show Updates" build option for this application, you will see an "Add Update" list item in the list on the right that you can click to add a comment to the event.
+
+regions: 
+- # ====== Region: Details =====================================
+  id: 1726665421535636869
+  identification: 
+    name: Details
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select    event_name,
+                row_key,
+                calendar_id,
+                type_id,
+                event_date_time,
+                to_char(event_date_time,'HH:MI PM') as start_time,
+                to_char(event_date_time + duration/24,'HH:MI PM') as end_time,
+                duration,
+                event_desc,
+                contact_person,
+                contact_email,
+                location,
+                created_on,
+                created_by,
+                last_updated_on,
+                last_updated_by,
+                case when series_id is null then 'No' else 'Yes' end as recurring_event,
+                tags,
+                (select recur_freq from eba_ca_series where series_id = e.series_id) as freq,
+                (select start_date from eba_ca_series where series_id = e.series_id) as start_date,
+                (select end_date from eba_ca_series where series_id = e.series_id) as end_date
+           from EBA_ca_events e
+         where event_id = :P3_EVENT_ID
+    page-items-to-submit: 
+    - P3_EVENT_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Value Attribute Pairs - Column
+      template-options: 
+      - '#DEFAULT#'
+      - t-AVPList--leftAligned
+      show-null-values-as: '-'
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: EVENT_NAME ==================================
+    id: 1726665471241636870
+    identification: 
+      column-name: EVENT_NAME
+      type: Hidden
+
+    layout: 
+      sequence: 1
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TYPE_ID =====================================
+    id: 1726665651446636871
+    identification: 
+      column-name: TYPE_ID
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Event Type
+      alignment: center
+
+    layout: 
+      sequence: 3
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EVENT TYPES # 8949808742838567911
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EVENT_DATE_TIME =============================
+    id: 1726665682691636872
+    identification: 
+      column-name: EVENT_DATE_TIME
+      type: Plain Text
+
+    heading: 
+      heading: Event Date
+      alignment: center
+
+    layout: 
+      sequence: 4
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: DD-MON-YYYY
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DURATION ====================================
+    id: 1726665827915636873
+    identification: 
+      column-name: DURATION
+      type: Plain Text
+
+    heading: 
+      heading: Duration
+      alignment: center
+
+    layout: 
+      sequence: 7
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    column-formatting: 
+      html-expression: '#DURATION# hour(s)'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EVENT_DESC ==================================
+    id: 1726665926442636874
+    identification: 
+      column-name: EVENT_DESC
+      type: Plain Text
+
+    heading: 
+      heading: Description
+      alignment: center
+
+    layout: 
+      sequence: 11
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select null
+          from EBA_ca_events
+         where event_id = :P3_EVENT_ID
+           and event_desc is not null
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CONTACT_PERSON ==============================
+    id: 1726666151890636876
+    identification: 
+      column-name: CONTACT_PERSON
+      type: Plain Text
+
+    heading: 
+      heading: Contact person
+      alignment: center
+
+    layout: 
+      sequence: 8
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select null
+          from EBA_ca_events
+         where event_id = :P3_EVENT_ID
+           and contact_person is not null
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CONTACT_EMAIL ===============================
+    id: 1726666170148636877
+    identification: 
+      column-name: CONTACT_EMAIL
+      type: Plain Text
+
+    heading: 
+      heading: Contact email
+      alignment: center
+
+    layout: 
+      sequence: 9
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select null
+          from EBA_ca_events
+         where event_id = :P3_EVENT_ID
+           and contact_email is not null
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LOCATION ====================================
+    id: 1726666255726636878
+    identification: 
+      column-name: LOCATION
+      type: Plain Text
+
+    heading: 
+      heading: Location
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select null
+          from EBA_ca_events
+         where event_id = :P3_EVENT_ID
+           and location is not null
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED_ON ==================================
+    id: 1726667073907636886
+    identification: 
+      column-name: CREATED_ON
+      type: Plain Text
+
+    heading: 
+      heading: Created
+      alignment: center
+
+    layout: 
+      sequence: 13
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 1726667225872636887
+    identification: 
+      column-name: CREATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Created by
+      alignment: center
+
+    layout: 
+      sequence: 14
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LAST_UPDATED_ON =============================
+    id: 1726667354588636888
+    identification: 
+      column-name: LAST_UPDATED_ON
+      type: Plain Text
+
+    heading: 
+      heading: Last Updated
+      alignment: center
+
+    layout: 
+      sequence: 15
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LAST_UPDATED_BY =============================
+    id: 1726667441170636889
+    identification: 
+      column-name: LAST_UPDATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Last Updated By
+      alignment: center
+
+    layout: 
+      sequence: 16
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TAGS ========================================
+    id: 1726667517483636890
+    identification: 
+      column-name: TAGS
+      type: Plain Text
+
+    heading: 
+      heading: Tags
+      alignment: center
+
+    layout: 
+      sequence: 17
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select null
+          from EBA_ca_events
+         where event_id = :P3_EVENT_ID
+           and tags is not null
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ROW_KEY =====================================
+    id: 1726667615390636891
+    identification: 
+      column-name: ROW_KEY
+      type: Plain Text
+
+    heading: 
+      heading: Unique ID
+      alignment: center
+
+    layout: 
+      sequence: 12
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: START_TIME ==================================
+    id: 3160411832108205772
+    identification: 
+      column-name: START_TIME
+      type: Plain Text
+
+    heading: 
+      heading: Start Time
+      alignment: center
+
+    layout: 
+      sequence: 5
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: END_TIME ====================================
+    id: 3160411893031205773
+    identification: 
+      column-name: END_TIME
+      type: Plain Text
+
+    heading: 
+      heading: End Time
+      alignment: center
+
+    layout: 
+      sequence: 6
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CALENDAR_ID =================================
+    id: 3160412103562205775
+    identification: 
+      column-name: CALENDAR_ID
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Calendar
+      alignment: center
+
+    layout: 
+      sequence: 2
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CALENDARS # 1866676699908727641
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select null
+          from EBA_ca_events
+         where event_id = :P3_EVENT_ID
+           and calendar_id is not null
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RECURRING_EVENT =============================
+    id: 3160412223200205776
+    identification: 
+      column-name: RECURRING_EVENT
+      type: Plain Text
+
+    heading: 
+      heading: Recurring Event
+      alignment: center
+
+    layout: 
+      sequence: 18
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FREQ ========================================
+    id: 3160412336941205777
+    identification: 
+      column-name: FREQ
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Frequency
+      alignment: center
+
+    layout: 
+      sequence: 19
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: RECUR FREQUENCY # 9168549725535120172
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select null
+          from EBA_ca_events
+         where event_id = :P3_EVENT_ID
+           and series_id is not null
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: START_DATE ==================================
+    id: 3160412409297205778
+    identification: 
+      column-name: START_DATE
+      type: Plain Text
+
+    heading: 
+      heading: Start Date
+      alignment: center
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: '&APP_DATE_FORMAT.'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select null
+          from EBA_ca_events
+         where event_id = :P3_EVENT_ID
+           and series_id is not null
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: END_DATE ====================================
+    id: 3160412510216205779
+    identification: 
+      column-name: END_DATE
+      type: Plain Text
+
+    heading: 
+      heading: End Date
+      alignment: center
+
+    layout: 
+      sequence: 21
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: '&APP_DATE_FORMAT.'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select null
+          from EBA_ca_events
+         where event_id = :P3_EVENT_ID
+           and series_id is not null
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: No Edit Actions =============================
+  id: 1874797845702207073
+  identification: 
+    name: No Edit Actions
+    type: Static Content
+
+  source: 
+    html-code: <p>You do not have rights to edit this event.</p>
+
+  layout: 
+    sequence: 140
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--hiddenOverflow
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P3_UPDATEABLE
+    value: N
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Event Actions ===============================
+  id: 1940689697398353859
+  identification: 
+    name: Event Actions
+    type: List
+
+  source: 
+    list: Event Actions # 2204848584569895071
+
+  layout: 
+    sequence: 130
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P3_UPDATEABLE
+    value: Y
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      list-template: Links List
+      template-options: 
+      - '#DEFAULT#'
+      - t-LinksList--showIcons
+      - t-LinksList--actions
+
+- # ====== Region: Region Display Selector =====================
+  id: 1950376528771779311
+  identification: 
+    name: Region Display Selector
+    type: Region Display Selector
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      mode: View Single Region
+      display-region-icons: false
+      include-'show-all': true
+      remember-selection: No
+
+- # ====== Region: Add Update ==================================
+  id: 3265598499084191788
+  identification: 
+    name: Add Update
+    type: Static Content
+
+  layout: 
+    sequence: 80
+    parent-region: No Parent
+    slot: REGION_POSITION_04
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Inline Dialog
+    template-options: 
+    - '#DEFAULT#'
+    - js-dialog-size600x400
+    - t-Form--stretchInputs
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: ADDNOTEM
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Updates =====================================
+  id: 3265601886186207012
+  identification: 
+    name: Updates
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select 
+              '' class, --use grayComment for gray look
+              'Note' note_type,
+              replace(sys.dbms_lob.substr(note,2000,1),chr(10),'<br />') comment_text,
+              '' attribute_1,
+              '' attribute_2,
+              '' attribute_3,
+              '' attribute_4,
+              lower(created_by) user_name,
+              apex_util.get_since(created) comment_date,
+              upper(
+                decode(instr(replace(created_by,'.',' '),' '),
+                       0, 
+                       substr(created_by,1,2),
+                       substr(created_by,1,1)||substr(created_by,instr(replace(created_by,'.',' '),' ')+1,1)
+                 )) user_icon,
+              'Edit' actions,
+              created,
+              id note_id
+      from EBA_CA_NOTES 
+      where   event_id = :P3_EVENT_ID
+      union all
+      select
+              'grayComment' class, --use grayComment for gray look
+              'Insert' note_type,
+              initcap(replace(replace(COLUMN_NAME,'_ID',null),'_',' ')) comment_text,
+              null attribute_1,
+              ' "'||new_value||'" inserted' attribute_2,
+              ' ' attribute_3,
+              ' ' attribute_4,
+              lower(CHANGED_BY) user_name,
+              apex_util.get_since(CHANGE_DATE) comment_date,
+              upper(
+                decode(instr(replace(changed_by,'.',' '),' '),
+                       0, 
+                       substr(changed_by,1,2),
+                       substr(changed_by,1,1)||substr(changed_by,instr(replace(changed_by,'.',' '),' ')+1,1)
+                 )) user_icon,
+              null actions,
+              CHANGE_DATE,
+              null note_id
+      from EBA_CA_HISTORY f
+      where component_id = :P3_EVENT_ID
+      and OLD_VALUE is null
+      union all
+      select
+              'grayComment' class, --use grayComment for gray look
+              'Update' note_type,
+              initcap(replace(replace(COLUMN_NAME,'_ID',null),'_',' ')) comment_text,
+              ' changed from "'||OLD_VALUE||'"' attribute_1,
+              ' to "'||new_value||'"' attribute_2,
+              ' ' attribute_3,
+              ' ' attribute_4,
+              lower(CHANGED_BY) user_name,
+              apex_util.get_since(CHANGE_DATE) comment_date,
+              upper(
+                decode(instr(replace(changed_by,'.',' '),' '),
+                       0, 
+                       substr(changed_by,1,2),
+                       substr(changed_by,1,1)||substr(changed_by,instr(replace(changed_by,'.',' '),' ')+1,1)
+                 )) user_icon,
+              null actions,
+              CHANGE_DATE,
+              null note_id
+      from EBA_CA_HISTORY f
+      where component_id = :P3_EVENT_ID
+      and OLD_VALUE is not null
+      order by 11 desc
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hiddenOverflow
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Show Updates # 1688256117016091328
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 50
+
+    appearance: 
+      template-type: Theme
+      template: Comments
+      template-options: 
+      - '#DEFAULT#'
+      - t-Comments--chat
+      show-null-values-as: ' '
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 50
+
+    messages: 
+      when-no-data-found: No updates found
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Column Names
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: COMMENT_TEXT ================================
+    id: 1556089005851463765
+    identification: 
+      column-name: COMMENT_TEXT
+      type: Plain Text
+
+    heading: 
+      heading: Comment Text
+      alignment: start
+
+    layout: 
+      sequence: 9
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: USER_NAME ===================================
+    id: 1556089095862463766
+    identification: 
+      column-name: USER_NAME
+      type: Plain Text
+
+    heading: 
+      heading: User Name
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMMENT_DATE ================================
+    id: 1556089218780463767
+    identification: 
+      column-name: COMMENT_DATE
+      type: Plain Text
+
+    heading: 
+      heading: Comment Date
+      alignment: start
+
+    layout: 
+      sequence: 11
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ACTIONS =====================================
+    id: 1556089320384463768
+    identification: 
+      column-name: ACTIONS
+      type: Link
+
+    heading: 
+      heading: Actions
+      alignment: start
+
+    layout: 
+      sequence: 12
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:33:&SESSION.::&DEBUG.:RP,33:P33_ID:#NOTE_ID#'
+        page: 33 # Event Update
+        clear-cache: RP,33
+        values: 
+          p33_id: '#NOTE_ID#'
+
+      link-text: '#ACTIONS#'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: USER_ICON ===================================
+    id: 1556089358673463769
+    identification: 
+      column-name: USER_ICON
+      type: Plain Text
+
+    heading: 
+      heading: User Icon
+      alignment: start
+
+    layout: 
+      sequence: 13
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CLASS =======================================
+    id: 3265602172998207021
+    identification: 
+      column-name: CLASS
+      type: Plain Text
+
+    heading: 
+      heading: Class
+      alignment: start
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NOTE_TYPE ===================================
+    id: 3265602280686207021
+    identification: 
+      column-name: NOTE_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Note Type
+      alignment: start
+
+    layout: 
+      sequence: 2
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ATTRIBUTE_1 =================================
+    id: 3265602471627207021
+    identification: 
+      column-name: ATTRIBUTE_1
+      type: Plain Text
+
+    heading: 
+      heading: Attribute 1
+      alignment: start
+
+    layout: 
+      sequence: 3
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ATTRIBUTE_2 =================================
+    id: 3265602591305207021
+    identification: 
+      column-name: ATTRIBUTE_2
+      type: Plain Text
+
+    heading: 
+      heading: Attribute 2
+      alignment: start
+
+    layout: 
+      sequence: 4
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ATTRIBUTE_3 =================================
+    id: 3265602697196207021
+    identification: 
+      column-name: ATTRIBUTE_3
+      type: Plain Text
+
+    heading: 
+      heading: Attribute 3
+      alignment: start
+
+    layout: 
+      sequence: 5
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ATTRIBUTE_4 =================================
+    id: 3265602794046207021
+    identification: 
+      column-name: ATTRIBUTE_4
+      type: Plain Text
+
+    heading: 
+      heading: Attribute 4
+      alignment: start
+
+    layout: 
+      sequence: 6
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 3265603201310207021
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: Created
+      alignment: start
+
+    layout: 
+      sequence: 7
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NOTE_ID =====================================
+    id: 3266442493813446088
+    identification: 
+      column-name: NOTE_ID
+      type: Plain Text
+
+    heading: 
+      heading: Note Id
+      alignment: start
+
+    layout: 
+      sequence: 8
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Attachments =================================
+  id: 3265682290669757130
+  identification: 
+    name: Attachments
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select
+          id,
+          '<a href="'||APEX_UTIL.GET_BLOB_FILE_SRC('P32_FILE_BLOB',id)||'">'||apex_escape.html(filename)||'</a>' filename,
+          file_mimetype,
+          file_charset,
+          apex_util.filesize_mask(dbms_lob.getlength(file_blob)) f_len,
+          substr(file_comments,1,50)||decode(greatest(length(file_comments),50),50,'','...') FILE_COMMENTS,
+          case when instr(upper(FILENAME),'.PPT') > 0or instr(upper(FILENAME),'.PPTX') > 0 then
+              'fa fa fa-file-powerpoint-o'
+          when instr(upper(FILENAME),'.XLS') > 0 or instr(upper(FILENAME),'.XLSX') > 0 then
+              'fa fa fa-file-excel-o'
+          when instr(upper(FILENAME),'.DOC') > 0 or instr(upper(FILENAME),'.DOCX') > 0 then
+              'fa fa fa-file-word-o'
+          when instr(upper(FILENAME),'.PDF') > 0 then
+              'fa fa fa-file-pdf-o'
+          when instr(upper(FILENAME),'.GIF') > 0 or
+               instr(upper(FILENAME),'.PNG') > 0 or
+               instr(upper(FILENAME),'.TIFF') > 0 or
+               instr(upper(FILENAME),'.JPG') > 0 then
+              'fa fa fa-file-image-o'
+          else
+              'fa fa fa-file-o'
+          end file_type,
+          case when instr(upper(FILENAME),'.PPT') > 0or instr(upper(FILENAME),'.PPTX') > 0 then
+              'MS Powerpoint File'
+          when instr(upper(FILENAME),'.XLS') > 0 or instr(upper(FILENAME),'.XLSX') > 0 then
+              'MS Excel File'
+          when instr(upper(FILENAME),'.DOC') > 0 or instr(upper(FILENAME),'.DOCX') > 0 then
+              'MS Word File'
+          when instr(upper(FILENAME),'.PDF') > 0 then
+              'Adobe PDF File'
+          when instr(upper(FILENAME),'.GIF') > 0 or
+               instr(upper(FILENAME),'.PNG') > 0 or
+               instr(upper(FILENAME),'.TIFF') > 0 or
+               instr(upper(FILENAME),'.JPG') > 0 then
+              'Image File'
+          else
+              'Text File'
+          end file_type_title,
+          created,
+          lower(created_by) created_by
+      from EBA_CA_FILES f
+      where event_id = :P3_EVENT_ID
+      order by created desc
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--hiddenOverflow
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 5000
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--inline
+      show-null-values-as: ' - '
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 5000
+
+    messages: 
+      when-no-data-found: No attachments found
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: FILE_TYPE_TITLE =============================
+    id: 2317058968765906556
+    identification: 
+      column-name: FILE_TYPE_TITLE
+      type: Hidden
+
+    layout: 
+      sequence: 1
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ID ==========================================
+    id: 3265682599067757134
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 2
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FILENAME ====================================
+    id: 3265682673544757134
+    identification: 
+      column-name: FILENAME
+      type: Plain Text
+
+    heading: 
+      heading: Name
+      alignment: start
+
+    layout: 
+      sequence: 4
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+  - # ====== Column: FILE_MIMETYPE ===============================
+    id: 3265682798770757134
+    identification: 
+      column-name: FILE_MIMETYPE
+      type: Hidden
+
+    layout: 
+      sequence: 5
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FILE_CHARSET ================================
+    id: 3265682896457757134
+    identification: 
+      column-name: FILE_CHARSET
+      type: Hidden
+
+    layout: 
+      sequence: 6
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: F_LEN =======================================
+    id: 3265682991217757134
+    identification: 
+      column-name: F_LEN
+      type: Plain Text
+
+    heading: 
+      heading: Size
+      alignment: start
+
+    layout: 
+      sequence: 7
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FILE_COMMENTS ===============================
+    id: 3265683097418757135
+    identification: 
+      column-name: FILE_COMMENTS
+      type: Plain Text
+
+    heading: 
+      heading: Description
+      alignment: start
+
+    layout: 
+      sequence: 8
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FILE_TYPE ===================================
+    id: 3265683197142757135
+    identification: 
+      column-name: FILE_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Type
+      alignment: center
+
+    layout: 
+      sequence: 3
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    column-formatting: 
+      html-expression: <span class="#FILE_TYPE#" title="#FILE_TYPE_TITLE#"></span>
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 15
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 3265683272315757139
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: Date Added
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 3265683393859757139
+    identification: 
+      column-name: CREATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Added By
+      alignment: start
+
+    layout: 
+      sequence: 9
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Add Attachment ==============================
+  id: 3265741273455584799
+  identification: 
+    name: Add Attachment
+    type: Static Content
+
+  layout: 
+    sequence: 90
+    parent-region: No Parent
+    slot: REGION_POSITION_04
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Inline Dialog
+    template-options: 
+    - '#DEFAULT#'
+    - js-dialog-size600x400
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: add_file_modal
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 3265749386371720983
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: ' Breadcrumb' # 8949803322316567820
+
+  layout: 
+    sequence: 100
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Edit Links ==================================
+  id: 3265774078115822722
+  identification: 
+    name: Edit Links
+    type: Static Content
+
+  layout: 
+    sequence: 100
+    parent-region: No Parent
+    slot: REGION_POSITION_04
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Inline Dialog
+    template-options: 
+    - '#DEFAULT#'
+    - js-dialog-size600x400
+    - t-Form--stretchInputs
+    - t-Form--labelsAbove
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: edit_link_modal
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Links =======================================
+  id: 7978604450945649139
+  identification: 
+    name: Links
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select nvl(link_name_1,link_url_1) name,
+          link_url_1 url,
+          last_updated_on updated, lower(last_updated_by) updated_by
+        from EBA_ca_events
+       where event_id = :P3_EVENT_ID
+         and link_url_1 is not null
+      union
+      select nvl(link_name_2,link_url_2) name,
+          link_url_2 url,
+          last_updated_on updated, lower(last_updated_by) updated_by
+        from EBA_ca_events
+       where event_id = :P3_EVENT_ID
+         and link_url_2 is not null
+      union
+      select nvl(link_name_3,link_url_3) name,
+          link_url_3 url,
+          last_updated_on updated, lower(last_updated_by) updated_by
+        from EBA_ca_events
+       where event_id = :P3_EVENT_ID
+         and link_url_3 is not null
+      order by 1
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--hiddenOverflow
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--inline
+      show-null-values-as: ' - '
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    messages: 
+      when-no-data-found: No links found
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: UPDATED =====================================
+    id: 3265792381943975168
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: Date Updated
+      alignment: start
+
+    layout: 
+      sequence: 4
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 3265792493549975169
+    identification: 
+      column-name: UPDATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Updated By
+      alignment: start
+
+    layout: 
+      sequence: 3
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NAME ========================================
+    id: 7978604758712649150
+    identification: 
+      column-name: NAME
+      type: Hidden
+
+    layout: 
+      sequence: 1
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: URL =========================================
+    id: 7978604859706649153
+    identification: 
+      column-name: URL
+      type: Plain Text
+
+    heading: 
+      heading: Name
+      alignment: start
+
+    layout: 
+      sequence: 2
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    column-formatting: 
+      html-expression: <a href="#URL#" target="_window" alt="click to open link" title="click to open link">#NAME#</a>
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Event =======================================
+  id: 8422128665274422996
+  identification: 
+    name: Event
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Never
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P3_PREV_PAGE =============================
+  id: 534198562586096726
+  identification: 
+    name: P3_PREV_PAGE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: Event # 8422128665274422996
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P3_UPDATEABLE ============================
+  id: 1874797741555207072
+  identification: 
+    name: P3_UPDATEABLE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: Event # 8422128665274422996
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P3_NOTE ==================================
+  id: 3265606999177248627
+  identification: 
+    name: P3_NOTE
+    type: Textarea
+
+  label: 
+    label: Update Text
+    alignment: Left
+
+  settings: 
+    resizable: false
+    auto-height: false
+    character-counter: false
+    trim-spaces: None
+
+  layout: 
+    sequence: 10
+    region: Add Update # 3265598499084191788
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+    height: 5
+
+  validation: 
+    value-required: false
+    maximum-length: 32767
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P3_FILE ==================================
+  id: 3265741980643605787
+  identification: 
+    name: P3_FILE
+    type: File Upload
+
+  label: 
+    label: File
+    alignment: Left
+
+  display: 
+    display-as: Inline File Browse
+    capture-using: NONE
+
+  storage:: 
+    type: Table WWV_FLOW_FILES
+
+  layout: 
+    sequence: 20
+    region: Add Attachment # 3265741273455584799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    post-text-: <p><em>Attachments must be under 15M in size.</em></p>
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P3_FILE_TAGS =============================
+  id: 3265742200383611476
+  identification: 
+    name: P3_FILE_TAGS
+    type: Text Field
+
+  label: 
+    label: Tags
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 30
+    region: Add Attachment # 3265741273455584799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P3_FILE_COMMENTS =========================
+  id: 3265742486662617014
+  identification: 
+    name: P3_FILE_COMMENTS
+    type: Textarea
+
+  label: 
+    label: Description
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: None
+
+  layout: 
+    sequence: 40
+    region: Add Attachment # 3265741273455584799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    width: 80
+    height: 5
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P3_LINK_NAME_1 ===========================
+  id: 3265774294750822722
+  identification: 
+    name: P3_LINK_NAME_1
+    type: Text Field
+
+  label: 
+    label: Name 1
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Edit Links # 3265774078115822722
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Name of 1st link.  If not provided, the URL will be displayed.
+
+- # ====== Page Item: P3_LINK_URL_1 ============================
+  id: 3265774774094822723
+  identification: 
+    name: P3_LINK_URL_1
+    type: Text Field
+
+  label: 
+    label: URL 1
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 60
+    region: Edit Links # 3265774078115822722
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: URL for 1st link.
+
+- # ====== Page Item: P3_LINK_NAME_2 ===========================
+  id: 3265775288687822724
+  identification: 
+    name: P3_LINK_NAME_2
+    type: Text Field
+
+  label: 
+    label: Name 2
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 70
+    region: Edit Links # 3265774078115822722
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Name of 2nd link.  If not provided, the URL will be displayed.
+
+- # ====== Page Item: P3_LINK_URL_2 ============================
+  id: 3265775772301822724
+  identification: 
+    name: P3_LINK_URL_2
+    type: Text Field
+
+  label: 
+    label: URL 2
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 80
+    region: Edit Links # 3265774078115822722
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: URL for 2nd link.
+
+- # ====== Page Item: P3_LINK_NAME_3 ===========================
+  id: 3265776271140822725
+  identification: 
+    name: P3_LINK_NAME_3
+    type: Text Field
+
+  label: 
+    label: Name 3
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 90
+    region: Edit Links # 3265774078115822722
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Name of 3rd link.  If not provided, the URL will be displayed.
+
+- # ====== Page Item: P3_LINK_URL_3 ============================
+  id: 3265776790125822725
+  identification: 
+    name: P3_LINK_URL_3
+    type: Text Field
+
+  label: 
+    label: URL 3
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 100
+    region: Edit Links # 3265774078115822722
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: URL for 3rd link.
+
+- # ====== Page Item: P3_EVENT_ID ==============================
+  id: 8422130571995423000
+  identification: 
+    name: P3_EVENT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: Event # 8422128665274422996
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P3_EVENT_NAME ============================
+  id: 8422132269693423002
+  identification: 
+    name: P3_EVENT_NAME
+    type: Text Field
+
+  label: 
+    label: 'Event Name:'
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 70
+    region: Event # 8422128665274422996
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Name of the event.
+
+buttons: 
+- # ====== Button: POP_ADD_LINKS ===============================
+  id: 2204863041157973960
+  identification: 
+    button-name: POP_ADD_LINKS
+    label: Add Links
+
+  layout: 
+    sequence: 160
+    region: Links # 7978604450945649139
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-plus
+
+  behavior: 
+    action: Redirect to URL
+    target: "javascript:openModal('edit_link_modal');"
+    execute-validations: true
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: |
+      select 1
+        from EBA_ca_events
+       where event_id = :P3_EVENT_ID
+         and link_url_1 is not null
+      union
+      select 1
+        from EBA_ca_events
+       where event_id = :P3_EVENT_ID
+         and link_url_2 is not null
+      union
+      select 1
+        from EBA_ca_events
+       where event_id = :P3_EVENT_ID
+         and link_url_3 is not null
+
+  security: 
+    authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+
+- # ====== Button: EDIT_EVENT ==================================
+  id: 3265592774187137273
+  identification: 
+    button-name: EDIT_EVENT
+    label: Edit Event
+
+  layout: 
+    sequence: 30
+    region: Breadcrumb # 3265749386371720983
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:10:&SESSION.::&DEBUG.:10:P10_EVENT_ID:&P3_EVENT_ID.'
+      page: 10 # Event Details
+      clear-cache: 10
+      values: 
+        p10_event_id: '&P3_EVENT_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item = Value
+    item: P3_UPDATEABLE
+    value: Y
+
+  security: 
+    authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+
+- # ====== Button: POP_ADD_NOTE ================================
+  id: 3265605692682227812
+  identification: 
+    button-name: POP_ADD_NOTE
+    label: Add Note
+
+  layout: 
+    sequence: 20
+    region: Updates # 3265601886186207012
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-plus
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:33:&SESSION.::&DEBUG.:RP,33:P33_EVENT_ID:&P3_EVENT_ID.'
+      page: 33 # Event Update
+      clear-cache: RP,33
+      values: 
+        p33_event_id: '&P3_EVENT_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item = Value
+    item: P3_UPDATEABLE
+    value: Y
+
+  security: 
+    authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+
+- # ====== Button: CANCEL ======================================
+  id: 3265606198353238836
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 10
+    region: Add Update # 3265598499084191788
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to URL
+    target: 'javascript:closeModal();'
+    execute-validations: true
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: ADD_NOTE ====================================
+  id: 3265606369739238836
+  identification: 
+    button-name: ADD_NOTE
+    label: Add Update
+
+  layout: 
+    sequence: 20
+    region: Add Update # 3265598499084191788
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  security: 
+    authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+
+- # ====== Button: POPATTACHMENT ===============================
+  id: 3265689087345841272
+  identification: 
+    button-name: POPATTACHMENT
+    label: Add Attachment
+
+  layout: 
+    sequence: 20
+    region: Attachments # 3265682290669757130
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-plus
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:32:&SESSION.::&DEBUG.:RP,32:P32_EVENT_ID:&P3_EVENT_ID.'
+      page: 32 # Attachment
+      clear-cache: RP,32
+      values: 
+        p32_event_id: '&P3_EVENT_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item = Value
+    item: P3_UPDATEABLE
+    value: Y
+
+  security: 
+    authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+
+- # ====== Button: VIEW_ATTACHMENTS ============================
+  id: 3265689298080844425
+  identification: 
+    button-name: VIEW_ATTACHMENTS
+    label: View Attachments
+
+  layout: 
+    sequence: 30
+    region: Attachments # 3265682290669757130
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-chevron-right
+
+  behavior: 
+    action: Redirect to URL
+    target: 
+      url: 'f?p=&APP_ID.:31:&SESSION.:::31:P31_ID:&P3_EVENT_ID.'
+      page: 31 # Attachments
+      clear-cache: 31
+      values: 
+        p31_id: '&P3_EVENT_ID.'
+
+    execute-validations: true
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: GOUPDATES ===================================
+  id: 3265697190031861030
+  identification: 
+    button-name: GOUPDATES
+    label: View Updates
+
+  layout: 
+    sequence: 30
+    region: Updates # 3265601886186207012
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-chevron-right
+
+  behavior: 
+    action: Redirect to URL
+    target: 
+      url: 'f?p=&APP_ID.:34:&SESSION.:::34:P34_ID:&P3_EVENT_ID.'
+      page: 34 # Event Updates
+      clear-cache: 34
+      values: 
+        p34_id: '&P3_EVENT_ID.'
+
+    execute-validations: true
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: POP_EDIT_LINKS ==============================
+  id: 3265709581252924710
+  identification: 
+    button-name: POP_EDIT_LINKS
+    label: Edit Links
+
+  layout: 
+    sequence: 90
+    region: Links # 7978604450945649139
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-pencil
+
+  behavior: 
+    action: Redirect to URL
+    target: "javascript:openModal('edit_link_modal');"
+    execute-validations: true
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+        from EBA_ca_events
+       where event_id = :P3_EVENT_ID
+         and link_url_1 is not null
+      union
+      select 1
+        from EBA_ca_events
+       where event_id = :P3_EVENT_ID
+         and link_url_2 is not null
+      union
+      select 1
+        from EBA_ca_events
+       where event_id = :P3_EVENT_ID
+         and link_url_3 is not null
+
+  security: 
+    authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+
+- # ====== Button: CANCEL ======================================
+  id: 3265742983330625473
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 30
+    region: Add Attachment # 3265741273455584799
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to URL
+    target: 'javascript:closeModal();'
+    execute-validations: true
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: ADD_FILE ====================================
+  id: 3265743200645630530
+  identification: 
+    button-name: ADD_FILE
+    label: Add Attachment
+
+  layout: 
+    sequence: 40
+    region: Add Attachment # 3265741273455584799
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: PRINT =======================================
+  id: 3265757798969734082
+  identification: 
+    button-name: PRINT
+    label: Print
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 3265749386371720983
+    slot: CHANGE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to URL
+    target: 'javascript: window.print();'
+    execute-validations: true
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CANCEL ======================================
+  id: 3265777875822831458
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 50
+    region: Edit Links # 3265774078115822722
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to URL
+    target: 'javascript:closeModal();'
+    execute-validations: true
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: EDIT_LINK ===================================
+  id: 3265778188635835181
+  identification: 
+    button-name: EDIT_LINK
+    label: Apply Changes
+
+  layout: 
+    sequence: 60
+    region: Edit Links # 3265774078115822722
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: icalendar ===================================
+  id: 3266697278458854430
+  identification: 
+    button-name: icalendar
+    label: iCalendar
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 3265749386371720983
+    slot: HELP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CANCEL ======================================
+  id: 8422128880139422998
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 40
+    region: Breadcrumb # 3265749386371720983
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:&P3_PREV_PAGE.:&SESSION.::&DEBUG.:::'
+      page: '&P3_PREV_PAGE.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: Refresh Attachments =================
+  id: 1725626632079624777
+  identification: 
+    name: Refresh Attachments
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: JavaScript Expression
+    javascript-expression: window
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 1725626738533624778
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Attachments # 3265682290669757130
+
+    execution: 
+      sequence: 10
+      event: Refresh Attachments # 1725626632079624777
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 1725626761317624779
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.message.showPageSuccess('Action Processed.');
+
+    execution: 
+      sequence: 20
+      event: Refresh Attachments # 1725626632079624777
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Refresh Updates =====================
+  id: 1726140905284265592
+  identification: 
+    name: Refresh Updates
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: JavaScript Expression
+    javascript-expression: window
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 1726141308209265599
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Updates # 3265601886186207012
+
+    execution: 
+      sequence: 10
+      event: Refresh Updates # 1726140905284265592
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 1726141850982265601
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.message.showPageSuccess('Action Processed.');
+
+    execution: 
+      sequence: 20
+      event: Refresh Updates # 1726140905284265592
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Refresh Links =======================
+  id: 3160411315036205767
+  identification: 
+    name: Refresh Links
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: JavaScript Expression
+    javascript-expression: window
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 3160411426263205768
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Links # 7978604450945649139
+
+    execution: 
+      sequence: 10
+      event: Refresh Links # 3160411315036205767
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 3160411468151205769
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.message.showPageSuccess('Action Processed.');
+
+    execution: 
+      sequence: 20
+      event: Refresh Links # 3160411315036205767
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+validations: 
+- # ====== Validation: URL 1 Must start with http ==============
+  id: 1225241012109214923
+  identification: 
+    name: URL 1 Must start with http
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "substr(:P3_LINK_URL_1, 1, 4) = 'http'"
+    always-execute: false
+
+  error: 
+    error-message: 'URL must start with http:// or https://'
+    display-location: Inline with Field and in Notification
+    associated-item: P3_LINK_URL_1 # 3265774774094822723
+
+- # ====== Validation: URL2 Must start with http ===============
+  id: 1225241102525214924
+  identification: 
+    name: URL2 Must start with http
+
+  execution: 
+    sequence: 20
+
+  validation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "substr(:P3_LINK_URL_2, 1, 4) = 'http'"
+    always-execute: false
+
+  error: 
+    error-message: 'URL must start with http:// or https://'
+    display-location: Inline with Field and in Notification
+    associated-item: P3_LINK_URL_2 # 3265775772301822724
+
+- # ====== Validation: URL 3 must start with http ==============
+  id: 1225241218638214925
+  identification: 
+    name: URL 3 must start with http
+
+  execution: 
+    sequence: 30
+
+  validation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "substr(:P3_LINK_URL_3, 1, 4) = 'http'"
+    always-execute: false
+
+  error: 
+    error-message: 'URL must start with http:// or https://'
+    display-location: Inline with Field and in Notification
+    associated-item: P3_LINK_URL_3 # 3265776790125822725
+
+computations: 
+- # ====== Computation: LAST_VIEW ==============================
+  id: 3265707688955907986
+  identification: 
+    item-name: LAST_VIEW
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: Static Value
+    static-value: 3
+
+processes: 
+- # ====== Process: edit links =================================
+  id: 3265785076823879067
+  identification: 
+    name: edit links
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      update eba_ca_events
+      set LINK_NAME_1 = :P3_LINK_NAME_1,                   
+          LINK_URL_1 = :P3_LINK_URL_1,                
+          LINK_NAME_2 = :P3_LINK_NAME_2,                    
+          LINK_URL_2 = :P3_LINK_URL_2,                     
+          LINK_NAME_3 = :P3_LINK_NAME_3,                   
+          LINK_URL_3 = :P3_LINK_URL_3
+      where event_id = :P3_EVENT_ID;
+      
+      :P3_LINK_NAME_1 := null;
+      :P3_LINK_URL_1 := null;
+      :P3_LINK_NAME_2 := null;
+      :P3_LINK_URL_2 := null;
+      :P3_LINK_NAME_3 := null;
+      :P3_LINK_URL_3 := null;
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Links updated
+
+  error: 
+    error-message: Unable to update the links
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: EDIT_LINK # 3265778188635835181
+
+- # ====== Process: Download iCalendar file ====================
+  id: 3266806369872925730
+  identification: 
+    name: Download iCalendar file
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+          l_dtstamp varchar2(255) := null;
+          l_dtstart varchar2(255) := null;
+          l_dtend   varchar2(255) := null;
+          l_utc     timestamp with time zone := systimestamp at time zone 'UTC';
+      
+      
+      begin
+      
+      --
+      -- Initialization
+      -- (think about changing the filename below, but be sure that the name is properly encoded,
+      -- similar to what is in wwv_flow_utilities.encode_filename)
+      --
+      sys.htp.init;
+      sys.owa_util.mime_header('text/calendar', FALSE, 'utf-8');
+      sys.htp.p('Content-Disposition: attachment;  filename="iCalendarFile.ics"');
+      sys.owa_util.http_header_close;
+      
+      
+      for c1 in (
+         select event_id id,
+                event_name,
+                type_id,
+                event_date_time,
+                duration,
+                event_desc,
+                contact_person,
+                contact_email,
+                location,
+                series_id,
+                created_on, 
+                created_by, 
+                last_updated_on, 
+                last_updated_by
+           from EBA_ca_events
+         where event_id = :P3_EVENT_ID )
+      loop
+      
+      l_dtstamp := to_char(l_utc,'RRRRMMDD')||'T'||
+         to_char(l_utc,'HH24MISS')||'Z';
+      
+      l_dtstart := to_char(c1.event_date_time at time zone 'UTC','RRRRMMDD')||'T'||
+         to_char(c1.event_date_time at time zone 'UTC','HH24MISS')||'Z';
+      
+      -- add duration, duration column is in hours needs to be added to start time
+      l_dtend := to_char((c1.event_date_time at time zone 'UTC' + numtodsinterval(c1.duration, 'hour')),'RRRRMMDD')||'T'||
+         to_char((c1.event_date_time at time zone 'UTC' + numtodsinterval(c1.duration, 'hour')),'HH24MISS')||'Z';
+      
+      sys.htp.p('BEGIN:VCALENDAR');
+      sys.htp.p('VERSION:2.0');
+      sys.htp.p('PRODID:-//hacksw/handcal//NONSGML v1.0//EN');
+      sys.htp.p('BEGIN:VEVENT');
+      sys.htp.p('UID:'||c1.id);
+      sys.htp.p('DTSTAMP:'||l_dtstamp);
+      sys.htp.p('ORGANIZER;CN='||apex_escape.html(c1.contact_person)||':MAILTO:'||apex_escape.html(c1.contact_email));
+      sys.htp.p('DTSTART:'||l_dtstart);
+      sys.htp.p('DTEND:'||l_dtend);
+      sys.htp.p('SUMMARY:'||apex_escape.html(c1.event_name));
+      sys.htp.p('END:VEVENT');
+      sys.htp.p('END:VCALENDAR');
+      
+      exit;
+      end loop;
+      
+      
+      
+      
+      --
+      -- Tell the APEX engine to stop
+      --
+      apex_application.stop_apex_engine;
+      
+      end;
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: icalendar # 3266697278458854430
+
+- # ====== Process: Load Data ==================================
+  id: 8422148295179450098
+  identification: 
+    name: Load Data
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      begin  
+        for c1 in (select calendar_id, event_name
+                   from EBA_ca_events
+                   where event_id = :P3_EVENT_ID 
+                  ) loop
+      
+          :P3_EVENT_NAME         := c1.event_name;
+      
+          -- Determine if event updateable
+          if c1.calendar_id is null then
+            :P3_UPDATEABLE := 'Y';
+          elsif :MULTIPLE_CAL_BO = 'Exclude' then
+            :P3_UPDATEABLE := 'Y';
+          else
+            for c2 in (select restricted_to
+                       ,      access_level_id
+                       from eba_ca_users
+                       where username = :APP_USER
+                      ) loop
+              if c2.restricted_to is null then
+                if c2.access_level_id = 3 then
+                  :P3_UPDATEABLE := 'Y';
+                else
+                  :P3_UPDATEABLE := 'N';
+                end if;
+              elsif instr(c2.restricted_to, c1.calendar_id) > 0 then
+                :P3_UPDATEABLE := 'Y';
+              else
+                :P3_UPDATEABLE := 'N';
+              end if;
+            end loop;
+          end if;
+      
+        end loop;
+      end;
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    error-message: failed to load data
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P3_EVENT_ID
+
+branches: 
+- # ====== Branch: Go To Page 3 ================================
+  id: 3265744679352662143
+  identification: 
+    name: Go To Page 3
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+      page: 3 # Event Details - &P3_EVENT_NAME.
+
+  comments: 
+    comments: 'Created 06-APR-2012 10:58 by CBCHO'
+

@@ -1,0 +1,567 @@
+---
+# ====== Page: Group Member Details ==========================
+id: 19
+identification: 
+  name: Group Member Details
+  alias: GROUP-MEMBER-DETAILS
+  title: Group Member Details
+  page-group: Administration # 8949833037355592644
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Modal Dialog
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: false
+
+javascript: 
+  function-and-global-variable-declaration: var htmldb_delete_message='"DELETE_CONFIRM_MSG"';
+
+security: 
+  authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: No help is available for this page.
+
+regions: 
+- # ====== Region: Buttons =====================================
+  id: 1726664150877636856
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Group Member Details ========================
+  id: 8036086473051273185
+  identification: 
+    name: Group Member Details
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P19_MBR_ID ===============================
+  id: 8036087454337273189
+  identification: 
+    name: P19_MBR_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 1
+    region: Group Member Details # 8036086473051273185
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Database Column
+    database-column: MBR_ID
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P19_EMAIL_ADDRESS ========================
+  id: 8036087645558273190
+  identification: 
+    name: P19_EMAIL_ADDRESS
+    type: Text Field
+
+  label: 
+    label: Email Address
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 2
+    region: Group Member Details # 8036086473051273185
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Database Column
+    database-column: EMAIL_ADDRESS
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: The email address of the member.
+
+- # ====== Page Item: P19_GROUP_ID =============================
+  id: 8036095774458299590
+  identification: 
+    name: P19_GROUP_ID
+    type: Select List
+
+  label: 
+    label: Email Group
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 1.5
+    region: Group Member Details # 8036086473051273185
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: EMAIL GROUPS # 8036095365108296938
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Database Column
+    database-column: GROUP_ID
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: The group you are adding the member to.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 8036086661235273186
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 10
+    region: Buttons # 1726664150877636856
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: SAVE ========================================
+  id: 8036086846117273187
+  identification: 
+    button-name: SAVE
+    label: Apply Changes
+
+  layout: 
+    sequence: 30
+    region: Buttons # 1726664150877636856
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--gapLeft
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P19_MBR_ID
+
+- # ====== Button: CREATE ======================================
+  id: 8036087049145273188
+  identification: 
+    button-name: CREATE
+    label: Add Member
+
+  layout: 
+    sequence: 20
+    region: Buttons # 1726664150877636856
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--gapLeft
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P19_MBR_ID
+
+- # ====== Button: DELETE ======================================
+  id: 8036087276488273188
+  identification: 
+    button-name: DELETE
+    label: Delete
+
+  layout: 
+    sequence: 40
+    region: Buttons # 1726664150877636856
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--simple
+    - t-Button--danger
+
+  behavior: 
+    action: Redirect to URL
+    target: "javascript:apex.confirm(htmldb_delete_message,'DELETE');"
+    execute-validations: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P19_MBR_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: CNX =================================
+  id: 56303987158931351
+  identification: 
+    name: CNX
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 8036086661235273186
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 56304099527931352
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: CNX # 56303987158931351
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+validations: 
+- # ====== Validation: P19_GROUP_EMAIL_ADDRESS unique ==========
+  id: 8036364356571278311
+  identification: 
+    name: P19_GROUP_EMAIL_ADDRESS unique
+
+  execution: 
+    sequence: 30
+
+  validation: 
+    type: No Rows returned
+    sql-query: |
+      select 1 from EBA_ca_email_group_mbrs
+       where lower(:P19_EMAIL_ADDRESS) = lower(email_address)
+         and :P19_GROUP_ID = group_id
+         and (:P19_MBR_ID != mbr_id or :P19_MBR_ID is null)
+    always-execute: false
+
+  error: 
+    error-message: Email Address already exists within selected Group.
+    display-location: Inline with Field and in Notification
+    associated-item: P19_EMAIL_ADDRESS # 8036087645558273190
+
+- # ====== Validation: P19_EMAIL_ADDRESS =======================
+  id: 8036376945198379071
+  identification: 
+    name: P19_EMAIL_ADDRESS
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: Item matches Regular Expression
+    item: P19_EMAIL_ADDRESS
+    regular-expression: '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}'
+    always-execute: false
+
+  error: 
+    error-message: Invalid Email format.
+    display-location: Inline with Field and in Notification
+    associated-item: P19_EMAIL_ADDRESS # 8036087645558273190
+
+computations: 
+- # ====== Computation: P19_EMAIL_ADDRESS ======================
+  id: 8036273276357612300
+  identification: 
+    item-name: P19_EMAIL_ADDRESS
+
+  execution: 
+    sequence: 10
+    point: After Submit
+
+  computation: 
+    type: Expression
+    language: SQL
+    sql-expression: 'lower(:P19_EMAIL_ADDRESS)'
+
+processes: 
+- # ====== Process: Close Dialog ===============================
+  id: 56304856525931360
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: false
+
+  execution: 
+    sequence: 11
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Fetch Row from EBA_CA_EMAIL_GROUP_MBRS =====
+  id: 8036091061941273198
+  identification: 
+    name: Fetch Row from EBA_CA_EMAIL_GROUP_MBRS
+    type: Automatic Row Fetch [Legacy]
+    execution-chain: None
+
+  settings: 
+    table-owner: PARSING SCHEMA
+    table-name: EBA_CA_EMAIL_GROUP_MBRS
+    primary-key-column-: MBR_ID
+    primary-key-item: P19_MBR_ID
+
+  execution: 
+    sequence: 1
+    point: After Header
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    error-message: Unable to fetch row.
+
+- # ====== Process: Process Row of EBA_CA_EMAIL_GROUP_MBRS =====
+  id: 8036091246945273200
+  identification: 
+    name: Process Row of EBA_CA_EMAIL_GROUP_MBRS
+    type: Automatic Row Processing (DML) [Legacy]
+    execution-chain: None
+
+  settings: 
+    table-owner: PARSING SCHEMA
+    table-name: EBA_CA_EMAIL_GROUP_MBRS
+    primary-key-column-: MBR_ID
+    primary-key-item: P19_MBR_ID
+    lock-row: true
+    supported-operations: 'I:U:D'
+
+  execution: 
+    sequence: 1
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Action Processed.
+
+  error: 
+    error-message: Unable to process row of table EBA_CA_EMAIL_GROUP_MBRS.
+    display-location: On Error Page
+

@@ -1,0 +1,533 @@
+---
+# ====== Page: Add Multiple Members ==========================
+id: 21
+identification: 
+  name: Add Multiple Members
+  alias: ADD-MULTIPLE-MEMBERS
+  title: Add Multiple Members
+  page-group: Administration # 8949833037355592644
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: false
+
+security: 
+  authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: |
+    <p>
+        Enter or copy and paste email addresses separated by commas, semicolons, or new lines. Extraneous information and duplicates will be filtered out. Click the <strong>Next</strong> button to continue and the <strong>Cancel</strong> button to leave the Add Multiple Members wizard.
+    </p>
+
+regions: 
+- # ====== Region: Buttons =====================================
+  id: 56304252698931353
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Add Multiple Members ========================
+  id: 8042634646040360098
+  identification: 
+    name: Add Multiple Members
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--noBorder
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 8042699771524645975
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: ' Breadcrumb' # 8949803322316567820
+
+  layout: 
+    sequence: 1
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Never
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+page-items: 
+- # ====== Page Item: P21_MBRS =================================
+  id: 8042635168986360106
+  identification: 
+    name: P21_MBRS
+    type: Textarea
+
+  label: 
+    label: List of Email Addresses
+    alignment: Left
+
+  settings: 
+    resizable: false
+    auto-height: false
+    character-counter: false
+    trim-spaces: None
+
+  layout: 
+    sequence: 10
+    region: Add Multiple Members # 8042634646040360098
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    width: 75
+    height: 14
+
+  validation: 
+    value-required: true
+    maximum-length: 32767
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Enter or copy and paste email addresses separated by commas, semicolons, or new lines. Note that if you copy and paste email addresses from email messages, extraneous text will be filtered out.
+
+- # ====== Page Item: P21_GROUP_ID =============================
+  id: 8042635365256360111
+  identification: 
+    name: P21_GROUP_ID
+    type: Select List
+
+  label: 
+    label: Group
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 5
+    region: Add Multiple Members # 8042634646040360098
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: EMAIL GROUPS # 8036095365108296938
+    display-extra-values: true
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Select the Group that these Members will be assigned to.
+
+- # ====== Page Item: P21_LB ===================================
+  id: 8042694345982619712
+  identification: 
+    name: P21_LB
+    type: Stop and Start Grid Layout [Deprecated]
+
+  label: 
+    alignment: Left
+
+  layout: 
+    sequence: 7
+    region: Add Multiple Members # 8042634646040360098
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 8042635474907360111
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 10
+    region: Buttons # 56304252698931353
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: false
+
+- # ====== Button: NEXT ========================================
+  id: 8042635774154360111
+  identification: 
+    button-name: NEXT
+    label: Next
+
+  layout: 
+    sequence: 20
+    region: Buttons # 56304252698931353
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconRight
+    icon: fa-chevron-right
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: CNX =================================
+  id: 56304331873931354
+  identification: 
+    name: CNX
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 8042635474907360111
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 56304446612931355
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: CNX # 56304331873931354
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: Clear Collections on Cancel ================
+  id: 7418478037236466568
+  identification: 
+    name: Clear Collections on Cancel
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      apex_collection.delete_collection (
+         p_collection_name => 'BULK_MBRS_CREATE' );
+      apex_collection.delete_collection (
+         p_collection_name => 'BULK_MBRS_INVALID' );
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: On Error Page
+
+  server-side-condition: 
+    when-button-pressed: CANCEL # 8042635474907360111
+
+- # ====== Process: init collections ===========================
+  id: 8042643856559386188
+  identification: 
+    name: init collections
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      wwv_flow_collection.CREATE_OR_TRUNCATE_COLLECTION ('BULK_MBRS_INVALID');
+      wwv_flow_collection.CREATE_OR_TRUNCATE_COLLECTION ('BULK_MBRS_CREATE');
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Create collection ==========================
+  id: 8042665669859475163
+  identification: 
+    name: Create collection
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      EBA_ca_api.create_mbrs_collection (
+          p_users    => :P21_MBRS,
+          p_group_id => :P21_GROUP_ID );
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: On Error Page
+
+  server-side-condition: 
+    when-button-pressed: NEXT # 8042635774154360111
+
+branches: 
+- # ====== Branch: Go To Page 18 ===============================
+  id: 7418479448318469756
+  identification: 
+    name: Go To Page 18
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:18:&SESSION.::&DEBUG.:21,22::'
+      page: 18 # Group Members
+      clear-cache: 21,22
+
+    save-state-before-branching: true
+
+  server-side-condition: 
+    when-button-pressed: CANCEL # 8042635474907360111
+
+  comments: 
+    comments: 'Created 14-OCT-2010 11:46 by SBKENNED'
+
+- # ====== Branch: Go To Page 22 ===============================
+  id: 8042636144967360119
+  identification: 
+    name: Go To Page 22
+
+  execution: 
+    sequence: 20
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:22:&SESSION.&success_msg=#SUCCESS_MSG#'
+      page: 22 # Add Multiple Members
+
+    save-state-before-branching: true
+
+  server-side-condition: 
+    when-button-pressed: NEXT # 8042635774154360111
+

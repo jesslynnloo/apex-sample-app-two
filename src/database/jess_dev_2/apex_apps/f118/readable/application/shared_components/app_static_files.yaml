@@ -1,0 +1,45 @@
+---
+- # ====== Static Application File: icons/app-icon-32.png ======
+  id: 560408808602191720
+  identification: 
+    file-name: icons/app-icon-32.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: icons/app-icon-192.png =====
+  id: 560409040672191736
+  identification: 
+    file-name: icons/app-icon-192.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: icons/app-icon-512.png =====
+  id: 560409270625191753
+  identification: 
+    file-name: icons/app-icon-512.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: gc/apxColor.js =============
+  id: 668773785073738284
+  identification: 
+    file-name: gc/apxColor.js
+
+  attributes: 
+    mime-type: application/javascript
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: group-cal-logo2.png ========
+  id: 2211296410828607249
+  identification: 
+    file-name: group-cal-logo2.png
+
+  attributes: 
+    mime-type: image/png
+

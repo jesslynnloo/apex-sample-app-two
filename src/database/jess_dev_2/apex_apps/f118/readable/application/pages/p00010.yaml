@@ -1,0 +1,3341 @@
+---
+# ====== Page: Event Details =================================
+id: 10
+identification: 
+  name: Event Details
+  alias: EVENT-DETAILS
+  title: Event Details
+  page-group: Events # 1326552201174164147
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: true
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: false
+
+javascript: 
+  function-and-global-variable-declaration: |
+    var htmldb_delete_message='"DELETE_CONFIRM_MSG"';
+    var groupCal = groupCal || {};
+    
+    groupCal.defaultDuration = 1;
+
+security: 
+  authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: No help is available for this page.
+
+regions: 
+- # ====== Region: Buttons =====================================
+  id: 1725627142782624782
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Links =======================================
+  id: 7978558965510454758
+  identification: 
+    name: Links
+    type: Static Content
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - is-expanded
+    - t-Region--noBorder
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Event =======================================
+  id: 8949822717776567971
+  identification: 
+    name: Event
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Audit Information ===========================
+  id: 8950362135613566600
+  identification: 
+    name: Audit Information
+    type: Static Content
+
+  layout: 
+    sequence: 60
+    parent-region: Event # 8949822717776567971
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P10_EVENT_ID
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Recurrence ==================================
+  id: 9168467117842862574
+  identification: 
+    name: Recurrence
+    type: Static Content
+
+  layout: 
+    sequence: 40
+    parent-region: Event # 8949822717776567971
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P10_CALENDAR_ID ==========================
+  id: 1702548408057087093
+  identification: 
+    name: P10_CALENDAR_ID
+    type: Select List
+
+  label: 
+    label: Calendar
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 40
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CALENDARS # 1866676699908727641
+    display-extra-values: false
+    display-null-value: true
+    null-display-value: '- Default Calendar -'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Name of the event.
+
+- # ====== Page Item: P10_NEW_COLOR_PREF_ID ====================
+  id: 1888616509999461338
+  identification: 
+    name: P10_NEW_COLOR_PREF_ID
+    type: Select List
+
+  label: 
+    label: Color Preference
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 70
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: COLOR PREFERENCE # 3303827771527254699
+    display-extra-values: false
+    display-null-value: true
+    null-display-value: '- Select Color Preference -'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10_NEW_INTERNAL_YN ======================
+  id: 1888616827578464331
+  identification: 
+    name: P10_NEW_INTERNAL_YN
+    type: Select List
+
+  label: 
+    label: External / Internal
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 80
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:External;N,Internal Only;Y'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Include External / Internal Event Types # 1641094558700216905
+
+- # ====== Page Item: P10_TAGS =================================
+  id: 3265615494048426865
+  identification: 
+    name: P10_TAGS
+    type: Popup LOV
+
+  label: 
+    label: Tags
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 180
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      select tag
+        from eba_ca_tags_type_sum
+       where content_type = 'EVENT'
+       order by 1
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10_CONTACT_EMAIL ========================
+  id: 3266704987818932839
+  identification: 
+    name: P10_CONTACT_EMAIL
+    type: Text Field
+
+  label: 
+    label: Contact Email
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 160
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Person to contact for more information.
+
+- # ====== Page Item: P10_SUPPRESS_TIME ========================
+  id: 7412069520336174558
+  identification: 
+    name: P10_SUPPRESS_TIME
+    type: Checkbox Group
+
+  label: 
+    label: All day event?
+    alignment: Left
+
+  settings: 
+    number-of-columns: 1
+
+  multiple-values: 
+    type: Delimited List
+    separator: ':'
+
+  layout: 
+    sequence: 120
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CHECKBOX # 9168577419751250965
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: If you do not want the start time to display on the Monthly report, check Suppress Time.
+
+- # ====== Page Item: P10_LINK_NAME_1 ==========================
+  id: 7978523671472361847
+  identification: 
+    name: P10_LINK_NAME_1
+    type: Text Field
+
+  label: 
+    label: Name 1
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 220
+    region: Links # 7978558965510454758
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Name of 1st link.  If not provided, the URL will be displayed.
+
+- # ====== Page Item: P10_LINK_URL_1 ===========================
+  id: 7978525249093364810
+  identification: 
+    name: P10_LINK_URL_1
+    type: Text Field
+
+  label: 
+    label: URL
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 230
+    region: Links # 7978558965510454758
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: URL for 1st link.
+
+- # ====== Page Item: P10_LINK_NAME_2 ==========================
+  id: 7978534551087384339
+  identification: 
+    name: P10_LINK_NAME_2
+    type: Text Field
+
+  label: 
+    label: 2
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 240
+    region: Links # 7978558965510454758
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Name of 2nd link.  If not provided, the URL will be displayed.
+
+- # ====== Page Item: P10_LINK_URL_2 ===========================
+  id: 7978535059745386853
+  identification: 
+    name: P10_LINK_URL_2
+    type: Text Field
+
+  label: 
+    label: 2
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 250
+    region: Links # 7978558965510454758
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: URL for 2nd link.
+
+- # ====== Page Item: P10_LINK_NAME_3 ==========================
+  id: 7978542847671411740
+  identification: 
+    name: P10_LINK_NAME_3
+    type: Text Field
+
+  label: 
+    label: 3
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 260
+    region: Links # 7978558965510454758
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Name of 3rd link.  If not provided, the URL will be displayed.
+
+- # ====== Page Item: P10_LINK_URL_3 ===========================
+  id: 7978543454943413778
+  identification: 
+    name: P10_LINK_URL_3
+    type: Text Field
+
+  label: 
+    label: 3
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 270
+    region: Links # 7978558965510454758
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: URL for 3rd link.
+
+- # ====== Page Item: P10_SERIES_ID ============================
+  id: 8406782668677045070
+  identification: 
+    name: P10_SERIES_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 180
+    region: Recurrence # 9168467117842862574
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10_LOCATION =============================
+  id: 8530400588029561358
+  identification: 
+    name: P10_LOCATION
+    type: Text Field
+
+  label: 
+    label: Location
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 170
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Location of the event.
+
+- # ====== Page Item: P10_RECUR ================================
+  id: 8530441187747741052
+  identification: 
+    name: P10_RECUR
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 210
+    region: Recurrence # 9168467117842862574
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10_EVENT_DATE_D =========================
+  id: 8791495222107309579
+  identification: 
+    name: P10_EVENT_DATE_D
+    type: Date Picker
+
+  label: 
+    label: Date
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 110
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    width: 15
+
+  validation: 
+    value-required: true
+    maximum-length: 30
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Select the event date.
+
+- # ====== Page Item: P10_NEW_EVENT_TYPE =======================
+  id: 8825574706751217540
+  identification: 
+    name: P10_NEW_EVENT_TYPE
+    type: Text Field
+
+  label: 
+    label: New Type
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 60
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    width: 48
+
+  validation: 
+    value-required: false
+    maximum-length: 60
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: If desired type is not in the select list, you can enter an event type here and it will be created.
+
+- # ====== Page Item: P10_EVENT_ID =============================
+  id: 8949823338095567974
+  identification: 
+    name: P10_EVENT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: Event # 8949822717776567971
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10_EVENT_NAME ===========================
+  id: 8949823429455567975
+  identification: 
+    name: P10_EVENT_NAME
+    type: Text Field
+
+  label: 
+    label: Name
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 30
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Name of the event.
+
+- # ====== Page Item: P10_TYPE_ID ==============================
+  id: 8949823623185567975
+  identification: 
+    name: P10_TYPE_ID
+    type: Select List
+
+  label: 
+    label: Type
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 50
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: EVENT TYPES # 8949808742838567911
+    display-extra-values: true
+    display-null-value: true
+    null-display-value: '- Select Type -'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: 'nvl(:P1_EVENT_TYPE,:P12_EVENT_TYPE)'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Type of event.
+
+- # ====== Page Item: P10_EVENT_DATE_TIME ======================
+  id: 8949823824085567975
+  identification: 
+    name: P10_EVENT_DATE_TIME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 100
+    region: Event # 8949822717776567971
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10_EVENT_DESC ===========================
+  id: 8949824829378567976
+  identification: 
+    name: P10_EVENT_DESC
+    type: Textarea
+
+  label: 
+    label: Description
+    alignment: Left
+
+  settings: 
+    resizable: false
+    auto-height: false
+    character-counter: false
+    trim-spaces: None
+
+  layout: 
+    sequence: 200
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+    height: 4
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Description of the event.
+
+- # ====== Page Item: P10_CONTACT_PERSON =======================
+  id: 8949825025474567977
+  identification: 
+    name: P10_CONTACT_PERSON
+    type: Text Field
+
+  label: 
+    label: Contact Person
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 150
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Person to contact for more information.
+
+- # ====== Page Item: P10_CREATED_ON ===========================
+  id: 8949825240616567977
+  identification: 
+    name: P10_CREATED_ON
+    type: Display Only
+
+  label: 
+    label: 'Created:'
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: false
+
+  layout: 
+    sequence: 280
+    region: Audit Information # 8950362135613566600
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: The date on which the record was created.
+
+- # ====== Page Item: P10_CREATED_BY ===========================
+  id: 8949825539714567977
+  identification: 
+    name: P10_CREATED_BY
+    type: Display Only
+
+  label: 
+    label: 'Created By:'
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: false
+
+  layout: 
+    sequence: 290
+    region: Audit Information # 8950362135613566600
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: The user who created the record.
+
+- # ====== Page Item: P10_LAST_UPDATED_ON ======================
+  id: 8949825735356567977
+  identification: 
+    name: P10_LAST_UPDATED_ON
+    type: Display Only
+
+  label: 
+    label: 'Last Updated:'
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: false
+
+  layout: 
+    sequence: 300
+    region: Audit Information # 8950362135613566600
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: The date on which the record was last updated.
+
+- # ====== Page Item: P10_LAST_UPDATED_BY ======================
+  id: 8949826048251567977
+  identification: 
+    name: P10_LAST_UPDATED_BY
+    type: Display Only
+
+  label: 
+    label: 'Last Updated By:'
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: false
+
+  layout: 
+    sequence: 310
+    region: Audit Information # 8950362135613566600
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: The user who last updated the record.
+
+- # ====== Page Item: P10_EVENT_START_TIME_D ===================
+  id: 9161186432641093349
+  identification: 
+    name: P10_EVENT_START_TIME_D
+    type: Select List
+
+  label: 
+    label: Start Time
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 130
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: START TIME SELECTOR # 8949934145676020819
+    display-extra-values: true
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Start time of the event.
+
+- # ====== Page Item: P10_DURATION =============================
+  id: 9161187141645095972
+  identification: 
+    name: P10_DURATION
+    type: Select List
+
+  label: 
+    label: End Time
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 140
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      select to_char(to_date(to_char(trunc(sysdate),'&APP_DATE_FORMAT.')||:P10_EVENT_START_TIME_D,
+                             '&APP_DATE_FORMAT.'||'&APP_TIME_FORMAT.') + ((i-1)/(24*4)),
+                     '&APP_TIME_FORMAT.') ||
+             ' (' ||
+            case when i = 1 then '0 mins'
+                  when i = 2 then '15 mins'
+                  when i = 3 then '30 mins'
+                  when i = 4 then '45 mins'
+                  when i = 5 then '1 hr'
+                  when i > 5 then to_char(trunc((i-1)/4)) || ' hrs' ||
+                    case when i - trunc((i-1)/4)*4 = 1 then ''
+                         when i - trunc((i-1)/4)*4 = 2 then ' 15 mins'
+                         when i - trunc((i-1)/4)*4 = 3 then ' 30 mins'
+                         when i - trunc((i-1)/4)*4 = 4 then ' 45 mins'
+                     end
+                   end
+             || ')' d,
+             (i-1)/4 r
+        from wwv_flow_dual100
+       where i < 50
+      order by i
+      
+    display-extra-values: true
+    display-null-value: false
+
+  cascading-list-of-values: 
+    parent-item(s): 
+    - P10_EVENT_START_TIME_D
+    items-to-submit: 
+    - P10_DURATION
+    parent-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: End time of the event.
+
+- # ====== Page Item: P10_RECUR_FREQ ===========================
+  id: 9168551541466124786
+  identification: 
+    name: P10_RECUR_FREQ
+    type: Select List
+
+  label: 
+    label: Frequency
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 190
+    region: Recurrence # 9168467117842862574
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: RECUR FREQUENCY # 9168549725535120172
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Select recurrence frequency.
+
+- # ====== Page Item: P10_RECUR_END_DATE =======================
+  id: 9168553333285131923
+  identification: 
+    name: P10_RECUR_END_DATE
+    type: Date Picker
+
+  label: 
+    label: End Date
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 200
+    region: Recurrence # 9168467117842862574
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: '&APP_DATE_FORMAT.'
+    width: 15
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      case when :P10_EVENT_ID is null
+           then sysdate+7
+           else to_date(:P10_EVENT_DATE_D,'&APP_DATE_FORMAT.')+7
+           end
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Date on which the recurrence will end.
+
+- # ====== Page Item: P10_RECUR_FLAG ===========================
+  id: 9168569136411208485
+  identification: 
+    name: P10_RECUR_FLAG
+    type: Checkbox Group
+
+  label: 
+    label: Recurs?
+    alignment: Left
+
+  settings: 
+    number-of-columns: 1
+
+  multiple-values: 
+    type: Delimited List
+    separator: ':'
+
+  layout: 
+    sequence: 220
+    region: Event # 8949822717776567971
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CHECKBOX # 9168577419751250965
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Identifies if event recurs.
+
+buttons: 
+- # ====== Button: DELETE2 =====================================
+  id: 8532383288139886335
+  identification: 
+    button-name: DELETE2
+    label: Delete
+
+  layout: 
+    sequence: 50
+    region: Buttons # 1725627142782624782
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--simple
+    - t-Button--danger
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :P10_EVENT_ID is not null and
+      :P10_SERIES_ID is not null
+
+- # ====== Button: CANCEL ======================================
+  id: 8949822830169567972
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 30
+    region: Buttons # 1725627142782624782
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:&LAST_VIEW.:&SESSION.::&DEBUG.:::'
+      page: '&LAST_VIEW.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: DELETE ======================================
+  id: 8949822924849567972
+  identification: 
+    button-name: DELETE
+    label: Delete
+
+  layout: 
+    sequence: 40
+    region: Buttons # 1725627142782624782
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--simple
+    - t-Button--danger
+
+  behavior: 
+    action: Redirect to URL
+    target: "javascript:apex.confirm(htmldb_delete_message,'DELETE');"
+    execute-validations: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :P10_EVENT_ID is not null and
+      :P10_SERIES_ID is null
+
+- # ====== Button: SAVE ========================================
+  id: 8949823027523567972
+  identification: 
+    button-name: SAVE
+    label: Apply Changes
+
+  layout: 
+    sequence: 10
+    region: Buttons # 1725627142782624782
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--gapLeft
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P10_EVENT_ID
+
+- # ====== Button: CREATE ======================================
+  id: 8949823137868567972
+  identification: 
+    button-name: CREATE
+    label: Create Event
+
+  layout: 
+    sequence: 20
+    region: Buttons # 1725627142782624782
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--gapLeft
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P10_EVENT_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 1725627186441624783
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 8949822830169567972
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 1725627326129624784
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 1725627186441624783
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Hide time if All Day event ==========
+  id: 3313267496204681817
+  identification: 
+    name: Hide time if All Day event
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P10_SUPPRESS_TIME
+
+  client-side-condition: 
+    type: Item = Value
+    item: P10_SUPPRESS_TIME
+    value: Y
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 3313267774304681819
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P10_EVENT_START_TIME_D
+      - P10_DURATION
+
+    execution: 
+      sequence: 10
+      event: Hide time if All Day event # 3313267496204681817
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 3313267981596681820
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P10_EVENT_START_TIME_D
+      - P10_DURATION
+
+    execution: 
+      sequence: 20
+      event: Hide time if All Day event # 3313267496204681817
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: redefault recur end date ============
+  id: 8022974454515928680
+  identification: 
+    name: redefault recur end date
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P10_EVENT_DATE_D
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "(:P10_EVENT_ID is null or :P10_RECUR_FLAG is null) and regexp_like(:P10_EVENT_DATE_D,'^[:digit:]+\\-[:alpha:]+\\-[:digit:]+$')"
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 8022974769373928685
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: "to_date(:P10_EVENT_DATE_D,'&APP_DATE_FORMAT.')+7"
+      items-to-submit: 
+      - P10_EVENT_DATE_D
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P10_RECUR_END_DATE
+
+    execution: 
+      sequence: 10
+      event: redefault recur end date # 8022974454515928680
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: save duration =======================
+  id: 8421870570947818699
+  identification: 
+    name: save duration
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P10_DURATION
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 8421870887205818704
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var duration = $v("P10_DURATION");
+        
+        if ( duration > 0 ) {
+           groupCal.defaultDuration = duration;
+        }
+
+    execution: 
+      sequence: 10
+      event: save duration # 8421870570947818699
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: reset duration after refresh ========
+  id: 8422027866043063297
+  identification: 
+    name: reset duration after refresh
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: After Refresh
+    selection-type: Item(s)
+    item(s): 
+    - P10_DURATION
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 8422028183989063298
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: JavaScript Expression
+      javascript-expression: groupCal.defaultDuration
+      suppress-change-event: true
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P10_DURATION
+
+    execution: 
+      sequence: 10
+      event: reset duration after refresh # 8422027866043063297
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: show/hide new event type ============
+  id: 8825604212179360979
+  identification: 
+    name: show/hide new event type
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P10_TYPE_ID
+
+  client-side-condition: 
+    type: Item = Value
+    item: P10_TYPE_ID
+    value: '-1'
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 8825604505614360986
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P10_NEW_EVENT_TYPE
+      - P10_NEW_COLOR_PREF_ID
+      - P10_NEW_INTERNAL_YN
+
+    execution: 
+      sequence: 10
+      event: show/hide new event type # 8825604212179360979
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 8825604708007360991
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P10_NEW_EVENT_TYPE
+      - P10_NEW_COLOR_PREF_ID
+      - P10_NEW_INTERNAL_YN
+
+    execution: 
+      sequence: 10
+      event: show/hide new event type # 8825604212179360979
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: display recurrence region ===========
+  id: 9168584128886263080
+  identification: 
+    name: display recurrence region
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P10_RECUR_FLAG
+
+  client-side-condition: 
+    type: Item = Value
+    item: P10_RECUR_FLAG
+    value: Y
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 9168584425506263082
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Region
+      region: Recurrence # 9168467117842862574
+
+    execution: 
+      sequence: 10
+      event: display recurrence region # 9168584128886263080
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 9168584616479263083
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Region
+      region: Recurrence # 9168467117842862574
+
+    execution: 
+      sequence: 10
+      event: display recurrence region # 9168584128886263080
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+validations: 
+- # ====== Validation: Valid Characters in Tag =================
+  id: 303252241767103112
+  identification: 
+    name: Valid Characters in Tag
+
+  execution: 
+    sequence: 70
+
+  validation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "not regexp_like( :P10_TAGS, '[:;#\\/\\\\\\?\\&]' )"
+    always-execute: false
+
+  error: 
+    error-message: 'Tags may not contain the following characters: : ; \ / ? &'
+    display-location: Inline with Field and in Notification
+    associated-item: P10_TAGS # 3265615494048426865
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE
+
+- # ====== Validation: URL 1 must start with http ==============
+  id: 494493845774805220
+  identification: 
+    name: URL 1 must start with http
+
+  execution: 
+    sequence: 80
+
+  validation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "substr(:P10_LINK_URL_1, 1, 4) = 'http'"
+    always-execute: false
+
+  error: 
+    error-message: 'URL must start with http:// or https://'
+    display-location: Inline with Field and in Notification
+    associated-item: P10_LINK_URL_1 # 7978525249093364810
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P10_LINK_URL_1
+
+- # ====== Validation: URL 2 must start with http ==============
+  id: 494493920291805221
+  identification: 
+    name: URL 2 must start with http
+
+  execution: 
+    sequence: 90
+
+  validation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "substr(:P10_LINK_URL_2, 1, 4) = 'http'"
+    always-execute: false
+
+  error: 
+    error-message: 'URL must start with http:// or https://'
+    display-location: Inline with Field and in Notification
+    associated-item: P10_LINK_URL_2 # 7978535059745386853
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P10_LINK_URL_2
+
+- # ====== Validation: URL 3 must start with http ==============
+  id: 494494065495805222
+  identification: 
+    name: URL 3 must start with http
+
+  execution: 
+    sequence: 100
+
+  validation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "substr(:P10_LINK_URL_3, 1, 4) = 'http'"
+    always-execute: false
+
+  error: 
+    error-message: 'URL must start with http:// or https://'
+    display-location: Inline with Field and in Notification
+    associated-item: P10_LINK_URL_3 # 7978543454943413778
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P10_LINK_URL_3
+
+- # ====== Validation: P10_NEW_EVENT_TYPE Not Null =============
+  id: 1521808774870441028
+  identification: 
+    name: P10_NEW_EVENT_TYPE Not Null
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: Item is NOT NULL
+    item: P10_NEW_EVENT_TYPE
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must have some value.'
+    display-location: Inline with Field and in Notification
+    associated-item: P10_NEW_EVENT_TYPE # 8825574706751217540
+
+  server-side-condition: 
+    type: Item = Value
+    item: P10_TYPE_ID
+    value: '-1'
+
+- # ====== Validation: P10_NEW_COLOR_PREF_ID Not Null ==========
+  id: 1874799872550207094
+  identification: 
+    name: P10_NEW_COLOR_PREF_ID Not Null
+
+  execution: 
+    sequence: 30
+
+  validation: 
+    type: Item is NOT NULL
+    item: P10_NEW_COLOR_PREF_ID
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must have some value.'
+    display-location: Inline with Field and in Notification
+    associated-item: P10_NEW_COLOR_PREF_ID # 1888616509999461338
+
+  server-side-condition: 
+    type: Item = Value
+    item: P10_TYPE_ID
+    value: '-1'
+
+- # ====== Validation: P10_NEW_INTERNAL_YN Not Null ============
+  id: 1874800047108207095
+  identification: 
+    name: P10_NEW_INTERNAL_YN Not Null
+
+  execution: 
+    sequence: 40
+
+  validation: 
+    type: Item is NOT NULL
+    item: P10_NEW_INTERNAL_YN
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must have some value.'
+    display-location: Inline with Field and in Notification
+    associated-item: P10_NEW_INTERNAL_YN # 1888616827578464331
+
+  server-side-condition: 
+    type: Item = Value
+    item: P10_TYPE_ID
+    value: '-1'
+
+  configuration: 
+    build-option: Include External / Internal Event Types # 1641094558700216905
+
+- # ====== Validation: recur end date > event date =============
+  id: 9168615324010384642
+  identification: 
+    name: recur end date > event date
+
+  execution: 
+    sequence: 60
+
+  validation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      to_date(:P10_RECUR_END_DATE,'&APP_DATE_FORMAT.') >=
+      to_date(:P10_EVENT_DATE_D,'&APP_DATE_FORMAT.')
+    always-execute: false
+
+  error: 
+    error-message: Recur End Date must be after Event Date
+    display-location: Inline with Field and in Notification
+    associated-item: P10_RECUR_END_DATE # 9168553333285131923
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :P10_RECUR_END_DATE is not null and 
+      :P10_RECUR_FLAG is not null
+
+- # ====== Validation: P10_RECUR_END_DATE not null =============
+  id: 9168616741110399019
+  identification: 
+    name: P10_RECUR_END_DATE not null
+
+  execution: 
+    sequence: 50
+
+  validation: 
+    type: Item is NOT NULL
+    item: P10_RECUR_END_DATE
+    always-execute: false
+
+  error: 
+    error-message: Recur End Date must be supplied.
+    display-location: Inline with Field and in Notification
+    associated-item: P10_RECUR_END_DATE # 9168553333285131923
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P10_RECUR_FLAG
+
+computations: 
+- # ====== Computation: P10_EVENT_DATE_D =======================
+  id: 3802263825760794277
+  identification: 
+    item-name: P10_EVENT_DATE_D
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "to_char(to_date(:P10_EVENT_DATE_D,'&APP_DATE_TIME_FORMAT.'),'&APP_NLS_DATE_FORMAT.')"
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P10_EVENT_ID
+
+- # ====== Computation: P10_EVENT_START_TIME_D =================
+  id: 8023048764933158782
+  identification: 
+    item-name: P10_EVENT_START_TIME_D
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select to_char(trunc(to_date(to_char(current_timestamp,'&APP_TIME_FORMAT.'),'&APP_TIME_FORMAT.'),'HH')+1/24,'&APP_TIME_FORMAT.') from dual
+      
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P10_EVENT_ID
+
+- # ====== Computation: P10_DURATION ===========================
+  id: 8421859794664787752
+  identification: 
+    item-name: P10_DURATION
+
+  execution: 
+    sequence: 20
+    point: Before Header
+
+  computation: 
+    type: Static Value
+    static-value: 1
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P10_EVENT_ID
+
+processes: 
+- # ====== Process: Close Dialog ===============================
+  id: 1725627415184624785
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: false
+
+  execution: 
+    sequence: 60
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request = Value
+    value: CREATE
+
+- # ====== Process: Update =====================================
+  id: 8530439688047712760
+  identification: 
+    name: Update
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+         l_type_id         number;
+         l_new_event_type  varchar2(60);
+         l_display_time    varchar2(1);
+         l_duration        number := :P10_DURATION;
+      begin
+      
+      if :P10_SUPPRESS_TIME = 'Y' then
+         l_display_time := 'N';
+         l_duration := 24;
+      else
+         l_display_time := 'Y';
+      end if;
+      
+      for c1 in (
+         select series_id, to_char(event_date_time,'&APP_DATE_FORMAT.') event_date
+           from EBA_ca_events
+          where event_id = :P10_EVENT_ID )
+      loop
+         -- simple update or adding recurrence
+         if c1.series_id is null then
+      
+            if :P10_TYPE_ID = '-1' then
+               l_type_id        := null;
+               l_new_event_type := :P10_NEW_EVENT_TYPE;
+            else
+               l_type_id        := :P10_TYPE_ID;
+               l_new_event_type := null;
+            end if;
+      
+            EBA_ca_api.update_event (
+               p_event_id        => :P10_EVENT_ID,
+               p_event_name      => :P10_EVENT_NAME,
+               p_calendar_id     => :P10_CALENDAR_ID,
+               p_type_id         => l_type_id,
+               p_new_event_type  => l_new_event_type,
+               p_new_color_pref_id  => :P10_NEW_COLOR_PREF_ID,
+               p_new_internal_yn    => :P10_NEW_INTERNAL_YN,
+               p_event_date_time => to_date(:P10_EVENT_DATE_D||:P10_EVENT_START_TIME_D,
+                                           '&APP_DATE_FORMAT.&APP_TIME_FORMAT.'),
+               p_duration        => l_duration,
+               p_event_desc      => :P10_EVENT_DESC,
+               p_contact_person  => :P10_CONTACT_PERSON,
+               p_contact_email   => :P10_CONTACT_EMAIL,
+               p_display_time    => l_display_time,
+               p_location        => :P10_LOCATION,
+               p_link_name_1     => :P10_LINK_NAME_1,
+               p_link_url_1      => :P10_LINK_URL_1,
+               p_link_name_2     => :P10_LINK_NAME_2,
+               p_link_url_2      => :P10_LINK_URL_2,
+               p_link_name_3     => :P10_LINK_NAME_3,
+               p_link_url_3      => :P10_LINK_URL_3,
+               p_tags            => :P10_TAGS,
+               --
+               p_recur_flag      => :P10_RECUR_FLAG,
+               p_recur_freq      => :P10_RECUR_FREQ,
+               p_recur_end_date  => to_date(:P10_RECUR_END_DATE||:P10_EVENT_START_TIME_D,
+                                           '&APP_DATE_FORMAT.&APP_TIME_FORMAT.'), 
+               --
+               p_update_request => 'S' );
+      
+         else
+            -- removing recurrence
+            if c1.series_id is not null and :P10_RECUR_FLAG is null then
+               :P10_RECUR := 'Y';
+               :P11_REQUEST_TYPE := 'AFO';
+            else
+               if :P10_EVENT_DATE_D != c1.event_date then 
+                  :P10_RECUR := 'Y';
+                  :P11_REQUEST_TYPE := 'FO';
+               else
+                  for c2 in (
+                     select recur_freq, end_date
+                       from EBA_ca_series
+                      where series_id = c1.series_id )
+                  loop
+                     if c2.recur_freq != :P10_RECUR_FREQ or
+                        to_char(c2.end_date,'&APP_DATE_FORMAT.') != :P10_RECUR_END_DATE then
+                        :P10_RECUR := 'Y';
+                        :P11_REQUEST_TYPE := 'AF';
+                     else
+                        :P10_RECUR := 'Y';
+                        :P11_REQUEST_TYPE := 'AFO';
+                     end if;
+                  end loop;
+               end if;
+            end if;
+         end if;
+      end loop;
+      
+      end;
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Event updated.
+
+  error: 
+    error-message: Error updating event.
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: SAVE # 8949823027523567972
+
+- # ====== Process: Simple Delete ==============================
+  id: 8530442085108749756
+  identification: 
+    name: Simple Delete
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      EBA_ca_api.delete_event (
+         p_event_id       => :P10_EVENT_ID );
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Event deleted.
+
+  error: 
+    error-message: Error deleting event.
+    display-location: On Error Page
+
+  server-side-condition: 
+    when-button-pressed: DELETE # 8949822924849567972
+
+- # ====== Process: Recur Delete ===============================
+  id: 8532384583075894361
+  identification: 
+    name: Recur Delete
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      :P10_RECUR        := 'Y';
+      :P11_REQUEST_TYPE := 'D';
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: On Error Page
+
+  server-side-condition: 
+    when-button-pressed: DELETE2 # 8532383288139886335
+
+- # ====== Process: Load Data ==================================
+  id: 8791645793504736552
+  identification: 
+    name: Load Data
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      for c1 in (
+         select event_name,
+                calendar_id,
+                type_id,
+                event_date_time,
+                duration,
+                event_desc,
+                contact_person,
+                case when display_time = 'Y' then null
+                     when display_time = 'N' then 'Y'
+                     end suppress_time,
+                location,
+                link_name_1, link_url_1, link_name_2, link_url_2, link_name_3, link_url_3,
+                series_id,
+                created_on, 
+                created_by, 
+                last_updated_on, 
+                last_updated_by, 
+                tags,
+                contact_email
+           from EBA_ca_events
+         where event_id = :P10_EVENT_ID )
+      loop
+         :P10_EVENT_NAME         := c1.event_name;	
+         :P10_CALENDAR_ID        := c1.calendar_id;
+         :P10_TYPE_ID	           := c1.type_id;	
+         :P10_EVENT_DATE_TIME	   := to_char(c1.event_date_time,'&APP_DATE_FORMAT.&APP_TIME_FORMAT.');		
+         :P10_EVENT_DATE_D	   := to_char(c1.event_date_time,'&APP_DATE_FORMAT.');	
+         :P10_EVENT_START_TIME_D := to_char(c1.event_date_time,'&APP_TIME_FORMAT.');	
+         :P10_DURATION           := c1.duration;	
+         :P10_EVENT_DESC	   := c1.event_desc;	
+         :P10_CONTACT_PERSON	   := c1.contact_person;
+         if c1.contact_email is null and 
+            instr(c1.contact_person,'@') > 0 and 
+            instr(c1.contact_person,'.') > 0 then
+            :P10_CONTACT_EMAIL      := c1.contact_person;
+         else
+            :P10_CONTACT_EMAIL      := c1.contact_email;
+         end if;
+         
+         :P10_SUPPRESS_TIME      := c1.suppress_time;
+         :P10_LOCATION           := c1.location;
+         :P10_LINK_NAME_1        := c1.link_name_1;
+         :P10_LINK_URL_1         := c1.link_url_1;
+         :P10_LINK_NAME_2        := c1.link_name_2;
+         :P10_LINK_URL_2         := c1.link_url_2;
+         :P10_LINK_NAME_3        := c1.link_name_3;
+         :P10_LINK_URL_3         := c1.link_url_3;
+         :P10_TAGS               := c1.tags;
+         :P10_SERIES_ID          := c1.series_id;	
+      
+         :P10_CREATED_ON	   := apex_util.get_since(c1.created_on);	
+         :P10_CREATED_BY	   := c1.created_by;	
+         :P10_LAST_UPDATED_ON	   := apex_util.get_since(c1.last_updated_on);	
+         :P10_LAST_UPDATED_BY	   := c1.last_updated_by;	
+      
+         if c1.series_id is not null then
+            for c2 in (
+               select recur_freq,
+                      end_date
+                 from EBA_ca_series
+               where series_id = c1.series_id )
+            loop
+               :P10_RECUR_FLAG	:= 'Y';
+               :P10_RECUR_FREQ	:= c2.recur_freq;	
+               :P10_RECUR_END_DATE	:= to_char(c2.end_date,'&APP_DATE_FORMAT.');	
+            end loop;
+            :P10_RECUR := 'Y';
+         else
+            :P10_RECUR := 'N';
+         end if;
+      end loop;
+
+  execution: 
+    sequence: 10
+    point: After Header
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    error-message: failed to load data
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P10_EVENT_ID
+
+- # ====== Process: Create =====================================
+  id: 9172452442391967070
+  identification: 
+    name: Create
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+         l_type_id         number;
+         l_new_event_type  varchar2(60);
+         l_display_time    varchar2(1);
+         l_duration        number := :P10_DURATION;
+      begin
+      
+      if :P10_TYPE_ID = '-1' then
+         l_type_id        := null;
+         l_new_event_type := :P10_NEW_EVENT_TYPE;
+      else
+         l_type_id        := :P10_TYPE_ID;
+         l_new_event_type := null;
+      end if;
+      
+      if :P10_SUPPRESS_TIME = 'Y' then
+         l_display_time := 'N';
+         l_duration := 24;
+      else
+         l_display_time := 'Y';
+      end if;
+      
+      EBA_ca_api.create_event (
+         p_event_name      => :P10_EVENT_NAME,
+         p_calendar_id     => :P10_CALENDAR_ID,
+         p_type_id         => l_type_id,
+         p_new_event_type  => l_new_event_type,
+         p_new_color_pref_id => :P10_NEW_COLOR_PREF_ID,
+         p_new_internal_yn   => :P10_NEW_INTERNAL_YN,
+         p_event_date_time => to_date(:P10_EVENT_DATE_D||:P10_EVENT_START_TIME_D,
+                                     '&APP_DATE_FORMAT.&APP_TIME_FORMAT.'),
+         p_duration        => l_duration,
+         p_event_desc      => :P10_EVENT_DESC,
+         p_contact_person  => :P10_CONTACT_PERSON,
+         p_contact_email   => :P10_CONTACT_EMAIL,
+         p_display_time    => l_display_time,
+         p_location        => :P10_LOCATION,
+         p_link_name_1     => :P10_LINK_NAME_1,
+         p_link_url_1      => :P10_LINK_URL_1,
+         p_link_name_2     => :P10_LINK_NAME_2,
+         p_link_url_2      => :P10_LINK_URL_2,
+         p_link_name_3     => :P10_LINK_NAME_3,
+         p_link_url_3      => :P10_LINK_URL_3,
+         p_tags            => :P10_TAGS,
+         --
+         p_recur_flag      => :P10_RECUR_FLAG,
+         p_recur_freq      => :P10_RECUR_FREQ,
+         p_recur_end_date  => to_date(:P10_RECUR_END_DATE||:P10_EVENT_START_TIME_D,
+                                     '&APP_DATE_FORMAT.&APP_TIME_FORMAT.') );
+      
+      end;
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Event created.
+
+  error: 
+    error-message: Error creating event.
+    display-location: On Error Page
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 8949823137868567972
+
+branches: 
+- # ====== Branch: Go To Home if setting event to recur ========
+  id: 618096495069497617
+  identification: 
+    name: Go To Home if setting event to recur
+
+  execution: 
+    sequence: 30
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:RP::&success_msg=#SUCCESS_MSG#'
+      page: 1 # Home
+      clear-cache: RP
+
+  server-side-condition: 
+    when-button-pressed: SAVE # 8949823027523567972
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ":P10_RECUR = 'N' and :P10_RECUR_FLAG = 'Y'"
+
+- # ====== Branch: Go To Page 11 ===============================
+  id: 8530439581813710908
+  identification: 
+    name: Go To Page 11
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:11:&SESSION.::&DEBUG.:::'
+      page: 11 # Update or Delete Affects
+
+    save-state-before-branching: true
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ":P10_RECUR = 'Y' and :REQUEST in ('SAVE','DELETE2')"
+
+  comments: 
+    comments: 'Created 08-SEP-2010 20:10 by SBKENNED'
+
+- # ====== Branch: Go To Page 1 ================================
+  id: 8530441572987746266
+  identification: 
+    name: Go To Page 1
+
+  execution: 
+    sequence: 20
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:1::'
+      page: 1 # Home
+      clear-cache: 1
+
+    save-state-before-branching: true
+
+  server-side-condition: 
+    when-button-pressed: DELETE # 8949822924849567972
+
+  comments: 
+    comments: 'Created 08-SEP-2010 20:10 by SBKENNED'
+
+- # ====== Branch: Go To Page &LAST_VIEW. ======================
+  id: 8949823246273567973
+  identification: 
+    name: Go To Page &LAST_VIEW.
+
+  execution: 
+    sequence: 40
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:&LAST_VIEW.:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+      page: '&LAST_VIEW.'
+
+    save-state-before-branching: true
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ":REQUEST not in ('DELETE','DELETE2')"
+

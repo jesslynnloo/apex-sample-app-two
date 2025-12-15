@@ -1,0 +1,1249 @@
+---
+# ====== Page: Delete Multiple Events ========================
+id: 13
+identification: 
+  name: Delete Multiple Events
+  alias: DELETE-MULTIPLE-EVENTS
+  title: Delete Multiple Events
+  page-group: Administration # 8949833037355592644
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: false
+
+javascript: 
+  function-and-global-variable-declaration: var htmldb_delete_message='"DELETE_CONFIRM_MSG"';
+
+security: 
+  authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: Use the filters on the left to change the events displayed in the list on the right. Once you've changed a flter value click the <strong>Go</strong> button to set your filter values. Once you've filtered the results down to all of the events you would like to delete, click the <strong>Delete Events Listed Below</strong> button. Click the <strong>Cancel</strong> button to navigate away from this page without deleting any events.
+
+regions: 
+- # ====== Region: Breadcrumb ==================================
+  id: 1983516986486411158
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: ' Breadcrumb' # 8949803322316567820
+
+  layout: 
+    sequence: 1
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Filter ======================================
+  id: 7444195432187131257
+  identification: 
+    name: Filter
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hiddenOverflow
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Events to be Deleted ========================
+  id: 7444201044574131282
+  identification: 
+    name: Events to be Deleted
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select e.EVENT_ID
+      ,      e.event_name
+      ,      case when et.display_color is not null then 
+               '<span style="white-space:nowrap;">' 
+               || apex_escape.html(et.type_name || decode(:EXTERNAL_INTERNAL_BO, 'Include', decode(internal_yn, 'Y', ' (Internal Only)', null), null)) || '</span>'
+             else 
+               '<span style="white-space:nowrap;">' 
+               || apex_escape.html(et.type_name || decode(:EXTERNAL_INTERNAL_BO, 'Include', decode(internal_yn, 'Y', ' (Internal Only)', null), null)) || '</span>'
+             end event_type
+      ,      e.EVENT_DATE_TIME event_date
+      ,      case when to_char(e.EVENT_DATE_TIME,'MI') = '00' 
+                  then ltrim(to_char(e.EVENT_DATE_TIME,'HHam'),'0')
+                  else ltrim(to_char(e.EVENT_DATE_TIME,'HH:MIam'),'0')
+                  end start_time
+      ,      case when to_char(to_date(to_char(EVENT_DATE_TIME,'DD-MON-RR'||'HH:MIam'),
+                               'DD-MON-RR'||'HH:MIam')+(e.duration/24),'MI') = '00'
+                  then ltrim(to_char(to_date(to_char(EVENT_DATE_TIME,'DD-MON-RR'||'HH:MIam'),
+                               'DD-MON-RR'||'HH:MIam')+(e.duration/24),'HHam'),'0')
+                  else ltrim(to_char(to_date(to_char(EVENT_DATE_TIME,'DD-MON-RR'||'HH:MIam'),
+                               'DD-MON-RR'||'HH:MIam')+(e.duration/24),'HH:MIam'),'0')
+                  end end_time
+      ,      case when e.duration = 0  then '0 mins'
+                  when e.duration = .25 then '15 mins'
+                  when e.duration = .5 then '30 mins'
+                  when e.duration = .75 then '45 mins'
+                  when e.duration = 1 then '1 hr'
+                  when e.duration > 1 then to_char(trunc(e.duration)) || ' hrs'
+                    || case when e.duration - trunc(e.duration) = 0  then ''
+                            when e.duration - trunc(e.duration) = .25 then ' 15 mins'
+                            when e.duration - trunc(e.duration) = .5 then ' 30 mins'
+                            when e.duration - trunc(e.duration) = .75 then ' 45 mins'
+                       end
+                  end duration
+      ,      e.EVENT_DESC
+      ,      decode(e.calendar_id, null, 'Default'
+                    , c.short_name || ' - ' || c.calendar_name 
+                      || decode(public_view_yn, 'Y', null, ' (Private)')
+                   ) calendar
+      from eba_ca_events e
+      ,    eba_ca_event_types et
+      ,    eba_ca_calendars c
+      where e.type_id = et.type_id
+      and   e.calendar_id = c.calendar_id (+)
+      and   (   :MULTIPLE_CAL_BO = 'Exclude' 
+             or (   e.calendar_id is null
+                 or (   c.public_view_yn = 'Y'
+                     or exists (select 'x'
+                                from eba_ca_users u
+                                where u.username = :APP_USER
+                                and   (   instr(u.restricted_to, c.calendar_id) > 0
+                                       or (access_level_id = 3 and restricted_to is null)
+                                      )
+                               )
+                    )
+                )
+            )
+      and   (   :EXTERNAL_INTERNAL_BO = 'Exclude'
+             or (   nvl(et.internal_yn, 'N') = 'N'
+                 or upper(:APP_USER) in (select upper(username) from eba_ca_users)
+                )
+            )
+      and   (   :P13_EVENT_TYPE is null 
+             or e.type_id = :P13_EVENT_TYPE
+            )
+      and   (   :P13_CALENDAR_ID is null 
+             or nvl(e.calendar_id, -1) = :P13_CALENDAR_ID
+            )
+      and   (   :P13_START_DATE is null 
+             or trunc(to_date(to_char(e.event_date_time,'&APP_DATE_FORMAT.'),'&APP_DATE_FORMAT.')) 
+                  >= to_date(:P13_START_DATE,'&APP_DATE_FORMAT.') 
+            )
+      and   (   :P13_END_DATE is null 
+             or trunc(to_date(to_char(e.event_date_time,'&APP_DATE_FORMAT.'),'&APP_DATE_FORMAT.')) 
+                <= to_date(:P13_END_DATE,'&APP_DATE_FORMAT.') 
+            )
+      and   (  :P13_TIMEFRAME is null 
+             or (    trunc(to_date(to_char(e.event_date_time,'DD-MON-RRRR'),'DD-MON-RRRR'))
+                       >= (select start_date 
+                           from EBA_ca_timeframes
+                           where :P13_TIMEFRAME = tf_id
+                          ) 
+                 and trunc(to_date(to_char(e.event_date_time,'DD-MON-RRRR'),'DD-MON-RRRR'))
+                       <= (select end_date 
+                           from EBA_ca_timeframes
+                           where :P13_TIMEFRAME = tf_id
+                          )
+                )
+            )
+      order by e.event_date_time, event_name
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  header-and-footer: 
+    header-text: <p/>
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    messages: 
+      when-no-data-found: No events found.
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: CALENDAR ====================================
+    id: 1874797199118207067
+    identification: 
+      column-name: CALENDAR
+      type: Plain Text
+
+    heading: 
+      heading: Calendar
+      alignment: center
+
+    layout: 
+      sequence: 8
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Include Multiple Calendars # 1866546217384601308
+
+  - # ====== Column: EVENT_DESC ==================================
+    id: 7444201245984131290
+    identification: 
+      column-name: EVENT_DESC
+      type: Plain Text
+
+    heading: 
+      heading: Description
+      alignment: start
+
+    layout: 
+      sequence: 9
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EVENT_ID ====================================
+    id: 7444201338821131292
+    identification: 
+      column-name: EVENT_ID
+      type: Hidden
+
+    layout: 
+      sequence: 2
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EVENT_NAME ==================================
+    id: 7444201441508131292
+    identification: 
+      column-name: EVENT_NAME
+      type: Plain Text
+
+    heading: 
+      heading: Event Name
+      alignment: start
+
+    layout: 
+      sequence: 6
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EVENT_TYPE ==================================
+    id: 7444201533508131292
+    identification: 
+      column-name: EVENT_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Event Type
+      alignment: start
+
+    layout: 
+      sequence: 7
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+  - # ====== Column: EVENT_DATE ==================================
+    id: 7444201623392131292
+    identification: 
+      column-name: EVENT_DATE
+      type: Plain Text
+
+    heading: 
+      heading: Event Date
+      alignment: start
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: '&APP_DATE_FORMAT.'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: START_TIME ==================================
+    id: 7444201747134131293
+    identification: 
+      column-name: START_TIME
+      type: Plain Text
+
+    heading: 
+      heading: Timing
+      alignment: start
+
+    layout: 
+      sequence: 3
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    column-formatting: 
+      html-expression: '#START_TIME# - #END_TIME# (#DURATION#)'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: END_TIME ====================================
+    id: 7444201822989131293
+    identification: 
+      column-name: END_TIME
+      type: Hidden
+
+    layout: 
+      sequence: 4
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DURATION ====================================
+    id: 7444201945954131293
+    identification: 
+      column-name: DURATION
+      type: Hidden
+
+    layout: 
+      sequence: 5
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Directions ==================================
+  id: 7444202033715131294
+  identification: 
+    name: Directions
+    type: Static Content
+
+  source: 
+    html-code: |
+      <p>You can use this to delete a set of events or to clean out historic events, like for the previous year.
+      </p>
+      <ol>
+        <li>Use the filter to select the set of events to be deleted.</li>
+        <li>Click [Delete Events].</li>
+      </ol>
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P13_CALENDAR_ID ==========================
+  id: 1874797267084207068
+  identification: 
+    name: P13_CALENDAR_ID
+    type: Select List
+
+  label: 
+    label: Calendar
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 20
+    region: Filter # 7444195432187131257
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CALENDARS WITH DEFAULT # 1878644215199008302
+    display-extra-values: false
+    display-null-value: true
+    null-display-value: '- All -'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: If selected, only events for the selected calendar will be included.
+
+  configuration: 
+    build-option: Include Multiple Calendars # 1866546217384601308
+
+- # ====== Page Item: P13_START_DATE ===========================
+  id: 7444195629059131262
+  identification: 
+    name: P13_START_DATE
+    type: Date Picker
+
+  label: 
+    label: From
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 40
+    region: Filter # 7444195432187131257
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: '&APP_DATE_FORMAT.'
+    width: 16
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: If entered, Events before this date will not be included.
+
+- # ====== Page Item: P13_END_DATE =============================
+  id: 7444196231961131270
+  identification: 
+    name: P13_END_DATE
+    type: Date Picker
+
+  label: 
+    label: Until
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 50
+    region: Filter # 7444195432187131257
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: '&APP_DATE_FORMAT.'
+    width: 16
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: If entered, Events after this date will not be included.
+
+- # ====== Page Item: P13_EVENT_TYPE ===========================
+  id: 7444196731358131271
+  identification: 
+    name: P13_EVENT_TYPE
+    type: Select List
+
+  label: 
+    label: Event Type
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Filter # 7444195432187131257
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: EVENT TYPES FOR MAIN CAL # 7977644959494043344
+    display-extra-values: false
+    display-null-value: true
+    null-display-value: '- All -'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: If selected, only events of this type will be included.
+
+- # ====== Page Item: P13_TIMEFRAME ============================
+  id: 7444197421006131271
+  identification: 
+    name: P13_TIMEFRAME
+    type: Select List
+
+  label: 
+    label: Timeframe
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 30
+    region: Filter # 7444195432187131257
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: TIMEFRAMES (SHOWING DATES) # 8044249159643010489
+    display-extra-values: true
+    display-null-value: true
+    null-display-value: '- None -'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+        from EBA_ca_timeframes
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Select Reporting Timeframe to restrict the report.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 3266890179063809977
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 30
+    region: Breadcrumb # 1983516986486411158
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:2:&SESSION.::&DEBUG.:RP::'
+      page: 2 # Search
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: P13_GO ======================================
+  id: 7444197223011131271
+  identification: 
+    button-name: P13_GO
+    label: Go
+
+  layout: 
+    sequence: 10
+    region: Filter # 7444195432187131257
+    slot: HELP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  advanced: 
+    static-id: P13_GO
+    request-source-type: Static Value
+    request-source: Go
+
+- # ====== Button: DELETE ======================================
+  id: 7444198337022131275
+  identification: 
+    button-name: DELETE
+    label: Delete Events Listed Below
+
+  layout: 
+    sequence: 40
+    region: Breadcrumb # 1983516986486411158
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--simple
+    - t-Button--danger
+
+  behavior: 
+    action: Redirect to URL
+    target: "javascript:apex.confirm(htmldb_delete_message,'DELETE');"
+    execute-validations: true
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: P13_CLEAR ===================================
+  id: 7444331946329369713
+  identification: 
+    button-name: P13_CLEAR
+    label: Clear
+
+  layout: 
+    sequence: 20
+    region: Filter # 7444195432187131257
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  advanced: 
+    static-id: P13_CLEAR
+    request-source-type: Static Value
+    request-source: CLEAR
+
+dynamic-actions: 
+- # ====== Dynamic Action: save group id =======================
+  id: 7444203933129131328
+  identification: 
+    name: save group id
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P13_GROUP_ID
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 7444204234947131333
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P13_GROUP_ID
+
+    execution: 
+      sequence: 10
+      event: save group id # 7444203933129131328
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+processes: 
+- # ====== Process: Delete Events ==============================
+  id: 7444203745627131318
+  identification: 
+    name: Delete Events
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      for c1 in (select e.event_id
+                 from EBA_CA_EVENTS e
+                 ,    EBA_CA_EVENT_TYPES et
+                 ,    eba_ca_calendars c
+                 where e.type_id = et.type_id
+                 and   e.calendar_id = c.calendar_id (+)
+                 and   (   :MULTIPLE_CAL_BO = 'Exclude' 
+                        or (   e.calendar_id is null
+                            or (   c.public_view_yn = 'Y'
+                                or exists (select 'x'
+                                           from eba_ca_users u
+                                           where u.username = :APP_USER
+                                           and   (   instr(u.restricted_to, c.calendar_id) > 0
+                                                  or (access_level_id = 3 and restricted_to is null)
+                                                 )
+                                          )
+                               )
+                           )
+                       )
+                 and   (   :EXTERNAL_INTERNAL_BO = 'Exclude'
+                        or (   nvl(et.internal_yn, 'N') = 'N'
+                            or upper(:APP_USER) in (select upper(username) from eba_ca_users)
+                           )
+                       )
+                 and   (   :P13_EVENT_TYPE is null 
+                        or e.type_id = :P13_EVENT_TYPE
+                       )
+                 and   (   :P13_CALENDAR_ID is null 
+                        or nvl(e.calendar_id, -1) = :P13_CALENDAR_ID
+                       )
+                 and   (   :P13_START_DATE is null 
+                        or trunc(to_date(to_char(e.event_date_time,'&APP_DATE_FORMAT.'),'&APP_DATE_FORMAT.')) 
+                             >= to_date(:P13_START_DATE,'&APP_DATE_FORMAT.') 
+                       )
+                 and   (   :P13_END_DATE is null 
+                        or trunc(to_date(to_char(e.event_date_time,'&APP_DATE_FORMAT.'),'&APP_DATE_FORMAT.')) 
+                             <= to_date(:P13_END_DATE,'&APP_DATE_FORMAT.') 
+                       )
+                 and   (  :P13_TIMEFRAME is null 
+                        or (    trunc(to_date(to_char(e.event_date_time,'DD-MON-RRRR'),'DD-MON-RRRR'))
+                                  >= (select start_date 
+                                      from EBA_ca_timeframes
+                                      where :P13_TIMEFRAME = tf_id
+                                     ) 
+                            and trunc(to_date(to_char(e.event_date_time,'DD-MON-RRRR'),'DD-MON-RRRR'))
+                                  <= (select end_date 
+                                      from EBA_ca_timeframes
+                                      where :P13_TIMEFRAME = tf_id
+                                     )
+                           )
+                       )
+                ) loop
+        eba_ca_api.delete_event (  p_event_id       => c1.event_id
+                                 , p_delete_request => 'O' 
+                                );
+      end loop;
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Event(s) deleted.
+
+  error: 
+    error-message: Event(s) failed to be deleted.
+    display-location: On Error Page
+
+  server-side-condition: 
+    when-button-pressed: DELETE # 7444198337022131275
+
+- # ====== Process: Reset Pagination ===========================
+  id: 7444349838542405347
+  identification: 
+    name: Reset Pagination
+    type: Reset Pagination
+    execution-chain: None
+
+  settings: 
+    target: This Page
+
+  execution: 
+    sequence: 20
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: On Error Page
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: Go,CLEAR
+
+branches: 
+- # ====== Branch: Go To Page 13 ===============================
+  id: 7444204430647131335
+  identification: 
+    name: Go To Page 13
+
+  execution: 
+    sequence: 20
+    point: After Submit
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:13:&SESSION.::&DEBUG.:13::'
+      page: 13 # Delete Multiple Events
+      clear-cache: 13
+
+    save-state-before-branching: true
+
+  server-side-condition: 
+    when-button-pressed: P13_CLEAR # 7444331946329369713
+
+- # ====== Branch: Go To Page 13 ===============================
+  id: 7444349630230402872
+  identification: 
+    name: Go To Page 13
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:2:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+      page: 2 # Search
+
+    save-state-before-branching: true
+
+  server-side-condition: 
+    when-button-pressed: DELETE # 7444198337022131275
+
+  comments: 
+    comments: 'Created 18-OCT-2010 12:49 by SBKENNED'
+

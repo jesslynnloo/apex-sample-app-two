@@ -1,0 +1,1159 @@
+---
+- # ====== List: Navigation Bar ================================
+  id: 1226288688404772270
+  identification: 
+    name: Navigation Bar
+
+  subscription: 
+    version-number: 1089051329
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Customize Appearance =========================
+    id: 1072338183847852045
+    label: 
+      label: Customize Appearance
+
+    icon: 
+      image/icon-css-classes: fa-wrench
+
+    layout: 
+      sequence: 52
+      parent-entry: '&APP_USER.' # 1760728707919542462
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: '#CUSTOMIZE_URL#'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: "'#CUSTOMIZE_URL#' is not null"
+
+  - # ====== Entry: --- ==========================================
+    id: 1072338502615854149
+    label: 
+      label: '---'
+
+    layout: 
+      sequence: 54
+      parent-entry: '&APP_USER.' # 1760728707919542462
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: separator
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Help =========================================
+    id: 1226289495339772274
+    label: 
+      label: Help
+
+    icon: 
+      image/icon-css-classes: fa-question-circle-o
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1001:&SESSION.::&DEBUG.:1001:P1001_PAGE_ID:&APP_PAGE_ID.:'
+        page: 1001 # Page Help Dialog
+        clear-cache: 1001
+        values: 
+          p1001_page_id: '&APP_PAGE_ID.'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: &APP_USER. ===================================
+    id: 1760728707919542462
+    label: 
+      label: '&APP_USER.'
+
+    icon: 
+      image/icon-css-classes: fa-user
+
+    layout: 
+      sequence: 40
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: '#'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      2.: has-username
+
+  - # ====== Entry: Preferences ==================================
+    id: 1760729027799546015
+    label: 
+      label: Preferences
+
+    icon: 
+      image/icon-css-classes: fa-heart-o
+
+    layout: 
+      sequence: 50
+      parent-entry: '&APP_USER.' # 1760728707919542462
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:28:&SESSION.::&DEBUG.::::'
+        page: 28 # Preferences
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Sign Out =====================================
+    id: 1760729325172549336
+    label: 
+      label: Sign Out
+
+    icon: 
+      image/icon-css-classes: fa-sign-out
+
+    layout: 
+      sequence: 60
+      parent-entry: '&APP_USER.' # 1760728707919542462
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: '&LOGOUT_URL.'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+- # ====== List: Mobile Navigation Menu ========================
+  id: 1641081171066998273
+  identification: 
+    name: Mobile Navigation Menu
+
+  subscription: 
+    version-number: 1089051329
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Home =========================================
+    id: 1702245442258328786
+    label: 
+      label: Home
+
+    icon: 
+      image/icon-css-classes: a-Icon icon-home
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:200:&SESSION.::&DEBUG.::::'
+        page: 200
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+- # ====== List: Navigation Menu ===============================
+  id: 1760666398868434401
+  identification: 
+    name: Navigation Menu
+
+  subscription: 
+    version-number: 1089051329
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Calendar =====================================
+    id: 1760666519186434408
+    label: 
+      label: Calendar
+
+    icon: 
+      image/icon-css-classes: fa-home
+
+    layout: 
+      sequence: 1
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 1
+      - 3
+      - 14
+      - 31
+      - 32
+      - 10
+      - 33
+      - 34
+      - 11
+      - 28
+      - 39
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.::::'
+        page: 1 # Home
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Timeline =====================================
+    id: 1760666620507434408
+    label: 
+      label: Timeline
+
+    icon: 
+      image/icon-css-classes: fa-clock-o
+
+    layout: 
+      sequence: 2
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:12:&SESSION.::&DEBUG.::::'
+        page: 12 # Timeline
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Search =======================================
+    id: 1760666701782434408
+    label: 
+      label: Search
+
+    icon: 
+      image/icon-css-classes: fa-search
+
+    layout: 
+      sequence: 3
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 2
+      - 13
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:2:&SESSION.::&DEBUG.::::'
+        page: 2 # Search
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Tags =========================================
+    id: 1760666828888434408
+    label: 
+      label: Tags
+
+    icon: 
+      image/icon-css-classes: fa-tags
+
+    layout: 
+      sequence: 4
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:36:&SESSION.::&DEBUG.::::'
+        page: 36 # Tags
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Administration ===============================
+    id: 1760666900219434408
+    label: 
+      label: Administration
+
+    icon: 
+      image/icon-css-classes: fa-gear
+
+    layout: 
+      sequence: 5
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 27
+      - 28
+      - 4
+      - 25
+      - 26
+      - 7
+      - 8
+      - 23
+      - 24
+      - 15
+      - 16
+      - 17
+      - 29
+      - 40
+      - 39
+      - 175
+      - 9
+      - 35
+      - 30
+      - 37
+      - 18
+      - 19
+      - 38
+      - 53
+      - 54
+      - 41
+      - 100
+      - 5
+      - 6
+      - 43
+      - 41
+      - 40
+      - 42
+      - 44
+      - 6
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:26:&SESSION.::&DEBUG.::::'
+        page: 26 # Administration
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+- # ====== List: Event Actions =================================
+  id: 2204848584569895071
+  identification: 
+    name: Event Actions
+
+  subscription: 
+    version-number: 1089051329
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Add Link =====================================
+    id: 2204848759438895081
+    label: 
+      label: Add Link
+
+    icon: 
+      image/icon-css-classes: fa-external-link
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:openModal('edit_link_modal');"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Attach File ==================================
+    id: 2204849240956895095
+    label: 
+      label: Attach File
+
+    icon: 
+      image/icon-css-classes: fa-paperclip
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:32:&SESSION.::&DEBUG.:32:P32_EVENT_ID:&P3_EVENT_ID.:'
+        page: 32 # Attachment
+        clear-cache: 32
+        values: 
+          p32_event_id: '&P3_EVENT_ID.'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Add Update ===================================
+    id: 2204849606087895095
+    label: 
+      label: Add Update
+
+    icon: 
+      image/icon-css-classes: fa-comment-o
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:33:&SESSION.::&DEBUG.:33:P33_EVENT_ID:&P3_EVENT_ID.:'
+        page: 33 # Event Update
+        clear-cache: 33
+        values: 
+          p33_event_id: '&P3_EVENT_ID.'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    configuration: 
+      build-option: Show Updates # 1688256117016091328
+
+- # ====== List: Preferences ===================================
+  id: 2480132200111897902
+  identification: 
+    name: Preferences
+
+  subscription: 
+    version-number: 1089051329
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Time Zone ====================================
+    id: 2480132536919897903
+    label: 
+      label: Time Zone
+
+    icon: 
+      image/icon-css-classes: fa-globe
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:100:&SESSION.::&DEBUG.::::'
+        page: 100 # Time Zone Preference
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Set time zone for the current user.
+      2.: switchIcon
+      3.: '&TZ.'
+
+- # ====== List: Access Control ================================
+  id: 3264373580620375645
+  identification: 
+    name: Access Control
+
+  subscription: 
+    version-number: 1089051329
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Access Control ===============================
+    id: 142370280651443295
+    label: 
+      label: Access Control
+
+    icon: 
+      image/icon-css-classes: fa-key
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:27:&SESSION.::&DEBUG.::::'
+        page: 27 # Access Control Configuration
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Use to change the Access Control Scope or to disable Access Control.
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+  - # ====== Entry: Username Format ==============================
+    id: 1447200596535952563
+    label: 
+      label: Username Format
+
+    icon: 
+      image/icon-css-classes: fa-user
+
+    layout: 
+      sequence: 40
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:38:&SESSION.::&DEBUG.::::'
+        page: 38 # Username Format
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Define the username format for new users in this application.
+      2.: formIcon
+
+    server-side-condition: 
+      type: Never
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+  - # ====== Entry: Users ========================================
+    id: 3264374482738375646
+    label: 
+      label: Users
+
+    icon: 
+      image/icon-css-classes: fa-users
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 29
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:29:&SESSION.::&DEBUG.:RP,29,RIR:::'
+        page: 29 # Access Control List
+        clear-cache: RP,29,RIR
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Administrators can define the domain of users and assign each a role.
+      2.: userIcon
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: eba_ca_fw.get_preference_value('ACCESS_CONTROL_ENABLED') = 'Y'
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+- # ====== List: Administration ================================
+  id: 3264374897291375647
+  identification: 
+    name: Administration
+
+  subscription: 
+    version-number: 1089051329
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Page Privileges ==============================
+    id: 1326551472271155933
+    label: 
+      label: Page Privileges
+
+    icon: 
+      image/icon-css-classes: fa-file-o
+
+    layout: 
+      sequence: 90
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:35:&SESSION.::&DEBUG.::::'
+        page: 35 # Page Privileges
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Report of the pages within this application and their corresponding access control security level.
+      2.: reportIcon
+
+    server-side-condition: 
+      type: Never
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+  - # ====== Entry: Rename Application ===========================
+    id: 1336355687626520949
+    label: 
+      label: Rename Application
+
+    icon: 
+      image/icon-css-classes: fa-tag
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:37:&SESSION.::&DEBUG.::::'
+        page: 37 # Rename Application
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Change the application name, displayed on the top left of each page, to one of your choosing.  By default, the application name is "&APP_NAME.".
+      2.: formIcon
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+  - # ====== Entry: Time Zone ====================================
+    id: 1363314501017638400
+    label: 
+      label: Time Zone
+
+    icon: 
+      image/icon-css-classes: fa-globe
+
+    layout: 
+      sequence: 80
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:100:&SESSION.::&DEBUG.::::'
+        page: 100 # Time Zone Preference
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Set my time zone preference for this application.
+      2.: formIcon
+
+    server-side-condition: 
+      type: Never
+
+  - # ====== Entry: Build Options ================================
+    id: 1684191860777437516
+    label: 
+      label: Build Options
+
+    icon: 
+      image/icon-css-classes: fa-gear
+
+    layout: 
+      sequence: 110
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:40:&SESSION.::&DEBUG.:RP:::'
+        page: 40 # Build Options
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Manage the status of build options. Build options allow application functionality to be included or excluded from an application.  Use build options to factor your application.
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+  - # ====== Entry: Application Appearance =======================
+    id: 1847585910941245686
+    label: 
+      label: Application Appearance
+
+    icon: 
+      image/icon-css-classes: fa-desktop
+
+    layout: 
+      sequence: 100
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:41:&SESSION.::&DEBUG.::::'
+        page: 41 # Application Appearance
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Change user interface theme style for all users.
+
+  - # ====== Entry: Calendars ====================================
+    id: 1866578700063863693
+    label: 
+      label: Calendars
+
+    icon: 
+      image/icon-css-classes: fa-calendar
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:42:&SESSION.::&DEBUG.:RP:::'
+        page: 42 # Calendars
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Maintain the different calendars available to enter events against.
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+    configuration: 
+      build-option: Include Multiple Calendars # 1866546217384601308
+
+  - # ====== Entry: Manage Sample Data ===========================
+    id: 1991741720193199628
+    label: 
+      label: Manage Sample Data
+
+    icon: 
+      image/icon-css-classes: fa-database
+
+    layout: 
+      sequence: 40
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:43:&SESSION.::&DEBUG.::::'
+        page: 43 # Manage Sample Data
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Create, re-Create or remove sample data distributed with this application.
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+  - # ====== Entry: Event Types ==================================
+    id: 3264375172074375647
+    label: 
+      label: Event Types
+
+    icon: 
+      image/icon-css-classes: fa-align-left
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:7:&SESSION.::&DEBUG.:RP:::'
+        page: 7 # Event Types
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: 'Maintain the different types of events available. Examples: meeting, conference, etc.'
+      2.: formIcon
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+  - # ====== Entry: Reporting Time Frames ========================
+    id: 3265218685455236582
+    label: 
+      label: Reporting Time Frames
+
+    icon: 
+      image/icon-css-classes: fa-file-o
+
+    layout: 
+      sequence: 50
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:23:&SESSION.::&DEBUG.:RP:::'
+        page: 23 # Reporting Time Frames
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: For reporting purposes, define different periods, such as fiscal months.
+      2.: formIcon
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+  - # ====== Entry: Notifications ================================
+    id: 3265534000683515349
+    label: 
+      label: Notifications
+
+    icon: 
+      image/icon-css-classes: fa-bullhorn
+
+    layout: 
+      sequence: 60
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:4:&SESSION.::&DEBUG.::::'
+        page: 4 # Notifications
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Manage application notifications that can be used to notify users of information.  Notifications can be set up to show within a specific date range.
+      2.: formIcon
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+  - # ====== Entry: Application Error Log ========================
+    id: 3314966991632650485
+    label: 
+      label: Application Error Log
+
+    icon: 
+      image/icon-css-classes: fa-alert
+
+    layout: 
+      sequence: 70
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:175:&SESSION.::&DEBUG.:RIR,CIR:::'
+        page: 175 # Application Error Log
+        clear-cache: RIR,CIR
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Report of all internal errors encountered within the application.
+      2.: reportIcon
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+- # ====== List: Activity Reporting ============================
+  id: 3343532383953146899
+  identification: 
+    name: Activity Reporting
+
+  subscription: 
+    version-number: 1089051329
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Activity Calendar ============================
+    id: 3343532601141146900
+    label: 
+      label: Activity Calendar
+
+    icon: 
+      image/icon-css-classes: fa-calendar
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:9:&SESSION.::&DEBUG.::::'
+        page: 9 # Activity Calendar
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Monthly calendar of page views with summary of page views by user by day.
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+- # ====== List: Admin Email ===================================
+  id: 8035429957368010891
+  identification: 
+    name: Admin Email
+
+  subscription: 
+    version-number: 1089051329
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Send Email ===================================
+    id: 8035430976415016368
+    label: 
+      label: Send Email
+
+    icon: 
+      image/icon-css-classes: fa-envelope-o
+
+    layout: 
+      sequence: 5
+
+    is-current: 
+      type: Pages
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:15:&SESSION.::&DEBUG.:15:::'
+        page: 15 # Send Email
+        clear-cache: 15
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Send email of events to other app users.
+
+    server-side-condition: 
+      type: Function Body
+      language: PL/SQL
+      pl/sql-function-body: |
+        declare
+            l_from_email varchar2(255);
+        begin
+            -- If the end-user's username is already an email address use it as the from address
+            if regexp_like(:APP_USER, '^[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~])*@(-?[a-zA-Z0-9+])+(\.(-?[a-zA-Z0-9+])*)+$') then
+                l_from_email := lower(:APP_USER);
+            else
+                -- otherwise populate the from address by querying the apex_workspace_apex_users view (where email is a required value)
+                select
+                    lower(a.email)
+                into
+                    l_from_email
+                from
+                    eba_ca_users u,
+                    apex_workspace_apex_users a
+                where
+                    lower(u.username) = lower(a.user_name)
+                and
+                    lower(:APP_USER) = lower(a.user_name);
+            end if;
+            return regexp_like(l_from_email, '^[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~])*@(-?[a-zA-Z0-9+])+(\.(-?[a-zA-Z0-9+])*)+$');
+        end;
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+  - # ====== Entry: Groups =======================================
+    id: 8036060555833199628
+    label: 
+      label: Groups
+
+    icon: 
+      image/icon-css-classes: fa-users
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Pages
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:16:&SESSION.::&DEBUG.::::'
+        page: 16 # Groups
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Groups are reusable lists of people that you can email a set of events to.
+
+    server-side-condition: 
+      type: Never
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+
+  - # ====== Entry: Group Members ================================
+    id: 8036061866914202835
+    label: 
+      label: Group Members
+
+    icon: 
+      image/icon-css-classes: fa-users
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Pages
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:18:&SESSION.::&DEBUG.::::'
+        page: 18 # Group Members
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Report of all members of all groups.  Used for adding members and seeing which groups a person belongs to.
+
+    server-side-condition: 
+      type: Never
+
+    security: 
+      authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+

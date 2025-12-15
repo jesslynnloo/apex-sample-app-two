@@ -1,0 +1,245 @@
+---
+- # ====== Install Script: Set First Run Preference ============
+  id: 1177654427428008359
+  identification: 
+    name: Set First Run Preference
+
+  execution: 
+    sequence: 670
+
+- # ====== Install Script: calendars ===========================
+  id: 1866010925265928184
+  identification: 
+    name: calendars
+
+  execution: 
+    sequence: 207
+
+- # ====== Install Script: series ==============================
+  id: 3263824799280963171
+  identification: 
+    name: series
+
+  execution: 
+    sequence: 205
+
+- # ====== Install Script: events ==============================
+  id: 3263825077940966431
+  identification: 
+    name: events
+
+  execution: 
+    sequence: 210
+
+- # ====== Install Script: event groups ========================
+  id: 3263825284173968258
+  identification: 
+    name: event groups
+
+  execution: 
+    sequence: 215
+
+- # ====== Install Script: group members =======================
+  id: 3263825488329969509
+  identification: 
+    name: group members
+
+  execution: 
+    sequence: 220
+
+- # ====== Install Script: timeframes ==========================
+  id: 3263825771145973962
+  identification: 
+    name: timeframes
+
+  execution: 
+    sequence: 225
+
+- # ====== Install Script: admins (to be replaced with new std c
+  id: 3263826181188976893
+  identification: 
+    name: admins (to be replaced with new std code)
+
+  execution: 
+    sequence: 230
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: select null from all_tables where table_name = 'EBA_CA_ADMINS';
+
+- # ====== Install Script: acl tables ==========================
+  id: 3263835699224209128
+  identification: 
+    name: acl tables
+
+  execution: 
+    sequence: 370
+
+- # ====== Install Script: eba_ca specs ========================
+  id: 3263837095462236488
+  identification: 
+    name: eba_ca specs
+
+  execution: 
+    sequence: 340
+
+- # ====== Install Script: eba_ca body =========================
+  id: 3263838977632269199
+  identification: 
+    name: eba_ca body
+
+  execution: 
+    sequence: 380
+
+- # ====== Install Script: install the acl seed data ===========
+  id: 3263839600272285214
+  identification: 
+    name: install the acl seed data
+
+  execution: 
+    sequence: 630
+
+- # ====== Install Script: notifications =======================
+  id: 3265512980672414985
+  identification: 
+    name: notifications
+
+  execution: 
+    sequence: 235
+
+- # ====== Install Script: tz prefs ============================
+  id: 3265513377471433003
+  identification: 
+    name: tz prefs
+
+  execution: 
+    sequence: 245
+
+- # ====== Install Script: history =============================
+  id: 3265593379644157762
+  identification: 
+    name: history
+
+  execution: 
+    sequence: 203
+
+- # ====== Install Script: event notes =========================
+  id: 3265593794797181089
+  identification: 
+    name: event notes
+
+  execution: 
+    sequence: 211
+
+- # ====== Install Script: tags ================================
+  id: 3265611787758321022
+  identification: 
+    name: tags
+
+  execution: 
+    sequence: 206
+
+- # ====== Install Script: files ===============================
+  id: 3265614087983387251
+  identification: 
+    name: files
+
+  execution: 
+    sequence: 212
+
+- # ====== Install Script: events_seq ==========================
+  id: 3265814478040267372
+  identification: 
+    name: events_seq
+
+  execution: 
+    sequence: 202
+
+- # ====== Install Script: events triggers =====================
+  id: 3265815798735292330
+  identification: 
+    name: events triggers
+
+  execution: 
+    sequence: 400
+
+- # ====== Install Script: events history trigger ==============
+  id: 3266441579575428706
+  identification: 
+    name: events history trigger
+
+  execution: 
+    sequence: 410
+
+- # ====== Install Script: color prefs =========================
+  id: 3266791896998791618
+  identification: 
+    name: color prefs
+
+  execution: 
+    sequence: 190
+
+- # ====== Install Script: Sample Data =========================
+  id: 3272995385560461992
+  identification: 
+    name: Sample Data
+
+  execution: 
+    sequence: 660
+
+- # ====== Install Script: error log ===========================
+  id: 3313371780606520505
+  identification: 
+    name: error log
+
+  execution: 
+    sequence: 5
+
+- # ====== Install Script: Framework Spec ======================
+  id: 3314960887214630296
+  identification: 
+    name: Framework Spec
+
+  execution: 
+    sequence: 10
+
+- # ====== Install Script: Framework Body ======================
+  id: 3314961100027633974
+  identification: 
+    name: Framework Body
+
+  execution: 
+    sequence: 375
+
+- # ====== Install Script: Set plscope_settings ================
+  id: 3370420477065585496
+  identification: 
+    name: Set plscope_settings
+
+  execution: 
+    sequence: 1
+
+- # ====== Install Script: eba_ca_api  spec ====================
+  id: 7416717139368768121
+  identification: 
+    name: eba_ca_api  spec
+
+  execution: 
+    sequence: 100
+
+- # ====== Install Script: event types =========================
+  id: 7416720530958771961
+  identification: 
+    name: event types
+
+  execution: 
+    sequence: 200
+
+- # ====== Install Script: eba_ca_api  body ====================
+  id: 7469829325066320118
+  identification: 
+    name: eba_ca_api  body
+
+  execution: 
+    sequence: 300
+

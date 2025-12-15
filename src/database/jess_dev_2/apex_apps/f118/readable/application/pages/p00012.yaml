@@ -1,0 +1,1510 @@
+---
+# ====== Page: Timeline ======================================
+id: 12
+identification: 
+  name: Timeline
+  alias: TIMELINE
+  title: '&APPLICATION_TITLE. - Timeline'
+  page-group: Public # 8949832234238591801
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: false
+
+css: 
+  inline: |
+    .t-Badge.apex-cal-default { background-color: #2578CF; border-color: #2578CF; color: #FFFFFF; }
+    .t-Badge.apex-cal-black { background-color: #303030; border-color: #303030; color: #FFFFFF; }
+    .t-Badge.apex-cal-blue { background-color: #4183D7; border-color: #4183D7; color: #FFFFFF; }
+    .t-Badge.apex-cal-bluesky { background-color: #6BB9F0; border-color: #6BB9F0; color: #404040; }
+    .t-Badge.apex-cal-brown { background-color: #D88935; border-color: #D88935; color: #404040; }
+    .t-Badge.apex-cal-cyan { background-color: #1ABC9C; border-color: #1ABC9C; color: #404040; }
+    .t-Badge.apex-cal-darkblue { background-color: #1F5F97; border-color: #1F5F97; color: #FFFFFF; }
+    .t-Badge.apex-cal-gray { background-color: #A0A0A0; border-color: #A0A0A0; color: #404040; }
+    .t-Badge.apex-cal-green { background-color: #2ECC71; border-color: #2ECC71; color: #404040; }
+    .t-Badge.apex-cal-lime { background-color: #28A346; border-color: #28A346; color: #FFFFFF; }
+    .t-Badge.apex-cal-orange { background-color: #F39C12; border-color: #F39C12; color: #404040; }
+    .t-Badge.apex-cal-red { background-color: #D91E18; border-color: #D91E18; color: #FFFFFF; }
+    .t-Badge.apex-cal-silver { background-color: #BDC3C7; border-color: #BDC3C7; color: #404040; }
+    .t-Badge.apex-cal-white { background-color: #F0F0F0; border-color: #F0F0F0; color: #404040; }
+    .t-Badge.apex-cal-yellow { background-color: #F1C40F; border-color: #F1C40F; color: #404040; }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: This is the timeline of future events page. It shows all upcoming events that match your current filter settings. To change your filter values, click the <strong>Update Filters</strong> button, make your changes and then click the <strong>Set</strong> button.
+
+regions: 
+- # ====== Region: Notifications ===============================
+  id: 1237048887694800746
+  identification: 
+    name: Notifications
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select id, 
+             nvl(lower(NOTIFICATION_TYPE),'yellow') as ALERT_TYPE, 
+             NOTIFICATION_NAME alert_title, 
+             NOTIFICATION_DESCRIPTION alert_desc,
+             '' alert_action
+        from EBA_CA_NOTIFICATIONS
+       where (DISPLAY_FROM is null or DISPLAY_FROM <= current_date) and
+             (DISPLAY_UNTIL is null or DISPLAY_UNTIL >= current_date)
+       order by nvl(DISPLAY_SEQUENCE,0),NOTIFICATION_NAME
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 100
+
+    appearance: 
+      template-type: Theme
+      template: Alerts
+      template-options: 
+      - '#DEFAULT#'
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: ID ==========================================
+    id: 1237049080807800762
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 1
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ALERT_TYPE ==================================
+    id: 1943760120378682798
+    identification: 
+      column-name: ALERT_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Alert Type
+      alignment: start
+
+    layout: 
+      sequence: 2
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ALERT_TITLE =================================
+    id: 1943760488710682798
+    identification: 
+      column-name: ALERT_TITLE
+      type: Plain Text
+
+    heading: 
+      heading: Alert Title
+      alignment: start
+
+    layout: 
+      sequence: 3
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ALERT_DESC ==================================
+    id: 1943760875137682798
+    identification: 
+      column-name: ALERT_DESC
+      type: Plain Text
+
+    heading: 
+      heading: Alert Desc
+      alignment: start
+
+    layout: 
+      sequence: 4
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ALERT_ACTION ================================
+    id: 1943761269693682798
+    identification: 
+      column-name: ALERT_ACTION
+      type: Plain Text
+
+    heading: 
+      heading: Alert Action
+      alignment: start
+
+    layout: 
+      sequence: 5
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Breadcrumbs =================================
+  id: 1726273658316509099
+  identification: 
+    name: Breadcrumbs
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: ' Breadcrumb' # 8949803322316567820
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Timeline of Future Events ===================
+  id: 1977695236331027333
+  identification: 
+    name: Timeline of Future Events
+    type: Timeline and Status List
+
+  source: 
+    sql-query: |
+      select e.event_id id
+      ,      case when :MULTIPLE_CAL_BO = 'Include' then nvl(c.short_name, 'Default') ||': ' end ||e.event_name ||
+                 case when exists (select 1 from EBA_CA_FILES
+                                   where event_id = e.event_id)
+                      then ' (a)'
+                 end title
+      ,      'f?p='||:app_id||':3:'||:app_session||':::3:LAST_VIEW,P3_EVENT_ID:12,'||e.event_id link
+      ,      case when et.display_color is not null then
+               'apex-cal-'||
+               (select lower(cp.color_name) from eba_ca_color_prefs cp where cp.bg_color = et.display_color)
+             else 
+               'apex-cal-default'
+             end color_class
+      ,      et.type_name || decode(:EXTERNAL_INTERNAL_BO, 'Include', decode(internal_yn, 'Y', ' (Internal Only)', null), null) event_type
+      ,      e.event_date_time
+      ,      case when display_time='N' then '' 
+                  when to_char(e.EVENT_DATE_TIME,'MI') = '00' then 
+                       ltrim(to_char(e.EVENT_DATE_TIME,'HHam'),'0')
+                  else 
+                       ltrim(to_char(e.EVENT_DATE_TIME,'HH:MIam'),'0')
+                  end ||
+             case when display_time='N' then '' 
+                  when e.duration = 0  then '(0 mins)'
+                  when e.duration = .25 then '(15 mins)'
+                  when e.duration = .5 then '(30 mins)'
+                  when e.duration = .75 then '(45 mins)'
+                  when e.duration = 1 then '(1 hr)'
+                  when e.duration > 1 then to_char(trunc(e.duration)) || ' hrs'
+                    || case when e.duration - trunc(e.duration) = 0  then ')'
+                            when e.duration - trunc(e.duration) = .25 then ' 15 mins)'
+                            when e.duration - trunc(e.duration) = .5 then ' 30 mins)'
+                            when e.duration - trunc(e.duration) = .75 then ' 45 mins)'
+                       end
+             end  time
+      ,      e.EVENT_DESC
+      ,      e.LOCATION
+      ,      e.CONTACT_PERSON
+      ,      e.tags
+      ,      e.CREATED_BY|| ' - '||apex_util.get_since(e.created_on) created
+      ,      e.display_time
+      ,      e.LINK_NAME_1, e.LINK_NAME_2, e.LINK_NAME_3
+      ,      e.LINK_URL_1, e.LINK_URL_2, e.LINK_URL_3
+      from eba_ca_events e
+      ,    eba_ca_event_types et
+      ,    eba_ca_calendars c
+      where e.EVENT_DATE_TIME >= decode(e.display_time,'N', trunc(sysdate),cast(sysdate-(e.duration/24) as timestamp))
+      and   e.type_id = et.type_id (+)
+      and   e.calendar_id = c.calendar_id (+)
+      and   (   nvl(:EVENT_TYPES_FILTER,'0') = '0' 
+             or instr(':'||:EVENT_TYPES_FILTER||':', ':'||nvl(e.type_id,'-1')||':') > 0
+            )
+      and   (   :MULTIPLE_CAL_BO = 'Exclude' 
+             or (    nvl(:CALENDARS_FILTER,'0') = '0' 
+                 and (   e.calendar_id is null
+                      or c.public_view_yn = 'Y'
+                      or exists (select 'x'
+                                 from eba_ca_users u
+                                 where u.username = :APP_USER
+                                 and   (   instr(u.restricted_to, c.calendar_id) > 0
+                                        or (access_level_id = 3 and restricted_to is null)
+                                       )
+                                )
+                     ) 
+                )
+             or instr(:CALENDARS_FILTER,nvl(e.calendar_id,'-1')) > 0
+            )
+      and   (   :EXTERNAL_INTERNAL_BO = 'Exclude'
+             or (:CONTACT_EMAIL is null
+                 or instr(upper(e.contact_email), :CONTACT_EMAIL) > 0
+                )
+            )
+      and   (   :EXTERNAL_INTERNAL_BO = 'Exclude'
+             or (   nvl(et.internal_yn, 'N') = 'N'
+                 or upper(:APP_USER) in (select upper(username) from eba_ca_users)
+                )
+            )
+      order by case when nvl(display_time,'Y')='N' then trunc(e.EVENT_DATE_TIME) else e.EVENT_DATE_TIME end
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  security: 
+    escape-special-characters: true
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      display-as: Timeline
+      group-by-column: EVENT_DATE_TIME
+      status-column: EVENT_TYPE
+      title-column: TITLE
+      link-column: LINK
+      first-value: TIME
+      second-value: TAGS
+      third-value: LOCATION
+      fourth-value: CONTACT_PERSON
+      primary-description: EVENT_DESC
+      color-column: COLOR_CLASS
+      color-label: EVENT_TYPE
+
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 100
+
+    messages: 
+      when-no-data-found: No calendar events found
+
+    heading: 
+      type: Custom Headings
+
+  columns: 
+  - # ====== Column: COLOR_CLASS =================================
+    id: 1547365497629669379
+    identification: 
+      column-name: COLOR_CLASS
+      show: true
+
+    heading: 
+      heading: Color class
+
+    layout: 
+      sequence: 250
+
+  - # ====== Column: LINK ========================================
+    id: 1556090031823463775
+    identification: 
+      column-name: LINK
+      show: true
+
+    heading: 
+      heading: Link
+
+    layout: 
+      sequence: 220
+
+  - # ====== Column: CREATED =====================================
+    id: 1556090123046463776
+    identification: 
+      column-name: CREATED
+      show: true
+
+    heading: 
+      heading: Created
+
+    layout: 
+      sequence: 230
+
+  - # ====== Column: TIME ========================================
+    id: 1556090162764463777
+    identification: 
+      column-name: TIME
+      show: true
+
+    heading: 
+      heading: Time
+
+    layout: 
+      sequence: 240
+
+  - # ====== Column: ID ==========================================
+    id: 1977695496030027337
+    identification: 
+      column-name: ID
+      show: true
+
+    heading: 
+      heading: Id
+
+    layout: 
+      sequence: 10
+
+  - # ====== Column: TITLE =======================================
+    id: 1977695984881027340
+    identification: 
+      column-name: TITLE
+      show: true
+
+    heading: 
+      heading: Title
+
+    layout: 
+      sequence: 20
+
+  - # ====== Column: EVENT_TYPE ==================================
+    id: 1977696974896027344
+    identification: 
+      column-name: EVENT_TYPE
+      show: true
+
+    heading: 
+      heading: Event Type
+
+    layout: 
+      sequence: 40
+
+  - # ====== Column: EVENT_DATE_TIME =============================
+    id: 1977697487993027345
+    identification: 
+      column-name: EVENT_DATE_TIME
+      show: true
+
+    heading: 
+      heading: Event Date Time
+
+    layout: 
+      sequence: 50
+
+  - # ====== Column: EVENT_DESC ==================================
+    id: 1977699507288027346
+    identification: 
+      column-name: EVENT_DESC
+      show: true
+
+    heading: 
+      heading: Event Desc
+
+    layout: 
+      sequence: 90
+
+  - # ====== Column: LOCATION ====================================
+    id: 1977700005306027346
+    identification: 
+      column-name: LOCATION
+      show: true
+
+    heading: 
+      heading: Location
+
+    layout: 
+      sequence: 100
+
+  - # ====== Column: CONTACT_PERSON ==============================
+    id: 1977700513449027347
+    identification: 
+      column-name: CONTACT_PERSON
+      show: true
+
+    heading: 
+      heading: Contact Person
+
+    layout: 
+      sequence: 110
+
+  - # ====== Column: TAGS ========================================
+    id: 1977701013428027347
+    identification: 
+      column-name: TAGS
+      show: true
+
+    heading: 
+      heading: Tags
+
+    layout: 
+      sequence: 120
+
+  - # ====== Column: DISPLAY_TIME ================================
+    id: 1977702519075027350
+    identification: 
+      column-name: DISPLAY_TIME
+      show: true
+
+    heading: 
+      heading: Display Time
+
+    layout: 
+      sequence: 150
+
+  - # ====== Column: LINK_NAME_1 =================================
+    id: 1977702975725027351
+    identification: 
+      column-name: LINK_NAME_1
+      show: true
+
+    heading: 
+      heading: Link Name 1
+
+    layout: 
+      sequence: 160
+
+  - # ====== Column: LINK_NAME_2 =================================
+    id: 1977703516293027352
+    identification: 
+      column-name: LINK_NAME_2
+      show: true
+
+    heading: 
+      heading: Link Name 2
+
+    layout: 
+      sequence: 170
+
+  - # ====== Column: LINK_NAME_3 =================================
+    id: 1977704051325027353
+    identification: 
+      column-name: LINK_NAME_3
+      show: true
+
+    heading: 
+      heading: Link Name 3
+
+    layout: 
+      sequence: 180
+
+  - # ====== Column: LINK_URL_1 ==================================
+    id: 1977704495079027354
+    identification: 
+      column-name: LINK_URL_1
+      show: true
+
+    heading: 
+      heading: Link Url 1
+
+    layout: 
+      sequence: 190
+
+  - # ====== Column: LINK_URL_2 ==================================
+    id: 1977705011920027354
+    identification: 
+      column-name: LINK_URL_2
+      show: true
+
+    heading: 
+      heading: Link Url 2
+
+    layout: 
+      sequence: 200
+
+  - # ====== Column: LINK_URL_3 ==================================
+    id: 1977705477149027354
+    identification: 
+      column-name: LINK_URL_3
+      show: true
+
+    heading: 
+      heading: Link Url 3
+
+    layout: 
+      sequence: 210
+
+- # ====== Region: Timezone ====================================
+  id: 3266605776121084311
+  identification: 
+    name: Timezone
+    type: Static Content
+
+  source: 
+    html-code: |2
+       "TIMEZONE"
+      
+       
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - infoTextRegion
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: true
+
+- # ====== Region: Calendars ===================================
+  id: 3548950193322615306
+  identification: 
+    name: Calendars
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select d
+        from
+      (
+      select 'Default' d,
+             1 ob
+        from dual
+       where exists (select 1 from eba_ca_events
+                      where calendar_id is null)
+       and   (   nvl(:CALENDARS_FILTER,'0') = '0'
+              or instr(:CALENDARS_FILTER, '-1') > 0
+             )
+      union
+      select short_name ||' - '|| calendar_name || decode(public_view_yn, 'Y', null, ' (Private)') d,
+             2 ob
+        from eba_ca_calendars c
+        where (   (     nvl(:CALENDARS_FILTER,'0') = '0' 
+                    and  (   c.public_view_yn = 'Y'
+                          or exists (select 'x'
+                                     from eba_ca_users u
+                                     where u.username = :APP_USER
+                                     and   (   instr(u.restricted_to, c.calendar_id) > 0
+                                            or (access_level_id = 3 and restricted_to is null)
+                                           )
+                                     )
+                         ) 
+                    )
+                 or instr(':'||:CALENDARS_FILTER||':',':'||nvl(calendar_id,'-1')||':') > 0
+                )
+      )
+       order by ob, d
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 80
+    parent-region: Filters # 3721197960710735270
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Include Multiple Calendars # 1866546217384601308
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 50
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      show-null-values-as: ' - '
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: D ===========================================
+    id: 1878345256329380576
+    identification: 
+      column-name: D
+      type: Plain Text
+
+    heading: 
+      heading: Calendars
+      alignment: start
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Contact Email ===============================
+  id: 3721196900676735259
+  identification: 
+    name: Contact Email
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select nvl(:CONTACT_EMAIL, '- All Contacts -') contact_email
+      from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 90
+    parent-region: Filters # 3721197960710735270
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 'x' from
+      eba_ca_events where contact_email is not null;
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Include External / Internal Event Types # 1641094558700216905
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 50
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+      show-null-values-as: ' - '
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: CONTACT_EMAIL ===============================
+    id: 1878344623700380575
+    identification: 
+      column-name: CONTACT_EMAIL
+      type: Plain Text
+
+    heading: 
+      heading: Contact Email
+      alignment: start
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Filters =====================================
+  id: 3721197960710735270
+  identification: 
+    name: Filters
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - is-expanded
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Event Types =================================
+  id: 9832088939820626059
+  identification: 
+    name: Event Types
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select listagg(a.event_type, ' ') within group (order by a.type_name) event_types
+      from (select type_name,
+             case when display_color is not null
+                  then '<span class="t-Badge t-Badge--basic t-Badge--small apex-cal-'||apex_escape.html(lower(cp.color_name))||'">'|| 
+                       apex_escape.html(type_name || decode(:EXTERNAL_INTERNAL_BO, 'Include', decode(internal_yn, 'Y', ' (Internal Only)', null), null) ) || '</span>'
+                  else '<span class="t-Badge t-Badge--basic t-Badge--small">'|| 
+                       apex_escape.html(type_name || decode(:EXTERNAL_INTERNAL_BO, 'Include', decode(internal_yn, 'Y', ' (Internal Only)', null), null) ) || '</span>'
+                  end event_type
+      from eba_ca_event_types et
+      ,    eba_ca_color_prefs cp
+      where et.color_pref_id = cp.id
+      and   (:EXTERNAL_INTERNAL_BO = 'Exclude'
+             or (   nvl(internal_yn, 'N') = 'N'
+                 or upper(:APP_USER) in (select upper(username) from eba_ca_users)
+                )
+            )
+      and   (   nvl(:EVENT_TYPES_FILTER,'0') = '0' 
+             or instr(':'||:EVENT_TYPES_FILTER||':',':'||nvl(type_id,'-1')||':') > 0
+            )
+      ) a
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 70
+    parent-region: Filters # 3721197960710735270
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+        from EBA_CA_EVENT_TYPES
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 50
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+      show-null-values-as: ' - '
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: EVENT_TYPES =================================
+    id: 1874799057897207086
+    identification: 
+      column-name: EVENT_TYPES
+      type: Plain Text
+
+    heading: 
+      heading: Event Types
+      alignment: start
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+buttons: 
+- # ====== Button: FILTER ======================================
+  id: 1878349349103393294
+  identification: 
+    button-name: FILTER
+    label: Update Filters
+
+  layout: 
+    sequence: 10
+    region: Filters # 3721197960710735270
+    slot: RIGHT_OF_TITLE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    - t-Button--iconRight
+    - t-Button--gapLeft
+    icon: fa-wrench
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:5:&SESSION.::&DEBUG.:::'
+      page: 5 # Filter Options
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CREATE ======================================
+  id: 3265804598716140840
+  identification: 
+    button-name: CREATE
+    label: Add Event
+
+  layout: 
+    sequence: 20
+    region: Breadcrumbs # 1726273658316509099
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconRight
+    icon: fa-chevron-right
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:10:&SESSION.::&DEBUG.:10::'
+      page: 10 # Event Details
+      clear-cache: 10
+
+    warn-on-unsaved-changes: Do Not Check
+
+  security: 
+    authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+
+dynamic-actions: 
+- # ====== Dynamic Action: Refresh Timeline ====================
+  id: 1702544800120087057
+  identification: 
+    name: Refresh Timeline
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P12_EVENT_TYPE
+    - P12_CONTACT
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 1702544941563087058
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Timeline of Future Events # 1977695236331027333
+
+    execution: 
+      sequence: 10
+      event: Refresh Timeline # 1702544800120087057
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Refresh Timeline for Create =========
+  id: 1726623605210345053
+  identification: 
+    name: Refresh Timeline for Create
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Button
+    button: CREATE # 3265804598716140840
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 1725627881756624790
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.message.showPageSuccess('Event added.');
+
+    execution: 
+      sequence: 20
+      event: Refresh Timeline for Create # 1726623605210345053
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 1726623979355345061
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Timeline of Future Events # 1977695236331027333
+
+    execution: 
+      sequence: 10
+      event: Refresh Timeline for Create # 1726623605210345053
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Refresh Timeline for Filter =========
+  id: 1874799327388207088
+  identification: 
+    name: Refresh Timeline for Filter
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Button
+    button: FILTER # 1878349349103393294
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 1874799382593207089
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Filters # 3721197960710735270
+
+    execution: 
+      sequence: 40
+      event: Refresh Timeline for Filter # 1874799327388207088
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 1874799540406207090
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Event Types # 9832088939820626059
+
+    execution: 
+      sequence: 10
+      event: Refresh Timeline for Filter # 1874799327388207088
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 1874799637594207091
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Calendars # 3548950193322615306
+
+    execution: 
+      sequence: 20
+      event: Refresh Timeline for Filter # 1874799327388207088
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 1874799684954207092
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Contact Email # 3721196900676735259
+
+    execution: 
+      sequence: 30
+      event: Refresh Timeline for Filter # 1874799327388207088
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 1874799844644207093
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.message.showPageSuccess('Filters applied.');
+
+    execution: 
+      sequence: 50
+      event: Refresh Timeline for Filter # 1874799327388207088
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+computations: 
+- # ====== Computation: LAST_VIEW ==============================
+  id: 3265706197696891568
+  identification: 
+    item-name: LAST_VIEW
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: Static Value
+    static-value: 12
+
+branches: 
+- # ====== Branch: Go To Page 12 ===============================
+  id: 3265801991481091524
+  identification: 
+    name: Go To Page 12
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:12:&SESSION.::&DEBUG.:::'
+      page: 12 # Timeline
+
+  comments: 
+    comments: 'Created 06-APR-2012 12:09 by MIKE'
+

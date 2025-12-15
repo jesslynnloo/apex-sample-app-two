@@ -1,0 +1,1178 @@
+---
+# ====== Page: Calendar Details ==============================
+id: 44
+identification: 
+  name: Calendar Details
+  alias: CALENDAR-DETAILS
+  title: Calendar Details
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: false
+
+javascript: 
+  function-and-global-variable-declaration: var htmldb_delete_message='"DELETE_CONFIRM_MSG"';
+
+security: 
+  authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: |
+    <p>
+        This page allows app administrators to change attributes of a calendar. Click the <strong>Apply Changes</strong> button to save your changes. Click the <strong>Delete</strong> button to delete this calendar. Click the <strong>Cancel</strong> button to leave this page.
+    </p>
+
+regions: 
+- # ====== Region: Readers (for this Private Calendar) =========
+  id: 1874798011902207075
+  identification: 
+    name: Readers (for this Private Calendar)
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select username, 
+             'Restricted To set for this calendar' access_type
+        from eba_ca_users
+       where access_level_id = 1
+       and   instr(':'||restricted_to||':',':'||:P44_CALENDAR_ID||':') > 0
+       order by 1
+    page-items-to-submit: 
+    - P44_PUBLIC_VIEW_YN
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :P44_CALENDAR_ID is not null
+      and eba_ca_fw.get_preference_value('ACCESS_CONTROL_ENABLED') = 'Y'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--inline
+      - t-Report--rowHighlightOff
+      show-null-values-as: ' - '
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    messages: 
+      when-no-data-found: No users found
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: USERNAME ====================================
+    id: 1874798085727207076
+    identification: 
+      column-name: USERNAME
+      type: Plain Text
+
+    heading: 
+      heading: Username
+      alignment: center
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ACCESS_TYPE =================================
+    id: 1874798175850207077
+    identification: 
+      column-name: ACCESS_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Access Type
+      alignment: center
+
+    layout: 
+      sequence: 2
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Calendar Details ============================
+  id: 17590523315201590569
+  identification: 
+    name: Calendar Details
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Buttons =====================================
+  id: 17590525404065590571
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Contributors ================================
+  id: 17828476190342996632
+  identification: 
+    name: Contributors
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select username, 
+             case when restricted_to is null then 'Unrestricted Contributor'
+                  else 'Restricted To set for this calendar' end access_type,
+             decode(access_level_id, 3, 'Administrator', 'Contributor') access_level
+        from eba_ca_users
+       where access_level_id >= 2
+       and   (   instr(':'||restricted_to||':',':'||:P44_CALENDAR_ID||':') > 0
+              or (    restricted_to is null 
+                  and access_level_id = 3
+                 )
+             )
+       order by 1
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P44_CALENDAR_ID
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--inline
+      - t-Report--rowHighlightOff
+      show-null-values-as: ' - '
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    messages: 
+      when-no-data-found: No users found
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: USERNAME ====================================
+    id: 1866570014871848615
+    identification: 
+      column-name: USERNAME
+      type: Plain Text
+
+    heading: 
+      heading: Username
+      alignment: center
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ACCESS_TYPE =================================
+    id: 1866570453437848616
+    identification: 
+      column-name: ACCESS_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Access Type
+      alignment: center
+
+    layout: 
+      sequence: 2
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ACCESS_LEVEL ================================
+    id: 1874797954033207074
+    identification: 
+      column-name: ACCESS_LEVEL
+      type: Plain Text
+
+    heading: 
+      heading: Access level
+      alignment: center
+
+    layout: 
+      sequence: 3
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+page-items: 
+- # ====== Page Item: P44_PUBLIC_VIEW_YN =======================
+  id: 1702548057303087090
+  identification: 
+    name: P44_PUBLIC_VIEW_YN
+    type: Switch
+
+  label: 
+    label: Public Can View Events?
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 30
+    region: Calendar Details # 17590523315201590569
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Database Column
+    database-column: PUBLIC_VIEW_YN
+    used: Always, replacing any existing value in session state
+
+  default: 
+    type: Static
+    static-value: Y
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: eba_ca_fw.get_preference_value('ACCESS_CONTROL_ENABLED') = 'Y'
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: |
+      <p>Define whether all users can view the events on this calendar or only selected users.</p>
+      <p>If public can not view the events, you must update users who have rights to the calendar by going to Access Control List and selecting each users. On the User Details screen update Restricted To, selecting the calendars the user has access to.</p>
+
+- # ====== Page Item: P44_CALENDAR_ID ==========================
+  id: 1866563777219848607
+  identification: 
+    name: P44_CALENDAR_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Calendar Details # 17590523315201590569
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Database Column
+    database-column: CALENDAR_ID
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P44_SHORT_NAME ===========================
+  id: 1866564213275848607
+  identification: 
+    name: P44_SHORT_NAME
+    type: Text Field
+
+  label: 
+    label: Short Name
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 15
+    region: Calendar Details # 17590523315201590569
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 10
+
+  validation: 
+    value-required: true
+    maximum-length: 10
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Database Column
+    database-column: SHORT_NAME
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Short name for Calendar.  Used as prefix when Events are displayed.
+
+- # ====== Page Item: P44_CALENDAR_NAME ========================
+  id: 1866565124375848610
+  identification: 
+    name: P44_CALENDAR_NAME
+    type: Text Field
+
+  label: 
+    label: Name
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: Calendar Details # 17590523315201590569
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 48
+
+  validation: 
+    value-required: true
+    maximum-length: 60
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Database Column
+    database-column: CALENDAR_NAME
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Full name of Calendar.
+
+- # ====== Page Item: P44_IS_ACTIVE_YN =========================
+  id: 1866565968048848610
+  identification: 
+    name: P44_IS_ACTIVE_YN
+    type: Switch
+
+  label: 
+    label: Active?
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 40
+    region: Calendar Details # 17590523315201590569
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Database Column
+    database-column: IS_ACTIVE_YN
+    used: Always, replacing any existing value in session state
+
+  default: 
+    type: Static
+    static-value: Y
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: If not active, events will still display but new events cannot be associated with the calendar.
+
+- # ====== Page Item: P44_DESCRIPTION ==========================
+  id: 1866566890862848611
+  identification: 
+    name: P44_DESCRIPTION
+    type: Textarea
+
+  label: 
+    label: Description
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 50
+    region: Calendar Details # 17590523315201590569
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+    height: 4
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Database Column
+    database-column: DESCRIPTION
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Description of the Calendar.  Only displayed on the Calendars report (to Adminstrators).
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 1866568152641848612
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 10
+    region: Buttons # 17590525404065590571
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: SAVE ========================================
+  id: 1866568468538848612
+  identification: 
+    button-name: SAVE
+    label: Apply Changes
+
+  layout: 
+    sequence: 30
+    region: Buttons # 17590525404065590571
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--gapLeft
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P44_CALENDAR_ID
+
+- # ====== Button: CREATE ======================================
+  id: 1866568931660848613
+  identification: 
+    button-name: CREATE
+    label: Add Calendar
+
+  layout: 
+    sequence: 40
+    region: Buttons # 17590525404065590571
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--gapLeft
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P44_CALENDAR_ID
+
+- # ====== Button: DELETE ======================================
+  id: 1866569291832848613
+  identification: 
+    button-name: DELETE
+    label: Delete
+
+  layout: 
+    sequence: 20
+    region: Buttons # 17590525404065590571
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--simple
+    - t-Button--danger
+
+  behavior: 
+    action: Redirect to URL
+    target: "javascript:apex.confirm(htmldb_delete_message,'DELETE');"
+    execute-validations: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P44_CALENDAR_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: CNX =================================
+  id: 138022377503137977
+  identification: 
+    name: CNX
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 1866568152641848612
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 138022528828137978
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: CNX # 138022377503137977
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Show Readers ========================
+  id: 1874798563477207081
+  identification: 
+    name: Show Readers
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P44_PUBLIC_VIEW_YN
+
+  client-side-condition: 
+    type: Item = Value
+    item: P44_PUBLIC_VIEW_YN
+    value: N
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 1874798692795207082
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Region
+      region: Readers (for this Private Calendar) # 1874798011902207075
+
+    execution: 
+      sequence: 10
+      event: Show Readers # 1874798563477207081
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 1874798815305207083
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Region
+      region: Readers (for this Private Calendar) # 1874798011902207075
+
+    execution: 
+      sequence: 10
+      event: Show Readers # 1874798563477207081
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+validations: 
+- # ====== Validation: P44_CALENDAR_NAME unique ================
+  id: 1866571546482848618
+  identification: 
+    name: P44_CALENDAR_NAME unique
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: No Rows returned
+    sql-query: |
+      select 1 from eba_ca_calendars
+       where lower(:P44_CALENDAR_NAME) = lower(calendar_name)
+         and (:P44_CALENDAR_ID != calendar_id or :P44_CALENDAR_ID is null)
+    always-execute: false
+
+  error: 
+    error-message: Calendar Name already exists.
+    display-location: Inline with Field and in Notification
+    associated-item: P44_CALENDAR_NAME # 1866565124375848610
+
+- # ====== Validation: no related events before delete =========
+  id: 1866571886811848618
+  identification: 
+    name: no related events before delete
+
+  execution: 
+    sequence: 20
+
+  validation: 
+    type: No Rows returned
+    sql-query: |
+      select 1 from EBA_ca_events
+       where :P44_CALENDAR_ID = calendar_id
+    always-execute: false
+
+  error: 
+    error-message: Cannot delete Calendar - it is related to Events.
+    display-location: Inline with Field and in Notification
+    associated-item: P44_CALENDAR_NAME # 1866565124375848610
+
+  server-side-condition: 
+    when-button-pressed: DELETE # 1866569291832848613
+
+- # ====== Validation: P44_SHORT_NAME unique ===================
+  id: 1866572276858848619
+  identification: 
+    name: P44_SHORT_NAME unique
+
+  execution: 
+    sequence: 15
+
+  validation: 
+    type: No Rows returned
+    sql-query: |
+      select 1 from eba_ca_calendars
+       where lower(:P44_SHORT_NAME) = lower(short_name)
+         and (:P44_CALENDAR_ID != calendar_id or :P44_CALENDAR_ID is null)
+    always-execute: false
+
+  error: 
+    error-message: Short Name already exists.
+    display-location: Inline with Field and in Notification
+    associated-item: P44_SHORT_NAME # 1866564213275848607
+
+processes: 
+- # ====== Process: close ======================================
+  id: 138022646506137979
+  identification: 
+    name: close
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: false
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Fetch Row from EBA_CA_CALENDARS ============
+  id: 1866572582971848619
+  identification: 
+    name: Fetch Row from EBA_CA_CALENDARS
+    type: Automatic Row Fetch [Legacy]
+    execution-chain: None
+
+  settings: 
+    table-owner: PARSING SCHEMA
+    table-name: EBA_CA_CALENDARS
+    primary-key-column-: CALENDAR_ID
+    primary-key-item: P44_CALENDAR_ID
+
+  execution: 
+    sequence: 10
+    point: After Header
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    error-message: Unable to fetch row.
+
+- # ====== Process: Process Row of EBA_CA_CALENDARS ============
+  id: 1866573014195848619
+  identification: 
+    name: Process Row of EBA_CA_CALENDARS
+    type: Automatic Row Processing (DML) [Legacy]
+    execution-chain: None
+
+  settings: 
+    table-owner: PARSING SCHEMA
+    table-name: EBA_CA_CALENDARS
+    primary-key-column-: CALENDAR_ID
+    primary-key-item: P44_CALENDAR_ID
+    lock-row: true
+    supported-operations: 'I:U:D'
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Action Processed.
+
+  error: 
+    error-message: Unable to process row of table EBA_CA_CALENDARS.
+    display-location: On Error Page
+
