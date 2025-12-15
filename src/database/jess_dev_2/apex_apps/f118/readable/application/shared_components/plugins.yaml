@@ -1,0 +1,2423 @@
+---
+- # ====== Plugin: Translated Message ==========================
+  id: 1440947672286570173
+  identification: 
+    name: Translated Message
+    internal-name: COM.ORACLE.APEX.TRANSLATED_MESSAGE
+    type: Region
+
+  advanced: 
+    quick-pick: false
+
+  subscription: 
+    master: 
+      referenced-id: 1367551240532222793
+
+    subscribe-component-settings: true
+
+  source: 
+    pl/sql-code: |
+      function render (
+          p_region              in apex_plugin.t_region,
+          p_plugin              in apex_plugin.t_plugin,
+          p_is_printer_friendly in boolean )
+          return apex_plugin.t_region_render_result
+      is
+          c_message     constant varchar2(255) := p_region.attribute_01;
+          c_add_p_tags  constant varchar2(1) := p_region.attribute_12;
+      
+          type subs_t is varray(10) of varchar2(4000);
+          type colnos_t is varray(10) of pls_integer;
+      
+          c_subs_columns constant subs_t :=
+              subs_t (
+                  p_region.attribute_02,
+                  p_region.attribute_03,
+                  p_region.attribute_04,
+                  p_region.attribute_05,
+                  p_region.attribute_06,
+                  p_region.attribute_07,
+                  p_region.attribute_08,
+                  p_region.attribute_09,
+                  p_region.attribute_10,
+                  p_region.attribute_11
+              );
+      
+          l_column_value_list apex_plugin_util.t_column_value_list2;
+          l_subs_column_nos colnos_t := colnos_t( null, null, null, null, null, null, null, null, null, null );
+      
+          l_subs subs_t := subs_t( null, null, null, null, null,
+                                   null, null, null, null, null );
+          l_label varchar2(50);
+          l_message clob;
+      begin
+          if p_region.source is not null then
+              -- Read the data based on the region source query
+              l_column_value_list := apex_plugin_util.get_data2 (
+                                         p_sql_statement  => p_region.source,
+                                         p_min_columns    => 1,
+                                         p_max_columns    => null,
+                                         p_component_name => p_region.name );
+      
+              -- Get the actual column# for faster access and also verify that the data type
+              -- of the column matches with what we are looking for
+              for i in 0..9 loop
+                  l_label := 'Substitution Column '
+                              ||to_char(i)||' (%'||to_char(i)||')';
+                  l_subs_column_nos(i+1) := apex_plugin_util.get_column_no (
+                                              p_attribute_label   => l_label,
+                                              p_column_alias      => c_subs_columns(i+1),
+                                              p_column_value_list => l_column_value_list,
+                                              p_is_required       => false,
+                                              p_data_type         => apex_plugin_util.c_data_type_varchar2 );
+              end loop;
+      
+              -- Set the column values of the first row so that apex_plugin_util.replace_substitutions
+              -- can do substitutions for columns contained in the region source query.
+              apex_plugin_util.set_component_values (
+                  p_column_value_list => l_column_value_list,
+                  p_row_num           => 1 );
+      
+              -- get the substitution values
+              for i in 0..9 loop
+                  if l_subs_column_nos(i+1) is not null then
+                      l_subs(i+1) := apex_plugin_util.escape (
+                                      apex_plugin_util.get_value_as_varchar2 (
+                                          p_data_type => l_column_value_list(l_subs_column_nos(i+1)).data_type,
+                                          p_value     => l_column_value_list(l_subs_column_nos(i+1)).value_list(1) ),
+                                      p_region.escape_output );
+                  end if;
+              end loop;
+          end if;
+      
+          l_message := apex_application.do_substitutions(
+              apex_lang.message( p_name => c_message,
+                                 p0     => l_subs(1),
+                                 p1     => l_subs(2),
+                                 p2     => l_subs(3),
+                                 p3     => l_subs(4),
+                                 p4     => l_subs(5),
+                                 p5     => l_subs(6),
+                                 p6     => l_subs(7),
+                                 p7     => l_subs(8),
+                                 p8     => l_subs(9),
+                                 p9     => l_subs(10)
+                            )
+              );
+          if c_add_p_tags = 'Y' and instr( l_message, '<p' ) = 0 then
+              l_message := '<p>'||l_message||'</p>';
+          end if;
+          sys.htp.p(l_message);
+          return null;
+      end;
+
+  callbacks: 
+    api-interface: Function
+    render-procedure/function-name: render
+
+  standard-attributes: 
+    attributes: 
+    - Region Source is SQL Statement [Deprecated]
+    - Has "Escape Special Characters" Region Attribute
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  information: 
+    version: 5.0.1
+    help-text: |
+      <p>This region plug-in is used to allow text messages to readily be translated into different languages. Up to nine values can be substituted into the text message.</p>
+      <p>The text message, with appropriate substitution variables, must be defined as a system message.</p>
+
+  standard-attributes: 
+  - # ====== Standard Attribute: SOURCE_SQL ======================
+    id: 3887609157800736736
+    identification: 
+      name: SOURCE_SQL
+
+    value: 
+      required: false
+
+    settings: 
+      minimum-columns: 1
+
+    examples: 
+      examples: This SQL is optional. If the message you are translating has substitutions built in (%0 through %9), select the values you wish to replace them with within Attributes.
+
+  custom-attributes: 
+  - # ====== Custom Attribute: Text Message ======================
+    id: 3887601060116736710
+    identification: 
+      static-id: attribute_01
+      attribute: 1
+      name: Text Message
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    help: 
+      help-text: Enter the name of the Text Message (from shared components) to be displayed.
+
+  - # ====== Custom Attribute: Substitution Column 0 (%0) ========
+    id: 3887601496450736710
+    identification: 
+      static-id: attribute_02
+      attribute: 2
+      name: Substitution Column 0 (%0)
+      scope: Component
+
+    layout: 
+      sequence: 20
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query which is used to replace any <strong>%0</strong> values in the displayed message.
+
+  - # ====== Custom Attribute: Substitution Column 1 (%1) ========
+    id: 3887601875346736711
+    identification: 
+      static-id: attribute_03
+      attribute: 3
+      name: Substitution Column 1 (%1)
+      scope: Component
+
+    layout: 
+      sequence: 30
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query which is used to replace any <strong>%1</strong> values in the displayed message.
+
+  - # ====== Custom Attribute: Substitution Column 2 (%2) ========
+    id: 3887602295933736713
+    identification: 
+      static-id: attribute_04
+      attribute: 4
+      name: Substitution Column 2 (%2)
+      scope: Component
+
+    layout: 
+      sequence: 40
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query which is used to replace any <strong>%2</strong> values in the displayed message.
+
+  - # ====== Custom Attribute: Substitution Column 3 (%3) ========
+    id: 3887602702188736714
+    identification: 
+      static-id: attribute_05
+      attribute: 5
+      name: Substitution Column 3 (%3)
+      scope: Component
+
+    layout: 
+      sequence: 50
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query which is used to replace any <strong>%3</strong> values in the displayed message.
+
+  - # ====== Custom Attribute: Substitution Column 4 (%4) ========
+    id: 3887603138395736715
+    identification: 
+      static-id: attribute_06
+      attribute: 6
+      name: Substitution Column 4 (%4)
+      scope: Component
+
+    layout: 
+      sequence: 60
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query which is used to replace any <strong>%4</strong> values in the displayed message.
+
+  - # ====== Custom Attribute: Substitution Column 5 (%5) ========
+    id: 3887603477050736715
+    identification: 
+      static-id: attribute_07
+      attribute: 7
+      name: Substitution Column 5 (%5)
+      scope: Component
+
+    layout: 
+      sequence: 70
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query which is used to replace any <strong>%5</strong> values in the displayed message.
+
+  - # ====== Custom Attribute: Substitution Column 6 (%6) ========
+    id: 3887603899548736715
+    identification: 
+      static-id: attribute_08
+      attribute: 8
+      name: Substitution Column 6 (%6)
+      scope: Component
+
+    layout: 
+      sequence: 80
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query which is used to replace any <strong>%6</strong> values in the displayed message.
+
+  - # ====== Custom Attribute: Substitution Column 7 (%7) ========
+    id: 3887604299473736716
+    identification: 
+      static-id: attribute_09
+      attribute: 9
+      name: Substitution Column 7 (%7)
+      scope: Component
+
+    layout: 
+      sequence: 90
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query which is used to replace any <strong>%7</strong> values in the displayed message.
+
+  - # ====== Custom Attribute: Substitution Column 8 (%8) ========
+    id: 3887604731500736716
+    identification: 
+      static-id: attribute_10
+      attribute: 10
+      name: Substitution Column 8 (%8)
+      scope: Component
+
+    layout: 
+      sequence: 100
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query which is used to replace any <strong>%8</strong> values in the displayed message.
+
+  - # ====== Custom Attribute: Substitution Column 9 (%9) ========
+    id: 3887605151276736716
+    identification: 
+      static-id: attribute_11
+      attribute: 11
+      name: Substitution Column 9 (%9)
+      scope: Component
+
+    layout: 
+      sequence: 110
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query which is used to replace any <strong>%9</strong> values in the displayed message.
+
+  - # ====== Custom Attribute: Add Paragraph Tags ================
+    id: 3887605511792736717
+    identification: 
+      static-id: attribute_12
+      attribute: 12
+      name: Add Paragraph Tags
+      scope: Component
+
+    layout: 
+      sequence: 120
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: Y
+
+    help: 
+      help-text: |
+        <p>Select whether paragraph tags are added around the text message.</p>
+        <p>Note: If the message already starts with a paragraph tag, no changes are made.</p>
+
+- # ====== Plugin: ACL Status ==================================
+  id: 1863139978697094708
+  identification: 
+    name: ACL Status
+    internal-name: COM.ORACLE.APEX.ACL_STATUS
+    type: Region
+
+  advanced: 
+    quick-pick: false
+
+  subscription: 
+    master: 
+      referenced-id: 1420925848444088670
+
+    subscribe-component-settings: true
+
+  source: 
+    pl/sql-code: |
+      function acl_status (   p_region              in apex_plugin.t_region,
+                              p_plugin              in apex_plugin.t_plugin,
+                              p_is_printer_friendly in boolean ) return apex_plugin.t_region_render_result is
+          l_retval         apex_plugin.t_region_render_result;
+          --
+          c_config_page constant varchar2(30)   := p_region.attribute_01;
+          c_acl_page    constant varchar2(30)   := p_region.attribute_02;
+          c_admin_alias constant varchar2(255)  := p_region.attribute_03;
+          c_cont_alias  constant varchar2(255)  := p_region.attribute_04;
+          c_read_alias  constant varchar2(255)  := p_region.attribute_05;
+          c_scope_pref  constant varchar2(4000) := p_region.attribute_06;
+          c_acl_status  constant varchar2(4000) := p_region.attribute_07;
+          --
+          l_app_id            varchar2(255) := :APP_ID;
+          l_session_id        varchar2(255) := :APP_SESSION;
+          -- TODO: Make this handle generic ACL levels.
+          l_column_value_list apex_plugin_util.t_column_value_list2;
+          l_admin_column_number pls_integer;
+          l_admin_count         number := null;
+          l_cont_column_number  pls_integer;
+          l_cont_count          number := null;
+          l_read_column_number  pls_integer;
+          l_read_count          number := null;
+          --
+          l_scope             varchar2(255);
+          l_acl_mode          varchar2(255);
+          l_acl_enabled       varchar2(1) := 'N';
+      begin
+          l_column_value_list := apex_plugin_util.get_data2(
+              p_sql_statement  => p_region.source,
+              p_min_columns    => 3,
+              p_max_columns    => null,
+              p_component_name => p_region.name
+          );
+      
+          l_admin_column_number := apex_plugin_util.get_column_no (
+              p_attribute_label   => 'ADMINCOUNT',
+              p_column_alias      => c_admin_alias,
+              p_column_value_list => l_column_value_list,
+              p_is_required       => true,
+              p_data_type         => apex_plugin_util.c_data_type_number
+          );
+          l_cont_column_number := apex_plugin_util.get_column_no (
+              p_attribute_label   => 'CONTCOUNT',
+              p_column_alias      => c_cont_alias,
+              p_column_value_list => l_column_value_list,
+              p_is_required       => true,
+              p_data_type         => apex_plugin_util.c_data_type_number
+          );
+          l_read_column_number := apex_plugin_util.get_column_no (
+              p_attribute_label   => 'READCOUNT',
+              p_column_alias      => c_read_alias,
+              p_column_value_list => l_column_value_list,
+              p_is_required       => true,
+              p_data_type         => apex_plugin_util.c_data_type_number
+          );
+      
+          l_scope := apex_plugin_util.get_plsql_expression_result( p_plsql_expression => c_scope_pref );
+          l_acl_enabled := apex_plugin_util.get_plsql_expression_result( p_plsql_expression => c_acl_status );
+      
+          for l_row_number in 1 .. l_column_value_list(1).value_list.count loop
+              l_admin_count := l_column_value_list(l_admin_column_number).value_list(l_row_number).number_value;
+              l_cont_count  := l_column_value_list(l_cont_column_number).value_list(l_row_number).number_value;
+              l_read_count  := l_column_value_list(l_read_column_number).value_list(l_row_number).number_value;
+          end loop;
+      
+          if l_acl_enabled = 'N' then
+              l_acl_mode := 'Disabled';
+          else
+              l_acl_mode := 'Enabled';
+          end if;
+      
+          sys.htp.p('<div class="t-ConfigPanel">');
+          sys.htp.p('  <div class="t-ConfigPanel-about">');
+              if l_acl_mode = 'Disabled' then
+                 sys.htp.p(apex_lang.message('ACL_DISABLED'));
+              else
+                 if l_scope = 'ACL_ONLY' then sys.htp.p(apex_lang.message('ACL_ENABLED')); end if;
+                 if l_scope = 'PUBLIC_CONTRIBUTE' then sys.htp.p(apex_lang.message('ACL_PUBLIC_CONTRIBUTE')); end if;
+                 if l_scope = 'PUBLIC_READONLY' then sys.htp.p(apex_lang.message('ACL_PUBLIC_READONLY')); end if;
+              end if;
+          sys.htp.p('  </div>');
+          sys.htp.p('  <div class="t-ConfigPanel-body">');
+          sys.htp.p('    <div class="t-ConfigPanel-main">');
+          sys.htp.p('      <span class="t-ConfigPanel-icon a-Icon');
+            if l_acl_mode = 'Enabled' then
+              sys.htp.prn('is-enabled');
+            else
+              sys.htp.prn('is-disabled');
+            end if;
+          sys.htp.p('"></span>');
+          sys.htp.p('      <span class="t-ConfigPanel-setting">Access Control</span>');
+              if l_acl_mode = 'Disabled' then
+                  sys.htp.p('      <span class="t-ConfigPanel-status">Disabled</span>');
+                  sys.htp.p('      <span class="t-ConfigPanel-actions">');
+                  sys.htp.p('        <button class="t-Button t-Button--small" onclick="openModal(''confirmEnableACL'');" type="button">Enable Access Control</button>');
+                  sys.htp.p('      </span>');
+              else
+                  sys.htp.p('      <span class="t-ConfigPanel-status">Enabled</span>');
+                  sys.htp.p('      <span class="t-ConfigPanel-actions">');
+                  sys.htp.p('        <button class="t-Button t-Button--small" onclick="apex.navigation.redirect('''||apex_util.prepare_url('f?p='||l_app_id||':'||c_config_page||':'||l_session_id)||''');" type="button">Configure</button>');
+                  sys.htp.p('      </span>');
+              end if;
+          sys.htp.p('      </span>');
+          sys.htp.p('    </div>');
+          sys.htp.p('    <div class="t-ConfigPanel-list">');
+          sys.htp.p('      <ul class="t-ConfigPanel-attrs">');
+          sys.htp.p('        <li class="t-ConfigPanel-attr">');
+          sys.htp.p('          <a href="'||apex_util.prepare_url('f?p='||l_app_id||':'||c_acl_page||':'||l_session_id|| ':::'||c_acl_page||',RIR:IREQ_ACCESS_LEVEL_ID:Administrator')||'" class="t-ConfigPanel-attrLink">');
+          sys.htp.p('            <span class="t-ConfigPanel-attrLabel">Administrators</span>');
+          sys.htp.p('            <span class="t-ConfigPanel-attrValue">');
+              if l_acl_mode = 'Disabled' then
+                  sys.htp.p(apex_escape.html(apex_lang.message('ANY_AUTHENTICATED_USER')));
+              else
+                  sys.htp.p(to_char(l_admin_count,'999G999G990'));
+              end if;
+          sys.htp.p('            </span>');
+          sys.htp.p('          </a>');
+          sys.htp.p('        </li>');
+      
+          sys.htp.p('        <li class="t-ConfigPanel-attr">');
+          sys.htp.p('          <a href="'||apex_util.prepare_url('f?p='||l_app_id||':'||c_acl_page||':'||l_session_id||':::'||c_acl_page||',RIR:IREQ_ACCESS_LEVEL_ID:Contributor')||'" class="t-ConfigPanel-attrLink">');
+          sys.htp.p('            <span class="t-ConfigPanel-attrLabel">Contributors</span>');
+          sys.htp.p('            <span class="t-ConfigPanel-attrValue">');
+              if l_acl_mode = 'Disabled' then 
+                  sys.htp.p(apex_escape.html(apex_lang.message('ANY_AUTHENTICATED_USER')));
+              elsif l_scope = 'ACL_ONLY' or l_scope = 'PUBLIC_READONLY' then
+                  sys.htp.p(to_char(nvl(l_cont_count,0),'999G999G990'));
+              else
+                  sys.htp.p(apex_escape.html(apex_lang.message('ANY_AUTHENTICATED_USER')));
+              end if;
+          sys.htp.p('            </span>');
+          sys.htp.p('          </a>');
+          sys.htp.p('        </li>');
+      
+          sys.htp.p('        <li class="t-ConfigPanel-attr">');
+          sys.htp.p('          <a href="'||apex_util.prepare_url('f?p='||l_app_id||':'||c_acl_page||':'||l_session_id||':::'||c_acl_page||',RIR:IREQ_ACCESS_LEVEL_ID:Reader')||'" class="t-ConfigPanel-attrLink">');
+          sys.htp.p('            <span class="t-ConfigPanel-attrLabel">Readers</span>');
+          sys.htp.p('            <span class="t-ConfigPanel-attrValue">');
+          sys.htp.p(  case
+                          when l_acl_mode = 'Disabled' then 
+                              apex_escape.html(apex_lang.message('ANY_AUTHENTICATED_USER'))
+                          when l_scope = 'ACL_ONLY' then
+                              to_char(nvl(l_read_count,0),'999G999G990')
+                          when l_scope = 'PUBLIC_READONLY' or l_scope = 'PUBLIC_CONTRIBUTE' then
+                              apex_escape.html(apex_lang.message('ANY_AUTHENTICATED_USER'))
+                          else
+                              to_char(nvl(l_read_count,0),'999G999G990')
+                      end );
+          sys.htp.p('            </span>');
+          sys.htp.p('          </a>');
+          sys.htp.p('        </li>');
+      
+          sys.htp.p('      </ul>');
+          sys.htp.p('    </div>');
+          sys.htp.p('  </div>');
+          sys.htp.p('</div>');
+      
+          return l_retval;    
+      end;
+
+  callbacks: 
+    api-interface: Function
+    render-procedure/function-name: acl_status
+
+  standard-attributes: 
+    attributes: 
+    - Region Source is SQL Statement [Deprecated]
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  information: 
+    version: 5.0.1
+    about-url: 'http://apex.oracle.com/plugins'
+    help-text: |
+      <p>ACL Status is designed for those applications that use the built-in Application Express authentication Access Control List (ACL), to control access to the application and features. The plug-in displays the current ACL status together with a count of Administrators, Contributors, and Readers.</p>
+      <p>This plug-in is suitable for adding to the main Administration page to provide an overview of user security settings.</p>
+
+  standard-attributes: 
+  - # ====== Standard Attribute: SOURCE_SQL ======================
+    id: 4102308857944520041
+    identification: 
+      name: SOURCE_SQL
+
+    value: 
+      required: true
+
+    settings: 
+      minimum-columns: 3
+
+    examples: 
+      examples: |
+        select sum(case when access_level_id = 1 then 1 else 0 end) reader_count
+        ,      sum(case when access_level_id = 2 then 1 else 0 end) contributor_count
+        ,      sum(case when access_level_id = 3 then 1 else 0 end) admin_count
+        from eba_plugin_users
+
+  custom-attributes: 
+  - # ====== Custom Attribute: Configuration Page ================
+    id: 4102305538280520038
+    identification: 
+      static-id: attribute_01
+      attribute: 1
+      name: Configuration Page
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: Page Number
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    help: 
+      help-text: Enter the application page number used to maintain the ACL settings.
+
+  - # ====== Custom Attribute: ACL Page ==========================
+    id: 4102305926914520038
+    identification: 
+      static-id: attribute_02
+      attribute: 2
+      name: ACL Page
+      scope: Component
+
+    layout: 
+      sequence: 20
+
+    settings: 
+      type: Page Number
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    help: 
+      help-text: Enter the application page number used to maintain users and their access level.
+
+  - # ====== Custom Attribute: Administrator Count Column ========
+    id: 4102306346600520039
+    identification: 
+      static-id: attribute_03
+      attribute: 3
+      name: Administrator Count Column
+      scope: Component
+
+    layout: 
+      sequence: 30
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      data-types: 
+      - Number
+
+    help: 
+      help-text: Select the column from the region SQL Query which holds the count of Administrators.
+
+  - # ====== Custom Attribute: Contributor Count Column ==========
+    id: 4102306713873520039
+    identification: 
+      static-id: attribute_04
+      attribute: 4
+      name: Contributor Count Column
+      scope: Component
+
+    layout: 
+      sequence: 40
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      data-types: 
+      - Number
+
+    help: 
+      help-text: Select the column from the region SQL Query which holds the count of Contributors.
+
+  - # ====== Custom Attribute: Reader Count Column ===============
+    id: 4102307078105520039
+    identification: 
+      static-id: attribute_05
+      attribute: 5
+      name: Reader Count Column
+      scope: Component
+
+    layout: 
+      sequence: 50
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      data-types: 
+      - Number
+
+    help: 
+      help-text: Select the column from the region SQL Query which holds the count of Readers.
+
+  - # ====== Custom Attribute: Scope Preference Value ============
+    id: 4102307468055520039
+    identification: 
+      static-id: attribute_06
+      attribute: 6
+      name: Scope Preference Value
+      scope: Component
+
+    layout: 
+      sequence: 60
+
+    settings: 
+      type: PL/SQL Expression Returning VARCHAR2
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    help: 
+      help-text: |
+        <p>Enter a function which returns the appropriate scope for the ACL.
+        Allowable values are:</p>
+        <dl>
+          <dt>ACL_ONLY</dt><dd>Rights are determined by ACL access levels. Public users cannot access the application.</dd>
+          <dt>PUBLIC_CONTRIBUTE</dt><dd>Public users can contribute, but cannot access Administrative tasks.</dd>
+          <dt>PUBLIC_READONLY</dt><dd>Public users can access the application, but cannot update records.</dd>
+        </dl>
+
+    examples: 
+      examples: eba_plugin_fw.get_preference_value('ACCESS_CONTROL_SCOPE')
+
+  - # ====== Custom Attribute: ACL Enabled Preference ============
+    id: 4102307898476520040
+    identification: 
+      static-id: attribute_07
+      attribute: 7
+      name: ACL Enabled Preference
+      scope: Component
+
+    layout: 
+      sequence: 70
+
+    settings: 
+      type: PL/SQL Expression Returning VARCHAR2
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    help: 
+      help-text: <p>Enter a function which returns if ACL is currently enabled or disabled.</p>
+
+    examples: 
+      examples: eba_plugin_fw.get_preference_value('ACCESS_CONTROL_ENABLED')
+
+- # ====== Plugin: ACL Warning =================================
+  id: 1863142976328094732
+  identification: 
+    name: ACL Warning
+    internal-name: COM.ORACLE.APEX.ACL_WARNING
+    type: Region
+
+  advanced: 
+    quick-pick: false
+
+  subscription: 
+    master: 
+      referenced-id: 1830928929089695217
+
+    subscribe-component-settings: true
+
+  source: 
+    pl/sql-code: |
+      function render (   p_region              in apex_plugin.t_region,
+                              p_plugin              in apex_plugin.t_plugin,
+                              p_is_printer_friendly in boolean ) return apex_plugin.t_region_render_result is
+          l_retval         apex_plugin.t_region_render_result;
+          --
+          c_admin_page  constant varchar2(512)   := p_region.attribute_01;
+      begin
+          -- This plugin displays a warning message if the ACL is disabled. To use:
+          --    1) Add this plugin region to the top of the application home page.
+          --    2) Set the template to Alert region, with the Warning template option.
+          --    3) Add a PL/SQL expression condition to the region, following this pattern:
+          --        eba_XXX_fw.get_preference_value('ACCESS_CONTROL_ENABLED') = 'N'
+      
+          sys.htp.p('Access control for this application is currently disabled. '
+              ||'All users are currently Administrators. Navigate to <a href="'
+              ||apex_util.prepare_url(c_admin_page)||'">application administration</a> '
+              ||'to enable access control.');
+      
+          return l_retval;    
+      end;
+
+  callbacks: 
+    api-interface: Function
+    render-procedure/function-name: render
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  information: 
+    version: 5.0.1
+    about-url: 'http://apex.oracle.com/plugins'
+    help-text: |
+      <p>ACL Warning is designed for those applications that use the built-in Application Express authentication Access Control List (ACL), to control access to the application and features. The plug-in displays a warning when ACL is disabled.</p>
+      <p>This plug-in is suitable for adding to the Home page to provide warnings when ACL is not enabled, allowing every user to act as an Administrator.</p>
+
+  custom-attributes: 
+  - # ====== Custom Attribute: Administration Page Link ==========
+    id: 2277535494332930125
+    identification: 
+      static-id: attribute_01
+      attribute: 1
+      name: Administration Page Link
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: Link to Target Page/URL
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    help: 
+      help-text: <p>Enter a target page to be called when the user clicks the associated link.</p>
+
+    examples: 
+      examples: |
+        <p>Example 1: URL to navigate to page 10 and set P10_EMPNO to the EMPNO value of the clicked entry.
+        <pre>f?p=&amp;APP_ID.:10:&amp;APP_SESSION.::&amp;DEBUG.:RP,10:P10_EMPNO:&amp;EMPNO.</pre>
+        </p>
+        <p>Example 2: Display the EMPNO value of the clicked entry in a JavaScript alert
+        <pre>javascript:alert('current empno: &amp;EMPNO.');</pre>
+        </p>
+
+- # ====== Plugin: Authorization Administration ================
+  id: 1863143678790094738
+  identification: 
+    name: Authorization Administration
+    internal-name: COM.ORACLE.AUTH_ADMINISTRATION
+    type: Region
+
+  advanced: 
+    quick-pick: false
+
+  subscription: 
+    master: 
+      referenced-id: 1436051286839742672
+
+    subscribe-component-settings: true
+
+  source: 
+    pl/sql-code: |
+      function auth_admin (   p_region              in apex_plugin.t_region,
+                              p_plugin              in apex_plugin.t_plugin,
+                              p_is_printer_friendly in boolean ) return apex_plugin.t_region_render_result is
+          l_retval         apex_plugin.t_region_render_result;
+          --
+          c_page_report_page constant number        := p_region.attribute_01;
+          c_public_pages_msg constant varchar2(255) := apex_escape.html(p_region.attribute_02);
+          c_auth_pages_msg   constant varchar2(255) := apex_escape.html(p_region.attribute_03);
+          c_custom_auth_msg  constant varchar2(255) := apex_escape.html(p_region.attribute_04);
+      
+          l_app_session     varchar2(255) := :APP_SESSION;
+          l_app_id          number := :APP_ID;
+          l_cnt             number := 0;
+          l_auth_scheme     number := 0;
+          l_auth_required   number := 0;
+          l_auth_scheme_name     varchar2(255);
+      begin
+          for c1 in ( select count(*) c,
+                          sum(decode(authorization_scheme,null,0,1)) auth_scheme,
+                          sum(decode(page_requires_authentication,'Yes',1,0)) auth_required
+                      from apex_application_pages
+                      where application_id =  l_app_id
+                          and page_function != 'Global Page' ) loop
+              l_cnt := c1.c;
+              l_auth_scheme := c1.auth_scheme;
+              l_auth_required := c1.auth_required;
+          end loop;
+      
+          for c1 in ( select authentication_scheme 
+                      from apex_applications 
+                      where application_id = l_app_id ) loop
+              l_auth_scheme_name := c1.authentication_scheme;
+          end loop;
+      
+          sys.htp.p('<div class="container">');
+          sys.htp.p('<div class="row">');
+          sys.htp.p('<div class="col col-12 ">');
+          sys.htp.p('<div class="t-ConfigPanel">');
+          sys.htp.p('<div class="t-ConfigPanel-body">');
+          sys.htp.p('<div class="t-ConfigPanel-main">');
+          sys.htp.p('<span class="t-ConfigPanel-icon a-Icon auth-scheme"></span>');
+          sys.htp.p('<span class="t-ConfigPanel-setting">Authentication Scheme</span>');
+          sys.htp.p('<span class="t-ConfigPanel-status">'||apex_escape.html(l_auth_scheme_name)||'</span>');
+          sys.htp.p('</div>');
+          sys.htp.p('<div class="t-ConfigPanel-list">');
+          sys.htp.p('<ul class="t-ConfigPanel-attrs">');
+          sys.htp.p('<li class="t-ConfigPanel-attr">');
+          sys.htp.p('<a href="'
+              ||case when c_page_report_page is not null then
+                      apex_util.prepare_url('f?p='||l_app_id||':'||c_page_report_page||':'||l_app_session
+                                           ||':::'||c_page_report_page||',RIR:IREQ_REQUIRES_AUTH:No')
+                  else
+                      '#'
+              end
+              ||'" class="t-ConfigPanel-attrLink">');
+          sys.htp.p('<span class="t-ConfigPanel-attrLabel">'||c_public_pages_msg||'</span>');
+          sys.htp.p('<span class="t-ConfigPanel-attrValue">'||to_char((l_cnt - l_auth_required),'999G999G990')
+              ||'</span>');
+          sys.htp.p('</a>');
+          sys.htp.p('</li>');
+          sys.htp.p('<li class="t-ConfigPanel-attr">');
+          sys.htp.p('<a href="'
+              ||case when c_page_report_page is not null then
+                      apex_util.prepare_url('f?p='||l_app_id||':'||c_page_report_page||':'||l_app_session
+                                           ||':::'||c_page_report_page||',RIR:IREQ_REQUIRES_AUTH:Yes')
+                  else
+                      '#'
+              end
+              ||'" class="t-ConfigPanel-attrLink">');
+          sys.htp.p('<span class="t-ConfigPanel-attrLabel">'||c_auth_pages_msg||'</span>');
+          sys.htp.p('<span class="t-ConfigPanel-attrValue">'||to_char(l_auth_required,'999G999G990')||
+            '</span>');
+          sys.htp.p('</a>');
+          sys.htp.p('</li>');
+          sys.htp.p('<li class="t-ConfigPanel-attr">');
+          sys.htp.p('<a href="'
+              ||case when c_page_report_page is not null then
+                      apex_util.prepare_url('f?p='||l_app_id||':'||c_page_report_page||':'||l_app_session
+                                           ||':::'||c_page_report_page||',RIR:IRNEQ_AUTHORIZATION_SCHEME:No Scheme Applied')
+                  else
+                      '#'
+              end
+              ||'" class="t-ConfigPanel-attrLink">');
+          sys.htp.p('<span class="t-ConfigPanel-attrLabel">'||c_custom_auth_msg||'</span>');
+          sys.htp.p('<span class="t-ConfigPanel-attrValue">'||to_char(l_auth_scheme,'999G999G990')||
+                '</span>');
+          sys.htp.p('</a>');
+          sys.htp.p('</li>');
+          sys.htp.p('</ul>');
+          sys.htp.p('</div>');
+          sys.htp.p('</div>');
+          sys.htp.p('</div>');
+          sys.htp.p('</div>');
+          sys.htp.p('</div>');
+          sys.htp.p('</div>');
+          --
+          return l_retval;    
+      end auth_admin;
+
+  callbacks: 
+    api-interface: Function
+    render-procedure/function-name: auth_admin
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  information: 
+    version: 5.0.1
+    about-url: 'http://apex.oracle.com/plugins'
+    help-text: |
+      <p>Authorization Administration displays the current authentication scheme together with a count of public pages, pages requiring authentication, and pages with an authorization defined.</p>
+      <p>This plug-in is suitable for adding to the main Administration page to provide an overview of high level security settings.</p>
+
+  custom-attributes: 
+  - # ====== Custom Attribute: Page Report Page ==================
+    id: 2476320765090910904
+    identification: 
+      static-id: attribute_01
+      attribute: 1
+      name: Page Report Page
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: Page Number
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    help: 
+      help-text: Enter or select the page number which has a report listing the pages within the application and the respective role required to access that page.
+
+  - # ====== Custom Attribute: Public Pages Label ================
+    id: 2476321216431910904
+    identification: 
+      static-id: attribute_02
+      attribute: 2
+      name: Public Pages Label
+      scope: Component
+
+    layout: 
+      sequence: 20
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: true
+
+    default: 
+      value: Public Pages
+
+    help: 
+      help-text: Enter the label displayed for pages with no authorization defined.
+
+  - # ====== Custom Attribute: Authenticated Pages Label =========
+    id: 2476321634436910904
+    identification: 
+      static-id: attribute_03
+      attribute: 3
+      name: Authenticated Pages Label
+      scope: Component
+
+    layout: 
+      sequence: 30
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: true
+
+    default: 
+      value: Login Required Pages
+
+    help: 
+      help-text: Enter the label displayed for pages that require authentication.
+
+  - # ====== Custom Attribute: Authorized Pages Label ============
+    id: 2476321994491910905
+    identification: 
+      static-id: attribute_04
+      attribute: 4
+      name: Authorized Pages Label
+      scope: Component
+
+    layout: 
+      sequence: 40
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: true
+
+    default: 
+      value: Authorization Protected
+
+    help: 
+      help-text: Enter the label displayed for pages where a specific authorization is defined.
+
+- # ====== Plugin: Timeline and Status List ====================
+  id: 1973742431244798956
+  identification: 
+    name: Timeline and Status List
+    internal-name: COM.ORACLE.APEX.TIMELINESTATUSLIST
+    type: Region
+
+  advanced: 
+    quick-pick: false
+
+  subscription: 
+    master: 
+      referenced-id: 9646339904178755041
+
+    subscribe-component-settings: true
+
+  source: 
+    pl/sql-code: |
+      procedure render_list_calendar( p_region in apex_plugin.t_region ) is
+          c_group_col          constant varchar2(255) := p_region.attribute_01;
+          c_color_col          constant varchar2(255) := p_region.attribute_02;
+          c_title_col          constant varchar2(255) := p_region.attribute_03;
+          c_link_col           constant varchar2(255) := p_region.attribute_04;
+          c_row1_attr1_val_col constant varchar2(255) := p_region.attribute_05;
+          c_row1_attr2_val_col constant varchar2(255) := p_region.attribute_06;
+          c_row2_attr1_val_col constant varchar2(255) := p_region.attribute_07;
+          c_row2_attr2_val_col constant varchar2(255) := p_region.attribute_08;
+          c_description_1_col  constant varchar2(255) := p_region.attribute_09;
+          c_description_2_col  constant varchar2(255) := p_region.attribute_10;
+          c_description_3_col  constant varchar2(255) := p_region.attribute_11;
+          c_description_4_col  constant varchar2(255) := p_region.attribute_15;
+          c_group_type         constant varchar2(255) := p_region.attribute_12;
+          c_status_col         constant varchar2(255) := p_region.attribute_13;
+          c_color_label_col    constant varchar2(255) := p_region.attribute_14;
+      
+          l_group_col_no          pls_integer;
+          l_color_col_no          pls_integer;
+          l_title_col_no          pls_integer;
+          l_link_col_no           pls_integer;
+          l_row1_attr1_val_col_no pls_integer;
+          l_row1_attr2_val_col_no pls_integer;
+          l_row2_attr1_val_col_no pls_integer;
+          l_row2_attr2_val_col_no pls_integer;
+          l_description_1_col_no  pls_integer;
+          l_description_2_col_no  pls_integer;
+          l_description_3_col_no  pls_integer;
+          l_description_4_col_no  pls_integer;
+          l_status_col_no         pls_integer;
+          l_color_label_col_no    pls_integer;
+      
+          l_date           timestamp with local time zone;
+          l_last_day       varchar2(8);
+          l_group          varchar2(4000);
+          l_color          varchar2(4000);
+          l_color_label    varchar2(4000);
+          l_title          varchar2(4000);
+          l_link           varchar2(4000);
+          l_row1_attr1_val varchar2(4000);
+          l_row1_attr1_lbl varchar2(4000);
+          l_row1_attr2_val varchar2(4000);
+          l_row1_attr2_lbl varchar2(4000);
+          l_row2_attr1_val varchar2(4000);
+          l_row2_attr1_lbl varchar2(4000);
+          l_row2_attr2_val varchar2(4000);
+          l_row2_attr2_lbl varchar2(4000);
+          l_description_1  varchar2(4000);
+          l_description_2  varchar2(4000);
+          l_description_3  varchar2(4000);
+          l_description_4  varchar2(4000);
+          l_status         varchar2(4000);
+      
+          --
+          l_no_data_found     varchar2(32767) := p_region.no_data_found_message;
+          l_num_rows          pls_integer     := p_region.fetched_rows;
+          --
+          l_column_value_list    apex_plugin_util.t_column_value_list2;
+          l_region_source        varchar2(32767) := p_region.source;
+      
+          --
+          l_last_group  varchar2(255) := 'x';
+      
+          l_found boolean;
+          l_count pls_integer := 0;
+      
+          type vc2_aat is table of varchar2(32767) index by varchar2(255);
+          l_colors vc2_aat;
+          l_color_idx varchar2(255);
+      
+      begin
+          -- get the data to be displayed
+          l_column_value_list := apex_plugin_util.get_data2 (
+                                     p_sql_statement  => l_region_source,
+                                     p_min_columns    => 3,
+                                     p_max_columns    => null,
+                                     p_component_name => p_region.name,
+                                     p_max_rows       => null );
+      
+          -- Get the actual column number for the fields we want.
+          l_group_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Group column',
+                              p_column_alias      => c_group_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => null -- might be date, timestamp, etc.
+                          );
+      
+          l_color_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Color column',
+                              p_column_alias      => c_color_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_color_label_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Color Label column',
+                              p_column_alias      => c_color_label_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_status_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Status column',
+                              p_column_alias      => c_status_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_title_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Title column',
+                              p_column_alias      => c_title_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => true,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_link_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Link column',
+                              p_column_alias      => c_link_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_row1_attr1_val_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'First Attribute Value column',
+                              p_column_alias      => c_row1_attr1_val_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_row1_attr2_val_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Second Attribute Value column',
+                              p_column_alias      => c_row1_attr2_val_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_row2_attr1_val_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Third Attribute Value column',
+                              p_column_alias      => c_row2_attr1_val_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_row2_attr2_val_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Fourth Attribute Value column',
+                              p_column_alias      => c_row2_attr2_val_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_description_1_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'First Description column',
+                              p_column_alias      => c_description_1_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_description_2_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Second Description column',
+                              p_column_alias      => c_description_2_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_description_3_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Third Description column (allows HTML)',
+                              p_column_alias      => c_description_3_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          l_description_4_col_no := apex_plugin_util.get_column_no (
+                              p_attribute_label   => 'Fourth Description column (allows HTML)',
+                              p_column_alias      => c_description_4_col,
+                              p_column_value_list => l_column_value_list,
+                              p_is_required       => false,
+                              p_data_type         => apex_plugin_util.c_data_type_varchar2
+                          );
+      
+          -- Loop through the data
+          if c_group_type = 'D' then
+              sys.htp.p('<div class="t-StatusList t-StatusList--dates">');
+          else
+              sys.htp.p('<div class="t-StatusList t-StatusList--bullets">');
+          end if;
+      
+          for l_row_num in 1..l_column_value_list(1).value_list.count loop
+              wwv_flow_plugin_util.set_component_values (
+                  p_column_value_list => l_column_value_list,
+                  p_row_num           => l_row_num );
+      
+              l_found := true;
+      
+              if l_group_col_no is not null then
+                  if c_group_type = 'D' then
+                      if l_column_value_list(l_group_col_no).value_list(l_row_num).date_value is not null then
+                          l_date := l_column_value_list(l_group_col_no).value_list(l_row_num).date_value;
+                      elsif l_column_value_list(l_group_col_no).value_list(l_row_num).timestamp_value is not null then
+                          l_date := l_column_value_list(l_group_col_no).value_list(l_row_num).timestamp_value;
+                      elsif l_column_value_list(l_group_col_no).value_list(l_row_num).timestamp_tz_value is not null then
+                          l_date := l_column_value_list(l_group_col_no).value_list(l_row_num).timestamp_tz_value;
+                      elsif l_column_value_list(l_group_col_no).value_list(l_row_num).timestamp_ltz_value is not null then
+                          l_date := l_column_value_list(l_group_col_no).value_list(l_row_num).timestamp_ltz_value;
+                      else
+                          -- Couldn't get a usable date value; ignore this row.
+                          l_found := false;
+                      end if;
+                  else
+                      l_group := apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_group_col_no).data_type,
+                                      p_value     => l_column_value_list(l_group_col_no).value_list(l_row_num) ),
+                                  p_region.escape_output );
+                  end if;
+              end if;
+              if l_found = true and l_count < nvl(l_num_rows,l_count) then
+                  l_count := l_count + 1;
+                  if l_color_col_no is not null then
+                      l_color := apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_color_col_no).data_type,
+                                      p_value     => l_column_value_list(l_color_col_no).value_list(l_row_num) ),
+                                  p_region.escape_output );
+                  end if;
+      
+                  if l_color_label_col_no is not null then
+                      l_color_label := apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_color_label_col_no).data_type,
+                                      p_value     => l_column_value_list(l_color_label_col_no).value_list(l_row_num) ),
+                                  p_region.escape_output );
+                  end if;
+      
+                  if l_status_col_no is not null then
+                      l_status := apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_status_col_no).data_type,
+                                      p_value     => l_column_value_list(l_status_col_no).value_list(l_row_num) ),
+                                  p_region.escape_output );
+                  end if;
+      
+                  if l_title_col_no is not null then
+                      l_title := apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_title_col_no).data_type,
+                                      p_value     => l_column_value_list(l_title_col_no).value_list(l_row_num) ),
+                                  p_region.escape_output );
+                  end if;
+      
+                  if l_link_col_no is not null then
+                      l_link := apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_link_col_no).data_type,
+                                      p_value     => l_column_value_list(l_link_col_no).value_list(l_row_num) ),
+                                  false );
+                  end if;
+      
+                  if l_row1_attr1_val_col_no is not null then
+                      l_row1_attr1_lbl := apex_plugin_util.escape(
+                                  p_region.region_columns( l_row1_attr1_val_col_no ).heading,
+                                  p_region.escape_output );
+                      l_row1_attr1_val := apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_row1_attr1_val_col_no).data_type,
+                                      p_value     => l_column_value_list(l_row1_attr1_val_col_no).value_list(l_row_num) ),
+                                  p_region.escape_output );
+                  end if;
+      
+                  if l_row1_attr2_val_col_no is not null then
+                      l_row1_attr2_lbl := apex_plugin_util.escape(
+                                  p_region.region_columns( l_row1_attr2_val_col_no ).heading,
+                                  p_region.escape_output );
+                      l_row1_attr2_val := apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_row1_attr2_val_col_no).data_type,
+                                      p_value     => l_column_value_list(l_row1_attr2_val_col_no).value_list(l_row_num) ),
+                                  p_region.escape_output );
+                  end if;
+      
+                  if l_row2_attr1_val_col_no is not null then
+                      l_row2_attr1_lbl := apex_plugin_util.escape(
+                                  p_region.region_columns( l_row2_attr1_val_col_no ).heading,
+                                  p_region.escape_output );
+                      l_row2_attr1_val := apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_row2_attr1_val_col_no).data_type,
+                                      p_value     => l_column_value_list(l_row2_attr1_val_col_no).value_list(l_row_num) ),
+                                  p_region.escape_output );
+                  end if;
+      
+                  if l_row2_attr2_val_col_no is not null then
+                      l_row2_attr2_lbl := apex_plugin_util.escape(
+                                  p_region.region_columns( l_row2_attr2_val_col_no ).heading,
+                                  p_region.escape_output );
+                      l_row2_attr2_val := apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_row2_attr2_val_col_no).data_type,
+                                      p_value     => l_column_value_list(l_row2_attr2_val_col_no).value_list(l_row_num) ),
+                                  p_region.escape_output );
+                  end if;
+      
+                  if l_description_1_col_no is not null then
+                      l_description_1 := substr(apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_description_1_col_no).data_type,
+                                      p_value     => l_column_value_list(l_description_1_col_no).value_list(l_row_num) ),
+                                  p_region.escape_output ),0,2000);
+                  end if;
+      
+                  if l_description_2_col_no is not null then
+                      l_description_2 := substr(apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_description_2_col_no).data_type,
+                                      p_value     => l_column_value_list(l_description_2_col_no).value_list(l_row_num) ),
+                                  p_region.escape_output ),0,2000);
+                  end if;
+      
+                  if l_description_3_col_no is not null then
+                      l_description_3 := substr(apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_description_3_col_no).data_type,
+                                      p_value     => l_column_value_list(l_description_3_col_no).value_list(l_row_num) ),
+                                  false ),0,2000);
+                  end if;
+      
+                  if l_description_4_col_no is not null then
+                      l_description_4 := substr(apex_plugin_util.escape(
+                                  apex_plugin_util.get_value_as_varchar2(
+                                      p_data_type => l_column_value_list(l_description_4_col_no).data_type,
+                                      p_value     => l_column_value_list(l_description_4_col_no).value_list(l_row_num) ),
+                                  false ),0,2000);
+                  end if;
+      
+                  -- Start of the actual rendering code.
+                  if c_group_type = 'D' then
+                      if l_last_group != to_char(l_date,'YYYYMM') then
+                          l_last_group := to_char(l_date,'YYYYMM');
+      
+                          if l_count > 1 then
+                              -- Not the first row; close the previous group.
+                              sys.htp.p('</ul></div>');
+                          end if;
+      
+                          sys.htp.p('<div class="t-StatusList-block">');
+                          sys.htp.p('<div class="t-StatusList-blockHeader"><span class="t-StatusList-headerTextPrimary">'||trim(to_char(l_date,'Month'))||
+                              '</span><span class="t-StatusList-headerTextAlt">'||to_char(l_date,'YYYY')||'</span></div>');
+                          sys.htp.p('<ul class="t-StatusList-list">');
+                      end if;
+                  else
+                      if l_last_group != l_group then
+                          l_last_group := l_group;
+                          if l_count > 1 then
+                              -- Not the first row; close the previous group.
+                              sys.htp.p('</ul></div>');
+                          end if;
+      
+                          sys.htp.p('<div class="t-StatusList-block" aria-labelledby="tl_'||trim(l_group)||'">');
+                          sys.htp.p('<div class="t-StatusList-blockHeader" id="tl_'||trim(l_group)||'">'
+                              ||'<span class="t-StatusList-headerTextPrimary">'||trim(l_group)||'</span></div>');
+                          sys.htp.p('<ul class="t-StatusList-list">');
+                      end if;
+                  end if;
+      
+                  if l_color_col_no is not null then
+                      -- Limit it down to the colors we support.
+                      l_color := lower(l_color);
+                      if l_color = 'red' then
+                          l_color := 'is-danger';
+                      elsif l_color = 'black' then
+                          l_color := 'is-complete';
+                      elsif l_color = 'blue' then
+                          l_color := 'is-info';
+                      elsif l_color = 'yellow' then
+                          l_color := 'is-warning';
+                      elsif l_color = 'green' then
+                          l_color := 'is-success';
+                      end if;
+      
+                      l_colors(l_color) := l_color_label;
+                  end if;
+      
+                  if c_group_type = 'D' then
+                      sys.htp.p('<li class="t-StatusList-item '||l_color||'" aria-label="'
+                          ||to_char(l_date,'Month fmDD, YYYY')||'" aria-describedby="tl_'||to_char(l_date,'DD_MON_YYYY')||'">'
+                          ||'<div class="t-StatusList-itemMarker">');
+      
+                      if l_last_day is null or to_char(l_date,'YYYYMMDD') != l_last_day
+                      then
+                          sys.htp.p('<span class="t-StatusList-marker" role="presentation">'
+                              ||to_char(l_date,'fmDD')||'</span>');
+                      end if;
+      
+                      sys.htp.p('</div>');
+      
+                      l_last_day := to_char(l_date, 'YYYYMMDD');
+      
+                      sys.htp.p('<div class="t-StatusList-itemBody" id="tl_'||to_char(l_date,'DD_MON_YYYY')||'_'||l_count||'_'|| p_region.static_id ||'">');
+                  else
+                      sys.htp.p('<li class="t-StatusList-item '||l_color||'" aria-label="'
+                          ||trim(l_title)||'" aria-describedby="tl_'||trim(l_title)||'">'
+                          ||'<div class="t-StatusList-itemMarker">'
+                          ||'<span class="t-StatusList-marker" role="presentation">'
+                          ||trim(l_title)||'</span></div>');
+      
+                      sys.htp.p('<div class="t-StatusList-itemBody" id="tl_'||trim(l_title)||'_'||l_count||'">');
+                  end if;
+      
+                  sys.htp.p('<h3 class="t-StatusList-itemTitle">'
+                      ||case when l_link is null then l_title
+                          else '<a href="'||apex_util.prepare_url(l_link)||'">'||l_title||'</a>'
+                          end
+                      ||'</h3>');
+      
+                  if l_row1_attr1_lbl is not null or l_row1_attr1_val is not null
+                          or l_row1_attr2_lbl is not null or l_row1_attr2_val is not null then
+                      sys.htp.prn('<div class="t-StatusList-itemAttrs">');
+      
+                      if l_status is not null then
+                          sys.htp.p('<span class="t-Badge t-Badge--basic t-Badge--xsmall '
+                              ||l_color||'">'||l_status||'</span>');
+                      end if;
+      
+                      if l_row1_attr1_lbl is not null and l_row1_attr1_val is not null then
+                          sys.htp.prn('<span class="t-StatusList-attr"><span class="t-StatusList-attrLabel">'||l_row1_attr1_lbl||'</span> '
+                              ||'<span class="t-StatusList-attrValue">'||l_row1_attr1_val||'</span></span>');
+                      elsif l_row1_attr1_lbl is null and l_row1_attr1_val is not null then
+                          sys.htp.prn('<span class="t-StatusList-attrValue">'||l_row1_attr1_val||'</span></span>');
+                      elsif l_row1_attr1_lbl is not null and l_row1_attr1_val is null then
+                          sys.htp.prn('<span><span class="t-StatusList-attrLabel"></span></span>');
+                      else
+                          -- No attr1.
+                          null;
+                      end if;
+      
+                      if l_row1_attr2_lbl is not null and l_row1_attr2_val is not null then
+                          sys.htp.prn('<span class="t-StatusList-attr"><span class="t-StatusList-attrLabel">'||l_row1_attr2_lbl||'</span> '
+                              ||'<span class="t-StatusList-attrValue">'||l_row1_attr2_val||'</span></span>');
+                      elsif l_row1_attr2_lbl is null and l_row1_attr2_val is not null then
+                          sys.htp.prn('<span class="t-StatusList-attrValue">'||l_row1_attr2_val||'</span></span>');
+                      elsif l_row1_attr2_lbl is not null and l_row1_attr2_val is null then
+                          sys.htp.prn('<span class="t-StatusList-attr"><span class="t-StatusList-attrLabel"></span></span>');
+                      else
+                          -- No attr2.
+                          null;
+                      end if;
+                      -- sys.htp.prn('</div>');
+                  end if;
+      
+                  if l_row2_attr1_lbl is not null or l_row2_attr1_val is not null
+                          or l_row2_attr2_lbl is not null or l_row2_attr2_val is not null then
+                      -- sys.htp.prn('<p>');
+                      if l_row2_attr1_lbl is not null and l_row2_attr1_val is not null then
+                          sys.htp.prn('<span class="t-StatusList-attr"><span class="t-StatusList-attrLabel">'||l_row2_attr1_lbl||'</span> '
+                              ||'<span class="t-StatusList-attrValue">'||l_row2_attr1_val||'</span></span>');
+                      elsif l_row2_attr1_lbl is null and l_row2_attr1_val is not null then
+                          sys.htp.prn('<span class="t-StatusList-attrValue">'||l_row2_attr1_val||'</span></span>');
+                      elsif l_row2_attr1_lbl is not null and l_row2_attr1_val is null then
+                          sys.htp.prn('<span class="t-StatusList-attr"><span class="t-StatusList-attrLabel"></span></span>');
+                      else
+                          -- No attr3.
+                          null;
+                      end if;
+      
+                      if l_row2_attr2_lbl is not null and l_row2_attr2_val is not null then
+                          sys.htp.prn('<span class="t-StatusList-attr"><span class="t-StatusList-attrLabel">'||l_row2_attr2_lbl||'</span> '
+                              ||'<span class="t-StatusList-attrValue">'||l_row2_attr2_val||'</span></span>');
+                      elsif l_row2_attr2_lbl is null and l_row2_attr2_val is not null then
+                          sys.htp.prn('<span class="t-StatusList-attrValue">'||l_row2_attr2_val||'</span></span>');
+                      elsif l_row2_attr2_lbl is not null and l_row2_attr2_val is null then
+                          sys.htp.prn('<span class="t-StatusList-attr"><span class="t-StatusList-attrLabel"></span></span>');
+                      else
+                          -- No attr4.
+                          null;
+                      end if;
+                      sys.htp.prn('</div>');
+                  end if;
+      
+                  if l_description_1 is not null then
+                      sys.htp.prn('<p class="t-StatusList-textDesc">'||l_description_1||'</p>');
+                  end if;
+      
+                  if l_description_2 is not null then
+                      sys.htp.prn('<p class="t-StatusList-textDesc">'||l_description_2||'</p>');
+                  end if;
+      
+                  if l_description_3 is not null then
+                      sys.htp.prn('<p class="t-StatusList-textDesc">'||l_description_3||'</p>');
+                  end if;
+      
+                  if l_description_4 is not null then
+                      sys.htp.prn('<p class="t-StatusList-textDesc">'||l_description_4||'</p>');
+                  end if;
+      
+                  sys.htp.prn('</div></li>');
+              end if;
+          end loop;
+          if l_count > 0 then
+              -- Close the HTML.
+              sys.htp.p('</ul></div>');
+      
+              -- Print Legend
+              if l_color_label_col_no is not null then
+                  sys.htp.p('<div class="t-StatusList-legend" style="padding: 8px; border-top: 1px solid rgba(0,0,0,.05); font-size: 11px;">');
+                  sys.htp.p('  <strong>Status Color Coding:</strong>');
+                  l_color_idx := l_colors.first;
+                  while l_color_idx is not null loop
+                      if l_colors(l_color_idx) is not null then
+                          sys.htp.p('  <span class="t-Badge t-Badge--basic t-Badge--small '||apex_escape.html(p_string => l_color_idx)||'">'||apex_escape.html(p_string => l_colors(l_color_idx))||'</span>');
+                      end if;
+                      l_color_idx := l_colors.next( l_color_idx );
+                  end loop;
+                  sys.htp.p('</div>');
+              end if;
+          else
+              sys.htp.p('<span class="nodatafound">'||l_no_data_found||'</span>');
+          end if;
+          sys.htp.p('</div>');
+      end render_list_calendar;
+      
+      function render ( p_region in apex_plugin.t_region,
+          p_plugin in apex_plugin.t_plugin, p_is_printer_friendly in boolean )
+          return apex_plugin.t_region_render_result is
+      begin
+          sys.htp.p('<div id="' || p_region.static_id || '_inner">');
+          render_list_calendar( p_region );
+          sys.htp.p('</div>');
+          
+          /* 
+          apex_javascript.add_onload_code (
+              p_code => '(function( apex, util, server, $ ){
+        window.com_oracle_apex_timeline_status_list = function( regionId, details ) {
+          function _clear() {
+            _inner$.empty();
+          }
+          function _render( markup ) {
+            _inner$.html( markup );
+          }
+          function _debug( error ) {
+                  if ( error.status >= 200 && error.status < 300 ) {
+                      _render( error.responseText );
+                  } else {
+                      debugger;
+                  }
+          }
+          function _refresh() {
+            server.plugin( details.ajaxIdentifier, { pageItems : details.pageItems }, {
+              refreshObject : _region$,
+              clear : _clear,
+              success : _render,
+              error : _debug,
+              loadingIndicator : _inner$,
+              loadingIndicatorPosition : "append"
+            });
+          }
+      
+          var _region$ = $( "#" + regionId );
+              var _inner$ = $( "#" + details.innerRegionId );
+          _region$.on( "apexrefresh", _refresh );
+        }
+      })( apex, apex.util, apex.server, apex.jQuery );'
+          );
+          */
+          
+          apex_javascript.add_onload_code (
+              p_code => '(function(){ var a = com_oracle_apex_timeline_status_list(' ||
+                  apex_javascript.add_value(p_region.static_id) ||
+                  '{' ||
+                      apex_javascript.add_attribute('innerRegionId',  p_region.static_id || '_inner' ) ||
+                      apex_javascript.add_attribute('pageItems',      apex_plugin_util.page_item_names_to_jquery(p_region.ajax_items_to_submit)) ||
+                      apex_javascript.add_attribute('ajaxIdentifier', apex_plugin.get_ajax_identifier, false, false) ||
+                  '});})()' );
+          return null;
+      end render;
+      
+      function ajax (
+          p_region in apex_plugin.t_region,
+          p_plugin in apex_plugin.t_plugin )
+          return apex_plugin.t_region_ajax_result is
+      begin
+          render_list_calendar( p_region );
+          return null;
+      end ajax;
+
+  callbacks: 
+    api-interface: Function
+    render-procedure/function-name: render
+    ajax-procedure/function-name: ajax
+
+  standard-attributes: 
+    attributes: 
+    - Region Source is SQL Statement [Deprecated]
+    - Has "Page Items to Submit" Attribute
+    - Has "Number of Fetched Rows" Attribute
+    - Has "No Data Found Message" Attribute
+    - Has "Escape Special Characters" Region Attribute
+    - Has "Region Columns"
+    - Has "Heading" Column Attribute
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  files: 
+    file-prefix: '#IMAGE_PREFIX#plugins/com.oracle.apex.timelinestatuslist/1.2/'
+
+  javascript: 
+    file-urls: 
+    - '#PLUGIN_FILES#timelinestatuslist#MIN#.js'
+
+  information: 
+    version: 5.1
+    help-text: |
+      <p>Timeline and Status lists are useful for displaying a region with calendar dates and summary information. </p>
+      <p>This plug-in is suitable for adding to Master / Detail pages to show important summary information with dates.</p>
+
+  standard-attributes: 
+  - # ====== Standard Attribute: SOURCE_SQL ======================
+    id: 170911527917981179
+    identification: 
+      name: SOURCE_SQL
+
+    value: 
+      required: true
+
+    settings: 
+      minimum-columns: 3
+
+  custom-attributes: 
+  - # ====== Custom Attribute: Group By Column ===================
+    id: 170903670319981169
+    identification: 
+      static-id: attribute_01
+      attribute: 1
+      name: Group By Column
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      data-types: 
+      - Varchar2
+      - Number
+      - Date
+      - Timestamp
+      - Timestamp with Time Zone
+      - Timestamp with Local Time Zone
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds the column the report will be grouped by.
+
+  - # ====== Custom Attribute: Color Column ======================
+    id: 170904006266981169
+    identification: 
+      static-id: attribute_02
+      attribute: 2
+      name: Color Column
+      scope: Component
+
+    layout: 
+      sequence: 120
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds the color for the list.
+
+  - # ====== Custom Attribute: Title Column ======================
+    id: 170904393062981170
+    identification: 
+      static-id: attribute_03
+      attribute: 3
+      name: Title Column
+      scope: Component
+
+    layout: 
+      sequence: 30
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds the title for each grouping.
+
+  - # ====== Custom Attribute: Link Column =======================
+    id: 170904821796981170
+    identification: 
+      static-id: attribute_04
+      attribute: 4
+      name: Link Column
+      scope: Component
+
+    layout: 
+      sequence: 40
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds the link for each record.
+
+  - # ====== Custom Attribute: First Value =======================
+    id: 170905245944981170
+    identification: 
+      static-id: attribute_05
+      attribute: 5
+      name: First Value
+      scope: Component
+
+    layout: 
+      sequence: 50
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds the first value to be displayed in the report.
+
+  - # ====== Custom Attribute: Second Value ======================
+    id: 170905678365981170
+    identification: 
+      static-id: attribute_06
+      attribute: 6
+      name: Second Value
+      scope: Component
+
+    layout: 
+      sequence: 60
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds the second value to be displayed in the report.
+
+  - # ====== Custom Attribute: Third Value =======================
+    id: 170905988554981171
+    identification: 
+      static-id: attribute_07
+      attribute: 7
+      name: Third Value
+      scope: Component
+
+    layout: 
+      sequence: 70
+
+    settings: 
+      type: Region SQL Statement Column
+      common: false
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds the third value to be displayed in the report.
+
+  - # ====== Custom Attribute: Fourth Value ======================
+    id: 170906479171981171
+    identification: 
+      static-id: attribute_08
+      attribute: 8
+      name: Fourth Value
+      scope: Component
+
+    layout: 
+      sequence: 80
+
+    settings: 
+      type: Region SQL Statement Column
+      common: false
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds the fourth value to be displayed in the report.
+
+  - # ====== Custom Attribute: Primary Description ===============
+    id: 170906825443981171
+    identification: 
+      static-id: attribute_09
+      attribute: 9
+      name: Primary Description
+      scope: Component
+
+    layout: 
+      sequence: 90
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds the primary description to be displayed in the report.
+
+  - # ====== Custom Attribute: Secondary Description =============
+    id: 170907202903981176
+    identification: 
+      static-id: attribute_10
+      attribute: 10
+      name: Secondary Description
+      scope: Component
+
+    layout: 
+      sequence: 100
+
+    settings: 
+      type: Region SQL Statement Column
+      common: false
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds the secondary description to be displayed in the report.
+
+  - # ====== Custom Attribute: Additional Description (with HTML) 
+    id: 170907682323981176
+    identification: 
+      static-id: attribute_11
+      attribute: 11
+      name: Additional Description (with HTML)
+      scope: Component
+
+    layout: 
+      sequence: 110
+
+    settings: 
+      type: Region SQL Statement Column
+      common: false
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds an additional description to be displayed in the report, which allows HTML content.
+
+  - # ====== Custom Attribute: Display As ========================
+    id: 170908000100981177
+    identification: 
+      static-id: attribute_12
+      attribute: 12
+      name: Display As
+      scope: Component
+
+    layout: 
+      sequence: 5
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    default: 
+      value: D
+
+    help: 
+      help-text: Select whether the region should be displayed as a timeline, based on a given date, or a list.
+
+    entries: 
+    - # ====== Entry: Timeline =====================================
+      id: 170908435896981177
+      entry: 
+        sequence: 10
+        display: Timeline
+        return: D
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Status List ==================================
+      id: 170908902213981177
+      entry: 
+        sequence: 20
+        display: Status List
+        return: L
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Status Column =====================
+    id: 170909438405981177
+    identification: 
+      static-id: attribute_13
+      attribute: 13
+      name: Status Column
+      scope: Component
+
+    layout: 
+      sequence: 20
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds the status to be displayed in the report.
+
+  - # ====== Custom Attribute: Color Label =======================
+    id: 170909804707981178
+    identification: 
+      static-id: attribute_14
+      attribute: 14
+      name: Color Label
+      scope: Component
+
+    layout: 
+      sequence: 140
+
+    settings: 
+      type: Region SQL Statement Column
+      common: true
+      show-in-wizard: false
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    condition: 
+      depending-on-custom-attribute: Color Column # 170904006266981169
+      depending-on-condition-type: NOT_NULL
+      always-evaluate: true
+
+  - # ====== Custom Attribute: Second Additional Description (with
+    id: 170910282337981178
+    identification: 
+      static-id: attribute_15
+      attribute: 15
+      name: Second Additional Description (with HTML)
+      scope: Component
+
+    layout: 
+      sequence: 115
+
+    settings: 
+      type: Region SQL Statement Column
+      common: false
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+
+    help: 
+      help-text: Select the column from the region SQL Query that holds an additional description to be displayed in the report, which allows HTML content.
+
+- # ====== Plugin: Tag Cloud ===================================
+  id: 10074172349203869160
+  identification: 
+    name: Tag Cloud
+    internal-name: COM.ORACLE.APEX.TAG_CLOUD
+    type: Region
+
+  advanced: 
+    quick-pick: false
+
+  subscription: 
+    master: 
+      referenced-id: 7838196871864100925
+
+    subscribe-component-settings: true
+
+  source: 
+    pl/sql-code: |
+      function render (
+          p_region              in apex_plugin.t_region,
+          p_plugin              in apex_plugin.t_plugin,
+          p_is_printer_friendly in boolean )
+          return apex_plugin.t_region_render_result
+      is
+          -- Constants for the columns of our region source query
+          c_tag_col   constant pls_integer := 1;
+          c_count_col constant pls_integer := 2;
+      
+          -- attributes of the plug-in
+          l_target_url           varchar2(4000)  := p_region.attribute_01;
+          l_max_display_tags     number          := p_region.attribute_02;
+          l_show_count           boolean         := nvl(p_region.attribute_03,'Y') = 'Y';
+          l_no_data_found     varchar2(32767) := p_region.no_data_found_message;
+      
+          l_valid_data_type_list wwv_flow_global.vc_arr2;
+          l_column_value_list    apex_plugin_util.t_column_value_list2;
+          l_printed_records    number := 0;
+          l_available_records  number := 20;
+          l_max                number;
+          l_min                number;
+          l_total              number := 0;
+          l_cnts               number;
+          l_tag                varchar2(4000);
+      
+          l_class_size         number;
+          l_class              varchar2(30);
+      
+      begin
+          -- don't need to load css file, styles are contained within theme_42
+          
+          -- apex_css.add_file (
+          --     p_name      => 'tag_cloud',
+          --     p_directory => p_plugin.file_prefix,
+          --     p_version   => null );
+      
+      
+          -- define the valid column data types for the region query
+          l_valid_data_type_list(c_tag_col)   := apex_plugin_util.c_data_type_varchar2;
+          l_valid_data_type_list(c_count_col) := apex_plugin_util.c_data_type_number;
+      
+          -- get the data to be displayed
+          l_column_value_list := apex_plugin_util.get_data2 (
+                                     p_sql_statement  => p_region.source,
+                                     p_min_columns    => 2,
+                                     p_max_columns    => 2,
+                                     p_data_type_list => l_valid_data_type_list,
+                                     p_component_name => p_region.name );
+      
+         l_available_records := l_column_value_list(c_tag_col).value_list.count;
+      
+         -----------------------------------------------
+         -- Determine total count and maximum tag counts
+         --
+         l_max := 0;
+         l_min := 1000;
+         FOR i in 1.. l_column_value_list(c_count_col).value_list.count loop
+            l_cnts := l_column_value_list(c_count_col).value_list(i).number_value;
+            l_total := l_total + l_cnts;
+            if l_cnts > l_max then
+               l_max := l_cnts;
+            end if;
+            if l_cnts < l_min then
+               l_min := l_cnts;
+            end if;
+         end loop;
+         if l_max = 0 then l_max := 1; end if;
+      
+      
+         l_class_size := round((l_max-l_min)/6);
+      
+         ------------------------
+         -- Generate tag cloud --
+         --
+         
+         sys.htp.prn('<ul class="a-TagCloud">');
+      
+         for i in 1.. l_column_value_list(c_tag_col).value_list.count loop
+             l_printed_records := l_printed_records + 1;
+             l_tag := apex_escape.html(l_column_value_list(c_tag_col).value_list(i).varchar2_value);
+             l_cnts := l_column_value_list(c_count_col).value_list(i).number_value;
+             if l_cnts < l_min + l_class_size then
+                l_class := 'size1';
+             elsif l_cnts < l_min + (l_class_size*2) then
+                l_class := 'size2';
+             elsif l_cnts < l_min + (l_class_size*3) then
+                l_class := 'size3';
+             elsif l_cnts < l_min + (l_class_size*4) then
+                l_class := 'size4';
+             elsif l_cnts < l_min + (l_class_size*5) then
+                l_class := 'size5';
+             else l_class := 'size6';
+             end if;      
+             
+              sys.htp.prn('<li class="a-TagCloud-item">'
+                  ||apex_plugin_util.get_link(
+                      p_url  => replace(l_target_url,'#TAG#',l_tag),
+                      p_text => l_tag
+                                  ||case when l_show_count then
+                                      ' <span class="a-TagCloud-count">'||l_cnts||'</span>'
+                                  end,
+                      p_escape_text => false,
+                      p_attributes => 'class="a-TagCloud-link a-TagCloud-link--' ||l_class||'"')
+                  ||'</li>');
+      
+             if  l_printed_records > l_max_display_tags then
+                 exit;
+             end if;
+         end loop;
+      
+         sys.htp.prn('</ul>');
+         if l_printed_records = 0 then
+             sys.htp.p('<span class="nodatafound">' || l_no_data_found || '</span>');
+         end if;
+      
+         return null;
+      end render;
+
+  callbacks: 
+    api-interface: Function
+    render-procedure/function-name: render
+
+  standard-attributes: 
+    attributes: 
+    - Region Source is SQL Statement [Deprecated]
+    - Has "No Data Found Message" Attribute
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  information: 
+    version: 5.0.1
+    help-text: <p>Use this region type plug-in to render a tag cloud. The developer supplies a query returning the tag name and count. </p>
+
+  standard-attributes: 
+  - # ====== Standard Attribute: SOURCE_SQL ======================
+    id: 684253527816627160
+    identification: 
+      name: SOURCE_SQL
+
+    value: 
+      required: false
+
+    settings: 
+      minimum-columns: 2
+      maximum-columns: 2
+
+    examples: 
+      examples: |
+        <p>
+        <strong>Example 1: Render tag cloud with all tags.</strong>
+        <pre>
+        select tag, count(*) cnt 
+          from your_tag_table
+         group by tag
+         order by 1
+        </pre>
+        </p>
+        
+        <p>
+        <b>Example 2: Render tag cloud with tags specific to a content type.</b>
+        <pre>
+        select tag, count(*) cnt 
+          from your_tag_table
+         where content_type = 'DOCUMENT'
+         group by tag
+         order by 1
+        </pre>
+        </p>
+        
+
+  custom-attributes: 
+  - # ====== Custom Attribute: Link Target =======================
+    id: 684251724911627158
+    identification: 
+      static-id: attribute_01
+      attribute: 1
+      name: Link Target
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: Link to Target Page/URL
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    help: 
+      help-text: 'Enter a target page to be called when the user clicks a tag. Use the #TAG# substitution for the tag that is clicked.'
+
+    examples: 
+      examples: 'f?p=&APP_ID.:69:&APP_SESSION.::::P69_SEARCH:#TAG#'
+
+  - # ====== Custom Attribute: Maximum Tags ======================
+    id: 684252109844627158
+    identification: 
+      static-id: attribute_02
+      attribute: 2
+      name: Maximum Tags
+      scope: Component
+
+    layout: 
+      sequence: 20
+
+    settings: 
+      type: Integer
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      display-width: 4
+      maximum-length: 4
+
+    help: 
+      help-text: Enter the maximum number of tags to display.
+
+    comments: 
+      comments: Enter the maximum number of tags to display in the region.
+
+  - # ====== Custom Attribute: Show Count ========================
+    id: 684252541803627158
+    identification: 
+      static-id: attribute_03
+      attribute: 3
+      name: Show Count
+      scope: Component
+
+    layout: 
+      sequence: 30
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: Y
+
+    help: 
+      help-text: Select whether to show the tag count next to the tag.
+
+  files: 
+  - # ====== File: tag_cloud.css =================================
+    id: 684254265978627160
+    identification: 
+      file-name: tag_cloud.css
+
+    attributes: 
+      mime-type: text/css
+

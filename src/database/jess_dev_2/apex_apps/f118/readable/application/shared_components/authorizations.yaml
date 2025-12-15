@@ -1,0 +1,105 @@
+---
+- # ====== Authorization: ADMINISTRATION RIGHTS ================
+  id: 3264368191493348877
+  identification: 
+    name: ADMINISTRATION RIGHTS
+
+  subscription: 
+    version-number: 1089051329
+
+  authorization-scheme: 
+    type: PL/SQL Function Returning Boolean
+
+  settings: 
+    pl/sql-function-body: 'return eba_ca.get_authorization_level(:APP_USER) = 3;'
+
+  server-cache: 
+    evaluation-point: Once per Session
+
+  error: 
+    error-message: Insufficient privileges, user is not an Administrator
+
+- # ====== Authorization: APPLICATION SENTRY ===================
+  id: 3264368374772348877
+  identification: 
+    name: APPLICATION SENTRY
+
+  subscription: 
+    version-number: 1089051329
+
+  authorization-scheme: 
+    type: PL/SQL Function Returning Boolean
+
+  settings: 
+    pl/sql-function-body: |
+      begin
+          if :APP_PAGE_ID = 101 then
+              return true;
+          else
+              return (eba_ca.get_authorization_level(:APP_USER) > 0);
+          end if;
+      end;
+
+  server-cache: 
+    evaluation-point: Once per Session
+
+  error: 
+    error-message: You are not authorized to view this application, either because you have not been granted access, or your account has been locked. Please contact the application administrator.
+
+- # ====== Authorization: CONTRIBUTION RIGHTS ==================
+  id: 3264368700663348877
+  identification: 
+    name: CONTRIBUTION RIGHTS
+
+  subscription: 
+    version-number: 1089051329
+
+  authorization-scheme: 
+    type: PL/SQL Function Returning Boolean
+
+  settings: 
+    pl/sql-function-body: 'return eba_ca.get_authorization_level(:APP_USER) >= 2;'
+
+  server-cache: 
+    evaluation-point: Once per Session
+
+  error: 
+    error-message: Insufficient privileges, user is not a Contributor
+
+- # ====== Authorization: is Admin =============================
+  id: 8949845639264631060
+  identification: 
+    name: is Admin
+
+  subscription: 
+    version-number: 1089051329
+
+  authorization-scheme: 
+    type: PL/SQL Function Returning Boolean
+
+  settings: 
+    pl/sql-function-body: |
+      for c1 in (
+         select admin_username
+           from EBA_ca_admins
+          where upper(admin_username) = upper(:APP_USER) )
+      loop
+         return true;
+      end loop;
+      
+      for c2 in (
+         select count(*) admin_cnt
+           from EBA_ca_admins )
+      loop
+         if c2.admin_cnt = 0
+            then return true;
+         else return false;
+         end if;
+      end loop;
+
+  server-cache: 
+    evaluation-point: Once per Session
+
+  error: 
+    error-message: Only Administrators can access these features.
+

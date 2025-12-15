@@ -1,0 +1,166 @@
+---
+- # ====== Upgrade Script: TIMESTAMP Fix (BUGID: 31352674) =====
+  id: 418713186585788884
+  identification: 
+    name: 'TIMESTAMP Fix (BUGID: 31352674)'
+
+  execution: 
+    sequence: 120
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: select null from all_tab_cols where table_name like 'EBA_CA_%' and data_type = 'TIMESTAMP(6) WITH LOCAL TIME ZONE'
+
+- # ====== Upgrade Script: Set First Run Preference ============
+  id: 1177708957205021511
+  identification: 
+    name: Set First Run Preference
+
+  execution: 
+    sequence: 60
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: |
+      select null
+        from eba_ca_preferences
+       where preference_name = 'FIRST_RUN';
+
+- # ====== Upgrade Script: Framework Body ======================
+  id: 1336340969433420085
+  identification: 
+    name: Framework Body
+
+  execution: 
+    sequence: 10
+
+- # ====== Upgrade Script: Username Format Preference ==========
+  id: 1447192770490910013
+  identification: 
+    name: Username Format Preference
+
+  execution: 
+    sequence: 20
+
+- # ====== Upgrade Script: Remove Help Table ===================
+  id: 1458472076338344402
+  identification: 
+    name: Remove Help Table
+
+  execution: 
+    sequence: 30
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select table_name
+      from user_tables
+      where table_name = 'EBA_CA_HELP_PAGE'
+
+- # ====== Upgrade Script: Framework Package ===================
+  id: 1458472470235352039
+  identification: 
+    name: Framework Package
+
+  execution: 
+    sequence: 5
+
+- # ====== Upgrade Script: Update event types ==================
+  id: 1641083468257087616
+  identification: 
+    name: Update event types
+
+  execution: 
+    sequence: 70
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: |
+      select column_name
+      from user_tab_columns
+      where table_name = 'EBA_CA_EVENT_TYPES'
+          and column_name = 'INTERNAL_YN'
+
+- # ====== Upgrade Script: Adding Multi-Calendar Mode ==========
+  id: 1865854707051817415
+  identification: 
+    name: Adding Multi-Calendar Mode
+
+  execution: 
+    sequence: 35
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: |
+      select null
+      from user_tables
+      where table_name = 'EBA_CA_CALENDARS';
+
+- # ====== Upgrade Script: eba_ca_api spec =====================
+  id: 1865862178730835480
+  identification: 
+    name: eba_ca_api spec
+
+  execution: 
+    sequence: 80
+
+- # ====== Upgrade Script: eba_ca_api body =====================
+  id: 1865862641317841856
+  identification: 
+    name: eba_ca_api body
+
+  execution: 
+    sequence: 90
+
+- # ====== Upgrade Script: remove eba_ca_admins (not used) =====
+  id: 1865863272535854128
+  identification: 
+    name: remove eba_ca_admins (not used)
+
+  execution: 
+    sequence: 100
+
+- # ====== Upgrade Script: eba_ca package ======================
+  id: 1886659105921242368
+  identification: 
+    name: eba_ca package
+
+  execution: 
+    sequence: 110
+
+- # ====== Upgrade Script: Sample Data Package =================
+  id: 2005634612649089925
+  identification: 
+    name: Sample Data Package
+
+  execution: 
+    sequence: 40
+
+- # ====== Upgrade Script: More Event Colors ===================
+  id: 2573961931076323447
+  identification: 
+    name: More Event Colors
+
+  execution: 
+    sequence: 50
+
+  server-side-condition: 
+    type: Function Body
+    language: PL/SQL
+    pl/sql-function-body: |
+      declare
+          l_cnt    pls_integer;
+          l_retval boolean := true;
+      begin
+          select count(*)
+            into l_cnt
+            from eba_ca_color_prefs
+           where color_name in ('Black', 'Darkblue', 'Bluesky', 'Brown', 'Cyan', 'Lime', 'Silver', 'Yellow');
+      
+          if l_cnt > 0 then
+              l_retval := false;
+          end if;
+      
+          return l_retval;
+      end;
+

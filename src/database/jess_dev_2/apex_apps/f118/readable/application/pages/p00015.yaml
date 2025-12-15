@@ -1,0 +1,1928 @@
+---
+# ====== Page: Send Email ====================================
+id: 15
+identification: 
+  name: Send Email
+  alias: SEND-EMAIL
+  title: Send Email
+  page-group: Administration # 8949833037355592644
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: false
+
+security: 
+  authorization-scheme: ADMINISTRATION RIGHTS # 3264368191493348877
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: |
+    <ol>
+      <li>Use the filter to select the set of events to be included.</li>
+      <li>Select the group to send email to and/or enter email addresses separated by commas.</li>
+      <li>Customize the from, subject and message body.</li>
+      <li>Click [Send Email].</li>
+    </ol>
+    <p>Emails can be sent to other app users.  The set of events will be appended to the message body.  The 'From' email address will be carbon-copied on the email.
+    </p>
+
+regions: 
+- # ====== Region: Email Functionality Disabled ================
+  id: 141503812162394431
+  identification: 
+    name: Email Functionality Disabled
+    type: Static Content
+
+  source: 
+    html-code: This form uses the current end-user's email address as the "From" email address for the emails it sends. We were unable to derive your email address, therefore this form cannot be used. Please ensure your APEX account has a valid email address defined or change the app's authentication method to one that uses email addresses as usernames.
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Alert
+    template-options: 
+    - '#DEFAULT#'
+    - t-Alert--colorBG
+    - t-Alert--horizontal
+    - t-Alert--defaultIcons
+    - t-Alert--danger
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "not regexp_like(:P15_FROM, '^[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~](\\.?[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~])*@(-?[a-zA-Z0-9+])+(\\.(-?[a-zA-Z0-9+])*)+$')"
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Events to be Included =======================
+  id: 8023516752659499835
+  identification: 
+    name: Events to be Included
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select e.EVENT_ID,
+             event_name,
+             et.type_name || decode(:EXTERNAL_INTERNAL_BO, 'Include', decode(internal_yn, 'Y', ' (Internal Only)', null), null) event_type,
+             e.EVENT_DATE_TIME event_date,
+             case when to_char(e.EVENT_DATE_TIME,'MI') = '00' 
+                  then ltrim(to_char(e.EVENT_DATE_TIME,'HHam'),'0')
+                  else ltrim(to_char(e.EVENT_DATE_TIME,'HH:MIam'),'0')
+                  end start_time,
+             case when to_char(to_date(to_char(EVENT_DATE_TIME,'DD-MON-RR'||'HH:MIam'),
+                               'DD-MON-RR'||'HH:MIam')+(e.duration/24),'MI') = '00'
+                  then ltrim(to_char(to_date(to_char(EVENT_DATE_TIME,'DD-MON-RR'||'HH:MIam'),
+                               'DD-MON-RR'||'HH:MIam')+(e.duration/24),'HHam'),'0')
+                  else ltrim(to_char(to_date(to_char(EVENT_DATE_TIME,'DD-MON-RR'||'HH:MIam'),
+                               'DD-MON-RR'||'HH:MIam')+(e.duration/24),'HH:MIam'),'0')
+                  end end_time,
+             case when e.duration = 0  then '0 mins'
+                  when e.duration = .25 then '15 mins'
+                  when e.duration = .5 then '30 mins'
+                  when e.duration = .75 then '45 mins'
+                  when e.duration = 1 then '1 hr'
+                  when e.duration > 1 then to_char(trunc(e.duration)) || ' hrs'
+                    || case when e.duration - trunc(e.duration) = 0  then ''
+                            when e.duration - trunc(e.duration) = .25 then ' 15 mins'
+                            when e.duration - trunc(e.duration) = .5 then ' 30 mins'
+                            when e.duration - trunc(e.duration) = .75 then ' 45 mins'
+                       end
+                  end duration,
+             e.EVENT_DESC
+        from EBA_CA_EVENTS e,
+             EBA_CA_EVENT_TYPES et
+       where (:EXTERNAL_INTERNAL_BO = 'Exclude'
+              or (   nvl(internal_yn, 'N') = 'N'
+                  or upper(:APP_USER) in (select upper(username) from eba_ca_users)
+                 )
+             )
+         and e.type_id = et.type_id (+)
+         and (:P15_EVENT_TYPE is null or e.type_id = :P15_EVENT_TYPE)
+         and (:P15_START_DATE is null or 
+              trunc(to_date(to_char(e.event_date_time,'&APP_DATE_FORMAT.'),
+                    '&APP_DATE_FORMAT.')) >= to_date(:P15_START_DATE,'&APP_DATE_FORMAT.') )
+         and (:P15_END_DATE is null or 
+              trunc(to_date(to_char(e.event_date_time,'&APP_DATE_FORMAT.'),
+                    '&APP_DATE_FORMAT.')) <= to_date(:P15_END_DATE,'&APP_DATE_FORMAT.') )
+         and (:P15_TIMEFRAME is null or
+              (trunc(to_date(to_char(e.event_date_time,'DD-MON-RRRR'),'DD-MON-RRRR'))
+                  >= (select start_date from EBA_ca_timeframes
+                       where :P15_TIMEFRAME = tf_id) and
+               trunc(to_date(to_char(e.event_date_time,'DD-MON-RRRR'),'DD-MON-RRRR'))
+                  <= (select end_date from EBA_ca_timeframes
+                       where :P15_TIMEFRAME = tf_id)))
+       order by e.event_date_time
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--hiddenOverflow
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--inline
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: Search Engine 1,2,3,4 (set based pagination)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    messages: 
+      when-no-data-found: No events found.
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: START_TIME ==================================
+    id: 7418784943929026647
+    identification: 
+      column-name: START_TIME
+      type: Plain Text
+
+    heading: 
+      heading: Timing
+      alignment: start
+
+    layout: 
+      sequence: 3
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    column-formatting: 
+      html-expression: '#START_TIME# - #END_TIME# (#DURATION#)'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: END_TIME ====================================
+    id: 7418785044382026648
+    identification: 
+      column-name: END_TIME
+      type: Hidden
+
+    layout: 
+      sequence: 4
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DURATION ====================================
+    id: 7418785136615026648
+    identification: 
+      column-name: DURATION
+      type: Hidden
+
+    layout: 
+      sequence: 5
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EVENT_ID ====================================
+    id: 8023517060696499837
+    identification: 
+      column-name: EVENT_ID
+      type: Hidden
+
+    layout: 
+      sequence: 2
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EVENT_NAME ==================================
+    id: 8023517175774499839
+    identification: 
+      column-name: EVENT_NAME
+      type: Plain Text
+
+    heading: 
+      heading: Name
+      alignment: start
+
+    layout: 
+      sequence: 6
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EVENT_TYPE ==================================
+    id: 8023517264155499839
+    identification: 
+      column-name: EVENT_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Type
+      alignment: start
+
+    layout: 
+      sequence: 7
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EVENT_DATE ==================================
+    id: 8023517364906499839
+    identification: 
+      column-name: EVENT_DATE
+      type: Plain Text
+
+    heading: 
+      heading: Event Date
+      alignment: start
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: '&APP_DATE_FORMAT.'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EVENT_DESC ==================================
+    id: 8023517647664499839
+    identification: 
+      column-name: EVENT_DESC
+      type: Plain Text
+
+    heading: 
+      heading: Description
+      alignment: start
+
+    layout: 
+      sequence: 8
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Filter ======================================
+  id: 8023525673972514236
+  identification: 
+    name: Filter
+    type: Static Content
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hiddenOverflow
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 8035427376284006801
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: ' Breadcrumb' # 8949803322316567820
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Email Details ===============================
+  id: 8036284471387677136
+  identification: 
+    name: Email Details
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hiddenOverflow
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    custom-attributes: 
+    - 'style="width:'
+    - 99%;
+    - 'min-width:'
+    - 99%"
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P15_FROM =================================
+  id: 7429421819630615654
+  identification: 
+    name: P15_FROM
+    type: Text Field
+
+  label: 
+    label: From
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 40
+    region: Email Details # 8036284471387677136
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "regexp_like(:P15_FROM, '^[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~](\\.?[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~])*@(-?[a-zA-Z0-9+])+(\\.(-?[a-zA-Z0-9+])*)+$')"
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Who the email will be sent from.
+
+- # ====== Page Item: P15_TO ===================================
+  id: 7435364824559765108
+  identification: 
+    name: P15_TO
+    type: Popup LOV
+
+  label: 
+    label: To (emails)
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 30
+    region: Email Details # 8036284471387677136
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      select
+          a.email as dv,
+          a.email as rv
+      from
+          eba_ca_users u,
+          apex_workspace_apex_users a
+      where
+          lower(u.username) = lower(a.user_name);
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select
+          null
+      from
+          eba_ca_users u,
+          apex_workspace_apex_users a
+      where
+          lower(u.username) = lower(a.user_name);
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Addresses to email.  Multiple addresses can be selected.
+
+- # ====== Page Item: P15_START_DATE ===========================
+  id: 8023522162198510840
+  identification: 
+    name: P15_START_DATE
+    type: Date Picker
+
+  label: 
+    label: From
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 80
+    region: Filter # 8023525673972514236
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: '&APP_DATE_FORMAT.'
+    width: 16
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: If entered, Events before this date will not be included.
+
+- # ====== Page Item: P15_END_DATE =============================
+  id: 8023563457658556864
+  identification: 
+    name: P15_END_DATE
+    type: Date Picker
+
+  label: 
+    label: Until
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 90
+    region: Filter # 8023525673972514236
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: '&APP_DATE_FORMAT.'
+    width: 16
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: If entered, Events after this date will not be included.
+
+- # ====== Page Item: P15_EVENT_TYPE ===========================
+  id: 8023566376358562221
+  identification: 
+    name: P15_EVENT_TYPE
+    type: Select List
+
+  label: 
+    label: Type
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 60
+    region: Filter # 8023525673972514236
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: EVENT TYPES FOR MAIN CAL # 7977644959494043344
+    display-extra-values: true
+    display-null-value: true
+    null-display-value: '- All -'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: If selected, only events of this type will be included.
+
+- # ====== Page Item: P15_GROUP_ID =============================
+  id: 8036285363553684371
+  identification: 
+    name: P15_GROUP_ID
+    type: Select List
+
+  label: 
+    label: To (group)
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Email Details # 8036284471387677136
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: 7
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: EMAIL GROUPS WITH CNT # 8036295147931727163
+    display-extra-values: true
+    display-null-value: true
+    null-display-value: '- Select Group -'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Never
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: The email group that the email will be sent to.  The can be in addition to email addresses identified in the 'To' or instead of.
+
+  comments: 
+    comments: |
+      select
+          1
+      from
+          (
+              select g.group_id,
+                     g.group_name name,
+                     count(*) cnt    
+                from EBA_ca_email_groups g, 
+                     EBA_ca_email_group_mbrs m
+               where m.group_id = g.group_id
+               group by g.group_id, g.group_name
+          ) v1
+      where
+          v1.cnt > 0
+
+- # ====== Page Item: P15_SUBJECT ==============================
+  id: 8036285748100689308
+  identification: 
+    name: P15_SUBJECT
+    type: Text Field
+
+  label: 
+    label: Subject
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Email Details # 8036284471387677136
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    width: 64
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: Please review the following events
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: The subject line for the email.
+
+- # ====== Page Item: P15_MSG_BODY =============================
+  id: 8036289060136711729
+  identification: 
+    name: P15_MSG_BODY
+    type: Textarea
+
+  label: 
+    label: Message
+    alignment: Left
+
+  settings: 
+    resizable: false
+    auto-height: false
+    character-counter: false
+    trim-spaces: None
+
+  layout: 
+    sequence: 60
+    region: Email Details # 8036284471387677136
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    width: 90
+    height: 4
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: Below is a set of events for your review.  If updates are necessary, please let me know.
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Enter the body of your email.  A table including the selected events will be included below the text.
+
+- # ====== Page Item: P15_TIMEFRAME ============================
+  id: 8072452469734728043
+  identification: 
+    name: P15_TIMEFRAME
+    type: Select List
+
+  label: 
+    label: Timeframe
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 70
+    region: Filter # 8023525673972514236
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: TIMEFRAMES (SHOWING DATES) # 8044249159643010489
+    display-extra-values: true
+    display-null-value: true
+    null-display-value: '- None -'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+        from EBA_ca_timeframes
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Select Reporting Timeframe to restrict the report.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 1900907315656602999
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 120
+    region: Breadcrumb # 8035427376284006801
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:&LAST_VIEW.:&SESSION.::&DEBUG.:RP::'
+      page: '&LAST_VIEW.'
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: MEMBERS =====================================
+  id: 2444534343289634753
+  identification: 
+    button-name: MEMBERS
+    label: View Members
+
+  layout: 
+    sequence: 20
+    region: Email Details # 8036284471387677136
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: 8
+    new-column: true
+    column-span: 5
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--small
+    - t-Button--primary
+    - t-Button--simple
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:20:&SESSION.::&DEBUG.:RP:P20_GROUP_ID:&P15_GROUP_ID.'
+      page: 20 # Group Members
+      clear-cache: RP
+      values: 
+        p20_group_id: '&P15_GROUP_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  advanced: 
+    custom-attributes: 
+    - 'style="margin-top:8px;"'
+
+  server-side-condition: 
+    type: Never
+
+  comments: 
+    comments: |
+      select
+          1
+      from
+          (
+              select g.group_id,
+                     g.group_name name,
+                     count(*) cnt    
+                from EBA_ca_email_groups g, 
+                     EBA_ca_email_group_mbrs m
+               where m.group_id = g.group_id
+               group by g.group_id, g.group_name
+          ) v1
+      where
+          v1.cnt > 0
+
+- # ====== Button: P15_CLEAR ===================================
+  id: 7444335530315384061
+  identification: 
+    button-name: P15_CLEAR
+    label: Clear
+
+  layout: 
+    sequence: 20
+    region: Filter # 8023525673972514236
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  advanced: 
+    static-id: P15_CLEAR
+    request-source-type: Static Value
+    request-source: CLEAR
+
+- # ====== Button: P15_GO ======================================
+  id: 8023570068178569278
+  identification: 
+    button-name: P15_GO
+    label: Go
+
+  layout: 
+    sequence: 10
+    region: Filter # 8023525673972514236
+    slot: HELP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  advanced: 
+    static-id: P15_GO
+    request-source-type: Static Value
+    request-source: Go
+
+- # ====== Button: SEND_EMAIL ==================================
+  id: 8036303349195793725
+  identification: 
+    button-name: SEND_EMAIL
+    label: Send Email
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 8035427376284006801
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "regexp_like(:P15_FROM, '^[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~](\\.?[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~])*@(-?[a-zA-Z0-9+])+(\\.(-?[a-zA-Z0-9+])*)+$')"
+
+dynamic-actions: 
+- # ====== Dynamic Action: New =================================
+  id: 2444534355221634754
+  identification: 
+    name: New
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P15_GROUP_ID
+
+  client-side-condition: 
+    type: Item is not null
+    item: P15_GROUP_ID
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 2444534511928634755
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Button
+      button: MEMBERS # 2444534343289634753
+
+    execution: 
+      sequence: 10
+      event: New # 2444534355221634754
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 2444534648539634756
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Button
+      button: MEMBERS # 2444534343289634753
+
+    execution: 
+      sequence: 10
+      event: New # 2444534355221634754
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: save group id =======================
+  id: 8042822364326899376
+  identification: 
+    name: save group id
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P15_GROUP_ID
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 8042822665431899420
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P15_GROUP_ID
+
+    execution: 
+      sequence: 10
+      event: save group id # 8042822364326899376
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+validations: 
+- # ====== Validation: Defined "To" users are valid  ===========
+  id: 141503646485394429
+  identification: 
+    name: 'Defined "To" users are valid '
+
+  execution: 
+    sequence: 60
+
+  validation: 
+    type: Function Body (returning Boolean)
+    language: PL/SQL
+    pl/sql-function-body: |
+      declare
+          l_email_array  apex_t_varchar2;
+          l_valid_emails apex_t_varchar2;
+          l_idx          varchar2(20);
+          l_retval       boolean := true;
+      begin
+         -- Populate submitted array
+         l_email_array := apex_string.split(
+                              p_str => :P15_TO,
+                              p_sep => ':'
+                          );
+      
+          -- Populate Valid Emails string
+          begin
+              select
+                  lower(a.email)
+              bulk collect into
+                  l_valid_emails
+              from
+                  eba_ca_users u,
+                  apex_workspace_apex_users a
+              where
+                  lower(u.username) = lower(a.user_name);
+          exception
+              when no_data_found then
+                  -- No users have been defined in the app and/or APEX workspace yet
+                  l_retval := false;
+                  return l_retval;
+          end;
+      
+          -- Start index at 1
+          l_idx := l_email_array.first;
+      
+          -- Loop through emails submitted in form
+          while (l_idx is not null)
+          loop
+              -- Verify that the emails entered by end-user is in the list of emails assigned to APEX workspace users
+              l_retval := lower(l_email_array(l_idx)) member of l_valid_emails; -- if this returns false it means the end-user somehow entered an invalid email
+              
+              -- Bail from continued looping if last retval assignment was false
+              if not l_retval then
+                  exit;
+              end if;
+      
+              -- If retval was true, move on to the next array value
+              l_idx := l_email_array.next(l_idx);
+          end loop;
+          return l_retval;
+      end;
+    always-execute: false
+
+  error: 
+    error-message: Please select only email addresses offered in the list.
+    display-location: Inline with Field
+    associated-item: P15_TO # 7435364824559765108
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P15_TO
+
+- # ====== Validation: P15_FROM not null =======================
+  id: 7429450347989671096
+  identification: 
+    name: P15_FROM not null
+
+  execution: 
+    sequence: 20
+
+  validation: 
+    type: Item is NOT NULL
+    item: P15_FROM
+    always-execute: false
+
+  error: 
+    error-message: From must be specified.
+    display-location: Inline with Field and in Notification
+    associated-item: P15_FROM # 7429421819630615654
+
+  server-side-condition: 
+    when-button-pressed: SEND_EMAIL # 8036303349195793725
+
+- # ====== Validation: From valid email ========================
+  id: 7435381830409814133
+  identification: 
+    name: From valid email
+
+  execution: 
+    sequence: 50
+
+  validation: 
+    type: Item matches Regular Expression
+    item: P15_FROM
+    regular-expression: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}'
+    always-execute: false
+
+  error: 
+    error-message: Invalid Email format for From.
+    display-location: Inline with Field and in Notification
+    associated-item: P15_FROM # 7429421819630615654
+
+  server-side-condition: 
+    when-button-pressed: SEND_EMAIL # 8036303349195793725
+    type: Item is NOT NULL
+    item: P15_FROM
+
+- # ====== Validation: P15_GROUP_ID  or TO not null ============
+  id: 8036302150103784482
+  identification: 
+    name: P15_GROUP_ID  or TO not null
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :P15_GROUP_ID is not null or 
+      :P15_TO is not null
+    always-execute: false
+
+  error: 
+    error-message: Either a group must be selected or 'To' must be specified.
+    display-location: Inline with Field and in Notification
+    associated-item: P15_GROUP_ID # 8036285363553684371
+
+  server-side-condition: 
+    when-button-pressed: SEND_EMAIL # 8036303349195793725
+
+- # ====== Validation: P15_SUBJECT not null ====================
+  id: 8036302559107787137
+  identification: 
+    name: P15_SUBJECT not null
+
+  execution: 
+    sequence: 30
+
+  validation: 
+    type: Item is NOT NULL
+    item: P15_SUBJECT
+    always-execute: false
+
+  error: 
+    error-message: Subject must be specified.
+    display-location: Inline with Field and in Notification
+    associated-item: P15_SUBJECT # 8036285748100689308
+
+  server-side-condition: 
+    when-button-pressed: SEND_EMAIL # 8036303349195793725
+
+- # ====== Validation: P15_MSG_BODY must be specified ==========
+  id: 8036302870535790411
+  identification: 
+    name: P15_MSG_BODY must be specified
+
+  execution: 
+    sequence: 40
+
+  validation: 
+    type: Item is NOT NULL
+    item: P15_MSG_BODY
+    always-execute: false
+
+  error: 
+    error-message: Message Body must be specified.
+    display-location: Inline with Field and in Notification
+    associated-item: P15_MSG_BODY # 8036289060136711729
+
+  server-side-condition: 
+    when-button-pressed: SEND_EMAIL # 8036303349195793725
+
+computations: 
+- # ====== Computation: P15_FROM ===============================
+  id: 141503289420394426
+  identification: 
+    item-name: P15_FROM
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: Function Body
+    language: PL/SQL
+    pl/sql-function-body: |
+      declare
+          l_from_email varchar2(255);
+      begin
+          -- If the end-user's username is already an email address use it as the from address
+          if regexp_like(:APP_USER, '^[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&''''*+/0-9=?A-Z^_a-z{|}~])*@(-?[a-zA-Z0-9+])+(\.(-?[a-zA-Z0-9+])*)+$') then
+              l_from_email := lower(:APP_USER);
+          else
+              -- otherwise populate the from address by querying the apex_workspace_apex_users view (where email is a required value)
+              select
+                  lower(a.email)
+              into
+                  l_from_email
+              from
+                  eba_ca_users u,
+                  apex_workspace_apex_users a
+              where
+                  lower(u.username) = lower(a.user_name)
+              and
+                  lower(:APP_USER) = lower(a.user_name);
+          end if;
+          return l_from_email;
+      end;
+
+processes: 
+- # ====== Process: Reset Pagination ===========================
+  id: 7444348844644397624
+  identification: 
+    name: Reset Pagination
+    type: Reset Pagination
+    execution-chain: None
+
+  settings: 
+    target: This Page
+
+  execution: 
+    sequence: 20
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: On Error Page
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: Go,CLEAR
+
+- # ====== Process: Send Email =================================
+  id: 8036306857338833850
+  identification: 
+    name: Send Email
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+         l_app_name  varchar2(255)  default 'Team Calendar';
+         l_body      clob;
+         l_email_to  varchar2(32000);
+         crlf        varchar2(2) := chr(10) || chr(13); 
+      begin
+      
+         for c1 in (
+            select logo, logo_type
+              from apex_applications
+             where application_id = :APP_ID )
+         loop
+            if c1.logo_type = 'Text Logo' then
+               l_app_name := replace(substr(c1.logo,6),'&'||'APPLICATION_TITLE.',:APPLICATION_TITLE);
+               if lower(substr(l_app_name,1,4)) = '<img' then
+                  l_app_name := substr(l_app_name,instr(l_app_name,'>')+1);
+               end if;
+            end if;
+         end loop;
+      
+         l_body := '<div style="margin: 10px">
+          <h1 style="margin: 0 0 5px 0; padding: 10px; font: bold 18px/32px Arial, sans-serif; color: #EA0000; background-color: #F0F0F0; border-bottom: 2px solid #E6E6E6">'||l_app_name||'</h1>
+          <p style="margin: 15px 0; font: normal 13px/18px Arial, sans-serif;padding: 0 10px">'||crlf;
+      
+         dbms_lob.append(l_body, apex_escape.html(:P15_MSG_BODY)||'</p>'||crlf);
+      
+         dbms_lob.append(l_body,'<p style="margin: 15px 0; font: normal 13px/18px Arial, sans-serif;padding: 0 10px">'||crlf);
+      
+         dbms_lob.append(l_body,'Please note that all dates and times are shown in '||:F855_TIMEZONE||
+                         ' time.  You can access these events in the <a href="'||:HOST_URL||'f?p='||:APP_ID||':1">'||l_app_name||'</a> application.</p>'||crlf);
+      
+         dbms_lob.append(l_body,' <table style="width: 100%;" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                  <th style="background-color: #CCC; color: #333; font: bold 11px/18px Arial, sans-serif; text-align: left; width: 10%; padding: 5px 10px">Event Date</th>
+                  <th style="background-color: #CCC; color: #333; font: bold 11px/18px Arial, sans-serif; text-align: left; width: 17%; padding: 5px 10px">Time</th>
+                  <th style="background-color: #CCC; color: #333; font: bold 11px/18px Arial, sans-serif; text-align: left; width: 28%; padding: 5px 10px">Event Name</th>
+                  <th style="background-color: #CCC; color: #333; font: bold 11px/18px Arial, sans-serif; text-align: left; width: 10%; padding: 5px 10px">Type</th>
+                  <th style="background-color: #CCC; color: #333; font: bold 11px/18px Arial, sans-serif; text-align: left; width: 35%; padding: 5px 10px">Description</th>
+              </tr>'||crlf);
+      
+         for c1 in (
+            select to_char(e.EVENT_DATE_TIME,:APP_DATE_FORMAT) event_date,
+                   case when to_char(e.EVENT_DATE_TIME,'MI') = '00' 
+                        then ltrim(to_char(e.EVENT_DATE_TIME,'HHam'),'0')
+                       else ltrim(to_char(e.EVENT_DATE_TIME,'HH:MIam'),'0')
+                       end || ' - ' ||
+                  case when to_char(to_date(to_char(EVENT_DATE_TIME,'DD-MON-RR'||'HH:MIam'),
+                               'DD-MON-RR'||'HH:MIam')+(e.duration/24),'MI') = '00'
+                       then ltrim(to_char(to_date(to_char(EVENT_DATE_TIME,'DD-MON-RR'||'HH:MIam'),
+                               'DD-MON-RR'||'HH:MIam')+(e.duration/24),'HHam'),'0')
+                       else ltrim(to_char(to_date(to_char(EVENT_DATE_TIME,'DD-MON-RR'||'HH:MIam'),
+                               'DD-MON-RR'||'HH:MIam')+(e.duration/24),'HH:MIam'),'0')
+                       end || ' (' ||
+                  case when e.duration = 0  then '0 mins'
+                       when e.duration = .5 then '30 mins'
+                       when e.duration = 1 then '1 hr'
+                       when e.duration > 1 then to_char(e.duration) || ' hrs'
+                       end || ')' event_time,
+                   case when et.display_color is not null
+                        then '<span style="color:' || apex_escape.html(et.display_color) || '; white-space:nowrap; font-weight:bold;">' || apex_escape.html(e.event_name) || '</span>'
+                        else '<span style="white-space:nowrap; font-weight:bold;">' || apex_escape.html(e.event_name) || '</span>'
+                        end event_name,
+                   nvl(apex_escape.html(et.type_name),'&nbsp;') event_type,
+                   nvl(apex_escape.html(e.EVENT_DESC),'&nbsp;') event_desc
+              from EBA_CA_EVENTS e,
+                   EBA_CA_EVENT_TYPES et
+             where e.type_id = et.type_id (+)
+               and (:P15_EVENT_TYPE is null or e.type_id = :P15_EVENT_TYPE)
+               and (:P15_START_DATE is null or 
+                    trunc(to_date(to_char(e.event_date_time,:APP_DATE_FORMAT),
+                          '&APP_DATE_FORMAT.')) >= to_date(:P15_START_DATE,:APP_DATE_FORMAT) )
+               and (:P15_END_DATE is null or 
+                    trunc(to_date(to_char(e.event_date_time,'&APP_DATE_FORMAT.'),
+                          '&APP_DATE_FORMAT.')) <= to_date(:P15_END_DATE,:APP_DATE_FORMAT) )
+               and (:P15_TIMEFRAME is null or
+                    (trunc(to_date(to_char(e.event_date_time,'DD-MON-RRRR'),'DD-MON-RRRR'))
+                        >= (select start_date from EBA_ca_timeframes
+                             where :P15_TIMEFRAME = tf_id) and
+                     trunc(to_date(to_char(e.event_date_time,'DD-MON-RRRR'),'DD-MON-RRRR'))
+                        <= (select end_date from EBA_ca_timeframes
+                             where :P15_TIMEFRAME = tf_id))) 
+              order by e.event_date_time )
+         loop
+            dbms_lob.append(l_body,'<tr style="font: normal 12px/16px Arial, sans-serif; vertical-align: top;">');
+            dbms_lob.append(l_body,'<td style="padding: 5px 10px; background-color: #F4F4F4; border-bottom: 1px solid #E0E0E0">'||c1.event_date||'</td>');
+            dbms_lob.append(l_body,'<td style="padding: 5px 10px; background-color: #F4F4F4; border-bottom: 1px solid #E0E0E0">'||c1.event_time||'</td>');
+            dbms_lob.append(l_body,'<td style="padding: 5px 10px; background-color: #F4F4F4; border-bottom: 1px solid #E0E0E0">'||c1.event_name||'</td>');
+            dbms_lob.append(l_body,'<td style="padding: 5px 10px; background-color: #F4F4F4; border-bottom: 1px solid #E0E0E0">'||c1.event_type||'</td>');
+            dbms_lob.append(l_body,'<td style="padding: 5px 10px; background-color: #F4F4F4; border-bottom: 1px solid #E0E0E0">'||c1.event_desc||'</td>');
+            dbms_lob.append(l_body,'</tr>'||crlf);
+         end loop;
+      
+         dbms_lob.append(l_body,'</table></div>'||crlf);
+      
+         for c1 in (
+            select email_address
+              from EBA_ca_email_group_mbrs
+             where group_id = :P15_GROUP_ID )
+         loop
+            l_email_to := l_email_to || c1.email_address || ',';
+         end loop;
+      
+         if :P15_TO is not null then 
+            l_email_to := l_email_to || :P15_TO || ',';
+         end if;
+      
+         l_email_to := substr(l_email_to,1,length(l_email_to)-1);
+      
+         apex_mail.send (
+            p_to        => l_email_to,
+            p_from      => :P15_FROM,
+            p_replyto   => nvl(replace(replace(eba_ca_fw.get_preference_value('NOTIFICATION_EMAIL_REPLY_TO'),'N/A',null),'Preference does not exist',null), :P15_FROM),
+            p_cc        => :P15_FROM,
+            p_body      => to_clob(' '),
+            p_body_html => l_body,
+            p_subj      => apex_escape.html(:P15_SUBJECT));
+      
+      end;
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Email(s) sent.
+
+  error: 
+    error-message: Email(s) failed to be sent.
+    display-location: On Error Page
+
+  server-side-condition: 
+    when-button-pressed: SEND_EMAIL # 8036303349195793725
+
+branches: 
+- # ====== Branch: Go To Page 15 ===============================
+  id: 7444345549015389416
+  identification: 
+    name: Go To Page 15
+
+  execution: 
+    sequence: 20
+    point: After Submit
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:15:&SESSION.::&DEBUG.:15::'
+      page: 15 # Send Email
+      clear-cache: 15
+
+    save-state-before-branching: true
+
+  server-side-condition: 
+    when-button-pressed: P15_CLEAR # 7444335530315384061
+
+  comments: 
+    comments: 'Created 18-OCT-2010 12:47 by SBKENNED'
+
+- # ====== Branch: Go To Page 15 ===============================
+  id: 8023570269548569279
+  identification: 
+    name: Go To Page 15
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:15:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+      page: 15 # Send Email
+
+    save-state-before-branching: true
+

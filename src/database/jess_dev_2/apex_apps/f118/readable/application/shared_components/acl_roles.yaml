@@ -1,0 +1,12 @@
+---
+- # ====== Role: Contributer ===================================
+  id: 610645949523991990
+  identification: 
+    name: Contributer
+
+  advanced: 
+    static-id: CONTRIBUTER
+
+  subscription: 
+    version-number: 37166093807337
+

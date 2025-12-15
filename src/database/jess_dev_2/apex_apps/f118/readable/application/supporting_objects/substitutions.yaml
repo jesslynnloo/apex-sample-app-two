@@ -1,0 +1,41 @@
+---
+- # ====== Substitution: APP_DATE_FORMAT =======================
+  id: 1
+  identification: 
+    name: APP_DATE_FORMAT
+
+  installation: 
+    prompt-substitution: false
+
+- # ====== Substitution: APP_TIME_FORMAT =======================
+  id: 2
+  identification: 
+    name: APP_TIME_FORMAT
+
+  installation: 
+    prompt-substitution: false
+
+- # ====== Substitution: APP_TIMESTAMP_FORMAT ==================
+  id: 3
+  identification: 
+    name: APP_TIMESTAMP_FORMAT
+
+  installation: 
+    prompt-substitution: false
+
+- # ====== Substitution: APP_DATETIME_FORMAT ===================
+  id: 4
+  identification: 
+    name: APP_DATETIME_FORMAT
+
+  installation: 
+    prompt-substitution: false
+
+- # ====== Substitution: APP_NAME ==============================
+  id: 5
+  identification: 
+    name: APP_NAME
+
+  installation: 
+    prompt-substitution: false
+

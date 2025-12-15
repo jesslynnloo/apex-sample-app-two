@@ -1,0 +1,325 @@
+---
+# ====== Page: Time Zone Preference ==========================
+id: 100
+identification: 
+  name: Time Zone Preference
+  alias: TIMEZONE
+  title: Time Zone Preference
+  page-group: Public # 8949832234238591801
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: |
+    <p>
+      Select your preferred time zone and click the <strong>Apply Changes</strong> button to set your time zone. Click the <strong>Cancel</strong> button to leave this page.
+    </p>
+    <p>
+      Various other functions in this app record and report timestamps according to this setting.  
+    </p>
+
+regions: 
+- # ====== Region: Breadcrumb ==================================
+  id: 1348399294428124294
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: ' Breadcrumb' # 8949803322316567820
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Preference ==================================
+  id: 7989928466472759488
+  identification: 
+    name: Preference
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Alert
+    template-options: 
+    - t-Alert--wizard
+    - t-Alert--defaultIcons
+    - t-Alert--info
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P100_TIMEZONE ============================
+  id: 7989928659714759493
+  identification: 
+    name: P100_TIMEZONE
+    type: Select List
+
+  label: 
+    label: Time Zone
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Preference # 7989928466472759488
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: STD TIME ZONES # 3266531777938715866
+    display-extra-values: true
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: '&F855_TIMEZONE.'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Select timezone.  This is used to adjust all dates and times.
+
+buttons: 
+- # ====== Button: APPLY_CHANGES ===============================
+  id: 3266533193521720329
+  identification: 
+    button-name: APPLY_CHANGES
+    label: Apply Changes
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 1348399294428124294
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CLOSE =======================================
+  id: 7989934574830790345
+  identification: 
+    button-name: CLOSE
+    label: Cancel
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 1348399294428124294
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:&LAST_VIEW.:&SESSION.::&DEBUG.:::'
+      page: '&LAST_VIEW.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+processes: 
+- # ====== Process: Change Timezone ============================
+  id: 7989928971667761078
+  identification: 
+    name: Change Timezone
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+         c integer := 0;
+      begin
+         for c1 in (select id, timezone_preference 
+                    from eba_ca_tz_pref 
+                    where userid = :APP_USER) loop
+            update eba_ca_tz_pref
+            set timezone_preference = nvl(:P100_TIMEZONE,'UTC')
+            where id = c1.id;
+            c := c + 1;
+         end loop;
+         if c = 0 then
+            insert into eba_ca_tz_pref (userid, timezone_preference)
+            values (:APP_USER,:P100_TIMEZONE);
+         end if;
+         APEX_UTIL.SET_SESSION_TIME_ZONE (  
+                P_TIME_ZONE => :P100_TIMEZONE); 
+          :F855_TIMEZONE := :P100_TIMEZONE;
+         commit;
+      end;
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Timezone Set.
+
+  error: 
+    display-location: On Error Page
+
+  server-side-condition: 
+    when-button-pressed: APPLY_CHANGES # 3266533193521720329
+
+branches: 
+- # ====== Branch: Go To Page &LAST_VIEW. ======================
+  id: 7989931356898776066
+  identification: 
+    name: Go To Page &LAST_VIEW.
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:&LAST_VIEW.:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+      page: '&LAST_VIEW.'
+
+    save-state-before-branching: true
+

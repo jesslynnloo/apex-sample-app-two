@@ -1,0 +1,964 @@
+---
+# ====== Page: Filter Options ================================
+id: 5
+identification: 
+  name: Filter Options
+  alias: FILTER-OPTIONS
+  title: Filter Options
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: true
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: false
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: No help is available for this page.
+
+regions: 
+- # ====== Region: Filter Options ==============================
+  id: 17448230768504990851
+  identification: 
+    name: Filter Options
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--noBorder
+    - t-Region--hiddenOverflow
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Buttons =====================================
+  id: 17792736648766301507
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P5_CAL_ALL ===============================
+  id: 1866532894803586384
+  identification: 
+    name: P5_CAL_ALL
+    type: Checkbox Group
+
+  label: 
+    label: Calendars
+    alignment: Left
+
+  settings: 
+    number-of-columns: 1
+
+  multiple-values: 
+    type: Delimited List
+    separator: ':'
+
+  layout: 
+    sequence: 20
+    region: Filter Options # 17448230768504990851
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:All;0'
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Use to limit the results to events from the Calendars selected.
+
+  configuration: 
+    build-option: Include Multiple Calendars # 1866546217384601308
+
+- # ====== Page Item: P5_CALENDARS =============================
+  id: 1866533326478586392
+  identification: 
+    name: P5_CALENDARS
+    type: Checkbox Group
+
+  label: 
+    label: Calendars
+    alignment: Left
+
+  settings: 
+    number-of-columns: 1
+
+  multiple-values: 
+    type: Delimited List
+    separator: ':'
+
+  layout: 
+    sequence: 30
+    region: Filter Options # 17448230768504990851
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 0
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CALENDARS WITH DEFAULT # 1878644215199008302
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Use to restrict to events from one or more calendars.
+
+  configuration: 
+    build-option: Include Multiple Calendars # 1866546217384601308
+
+- # ====== Page Item: P5_ET_ALL ================================
+  id: 1866533700047586393
+  identification: 
+    name: P5_ET_ALL
+    type: Checkbox Group
+
+  label: 
+    label: Event Types
+    alignment: Left
+
+  settings: 
+    number-of-columns: 1
+
+  multiple-values: 
+    type: Delimited List
+    separator: ':'
+
+  layout: 
+    sequence: 7
+    region: Filter Options # 17448230768504990851
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:All;0'
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Use to limit the results to events with the Event Types selected.
+
+- # ====== Page Item: P5_EVENT_TYPES ===========================
+  id: 1866534086864586393
+  identification: 
+    name: P5_EVENT_TYPES
+    type: Checkbox Group
+
+  label: 
+    label: Event Types
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+
+  multiple-values: 
+    type: Delimited List
+    separator: ':'
+
+  layout: 
+    sequence: 10
+    region: Filter Options # 17448230768504990851
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 0
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: EVENT TYPES FOR MAIN CAL # 7977644959494043344
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P5_CONTACT_EMAIL =========================
+  id: 1866642034345194711
+  identification: 
+    name: P5_CONTACT_EMAIL
+    type: Select List
+
+  label: 
+    label: Contact Email
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 40
+    region: Filter Options # 17448230768504990851
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CONTACTS # 1641100680617237514
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 'x' from
+      eba_ca_events where contact_email is not null;
+
+  security: 
+    authorization-scheme: CONTRIBUTION RIGHTS # 3264368700663348877
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: Use to limit the results to events where the Contact Email matches the email listed in the Access Control List (under Administration).
+
+  configuration: 
+    build-option: Include External / Internal Event Types # 1641094558700216905
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 1866531919727586369
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 10
+    region: Buttons # 17792736648766301507
+    slot: BELOW_BOX
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    horizontal-alignment: Left
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: SUBMIT ======================================
+  id: 1866532199834586371
+  identification: 
+    button-name: SUBMIT
+    label: Set
+
+  layout: 
+    sequence: 30
+    region: Buttons # 17792736648766301507
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--gapLeft
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: RESET =======================================
+  id: 1893491296487065256
+  identification: 
+    button-name: RESET
+    label: Reset All
+
+  layout: 
+    sequence: 20
+    region: Buttons # 17792736648766301507
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: when calendars All ==================
+  id: 1866536528843586426
+  identification: 
+    name: when calendars All
+
+  execution: 
+    sequence: 5
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P5_CAL_ALL
+
+  client-side-condition: 
+    type: Item = Value
+    item: P5_CAL_ALL
+    value: 0
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 1866536989611586429
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P5_CALENDARS
+
+    execution: 
+      sequence: 10
+      event: when calendars All # 1866536528843586426
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: when cal other than all =============
+  id: 1866537397518586430
+  identification: 
+    name: when cal other than all
+
+  execution: 
+    sequence: 7
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P5_CALENDARS
+
+  client-side-condition: 
+    type: Item is not null
+    item: P5_CALENDARS
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 1866537856780586430
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P5_CAL_ALL
+
+    execution: 
+      sequence: 10
+      event: when cal other than all # 1866537397518586430
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: when event_types All ================
+  id: 1866538259212586430
+  identification: 
+    name: when event_types All
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P5_ET_ALL
+
+  client-side-condition: 
+    type: Item = Value
+    item: P5_ET_ALL
+    value: 0
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 1866538818012586431
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P5_EVENT_TYPES
+
+    execution: 
+      sequence: 10
+      event: when event_types All # 1866538259212586430
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: when event type other than all ======
+  id: 1866539165180586431
+  identification: 
+    name: when event type other than all
+
+  execution: 
+    sequence: 12
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P5_EVENT_TYPES
+
+  client-side-condition: 
+    type: Item is not null
+    item: P5_EVENT_TYPES
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 1866539735791586431
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P5_ET_ALL
+
+    execution: 
+      sequence: 10
+      event: when event type other than all # 1866539165180586431
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: close ===============================
+  id: 1866540123735586432
+  identification: 
+    name: close
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 1866531919727586369
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 1866540557067586433
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: close # 1866540123735586432
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: load contact_email =========================
+  id: 816370855838692379
+  identification: 
+    name: load contact_email
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+         l_pref varchar2(4000);
+      begin
+      
+      l_pref := apex_util.get_preference (
+                    p_preference => 'CONTACT_EMAIL',
+                    p_user       => :APP_USER );
+      
+      if l_pref is null or l_pref = '0' then
+         :P5_CONTACT_EMAIL := null;
+      else
+         :P5_CONTACT_EMAIL := l_pref;
+      end if;
+      
+      end;
+
+  execution: 
+    sequence: 32
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: set contact email ==========================
+  id: 1702548574125087095
+  identification: 
+    name: set contact email
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      APEX_UTIL.SET_PREFERENCE(        
+         p_preference => 'CONTACT_EMAIL',
+         p_value      => nvl(:P5_CONTACT_EMAIL,'0'),      
+         p_user       => :APP_USER);
+         
+      :CONTACT_EMAIL := :P5_CONTACT_EMAIL;
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Filters set.
+
+  error: 
+    error-message: Filters failed to be set.
+    display-location: Inline in Notification
+
+- # ====== Process: set event type pref ========================
+  id: 1866534484776586423
+  identification: 
+    name: set event type pref
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      APEX_UTIL.SET_PREFERENCE(        
+         p_preference => 'EVENT_TYPES_FILTER',
+         p_value      => nvl(:P5_EVENT_TYPES,'0'),      
+         p_user       => :APP_USER);
+         
+      :EVENT_TYPES_FILTER := nvl(:P5_EVENT_TYPES,'0');
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Filters set.
+
+  error: 
+    error-message: Filters failed to be set.
+    display-location: Inline in Notification
+
+- # ====== Process: set calendar pref ==========================
+  id: 1866534859748586424
+  identification: 
+    name: set calendar pref
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      APEX_UTIL.SET_PREFERENCE(        
+         p_preference => 'CALENDARS_FILTER',
+         p_value      => nvl(:P5_CALENDARS,'0'),      
+         p_user       => :APP_USER);
+         
+      :CALENDARS_FILTER := nvl(:P5_CALENDARS,'0');
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Close Dialog ===============================
+  id: 1866535291611586424
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: false
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: load cals ==================================
+  id: 1866535660391586424
+  identification: 
+    name: load cals
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+         l_pref varchar2(4000);
+      begin
+      
+      l_pref := apex_util.get_preference (
+                    p_preference => 'CALENDARS_FILTER',
+                    p_user       => :APP_USER );
+      
+      if l_pref is null or l_pref = '0' then
+         :P5_CAL_ALL := '0';
+      else
+         :P5_CALENDARS := l_pref;
+      end if;
+      
+      end;
+
+  execution: 
+    sequence: 22
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: load event types ===========================
+  id: 1866536094273586425
+  identification: 
+    name: load event types
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+         l_pref varchar2(4000);
+      begin
+      
+      l_pref := apex_util.get_preference (
+                    p_preference => 'EVENT_TYPES_FILTER',
+                    p_user       => :APP_USER );
+      
+      if l_pref is null or l_pref = '0' then
+         :P5_ET_ALL := '0';
+      else
+         :P5_EVENT_TYPES := l_pref;
+      end if;
+      
+      end;
+
+  execution: 
+    sequence: 12
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Reset ======================================
+  id: 1893491441785065257
+  identification: 
+    name: Reset
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      :P5_EVENT_TYPES := null;
+      :P5_CALENDARS := null;
+      :P5_CONTACT_EMAIL := null;
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: All filters reset
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: RESET # 1893491296487065256
+
